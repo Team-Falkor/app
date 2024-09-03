@@ -1,19 +1,17 @@
 import { BaseProvider } from "@falkor/sdk";
-import { BaseDirectory, exists, readDir } from "@tauri-apps/plugin-fs";
+import { BaseDirectory, exists, mkdir, readDir } from "@tauri-apps/plugin-fs";
 import { fetch } from "@tauri-apps/plugin-http";
 
 let instance: PluginLoader | null = null;
 
-class PluginLoader {
+export class PluginLoader {
   private pluginPath: string = "plugins";
   private plugins: BaseProvider[] = [];
 
   private initialized = false;
 
   constructor() {
-    if (instance) {
-      return instance;
-    }
+    if (instance) return instance;
     instance = this;
   }
 
@@ -29,9 +27,16 @@ class PluginLoader {
 
     try {
       // Get the list of plugin directories
+      await mkdir(this.pluginPath, {
+        baseDir: BaseDirectory.AppData,
+        recursive: true,
+      });
+
       const pluginFolders = await readDir(this.pluginPath, {
         baseDir: BaseDirectory.AppData,
       });
+
+      if (!pluginFolders) return;
 
       // Load plugins in parallel
       const loadPromises = pluginFolders.map(async (folder) => {
@@ -44,6 +49,7 @@ class PluginLoader {
 
         if (fileExists) {
           try {
+            /* @vite-ignore */
             const pluginModule = await import(pluginFilePath);
             const { default: PluginClass } = pluginModule as {
               default: new (fetchApi: typeof fetch) => BaseProvider;

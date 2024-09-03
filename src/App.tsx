@@ -4,6 +4,7 @@ import { Toaster } from "sonner";
 import { ThemeProvider } from "./components/theme-provider";
 import { TooltipProvider } from "./components/ui/tooltip";
 
+import { usePlugins } from "./hooks/plugins/usePlugins";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -28,6 +29,9 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
+  const { hasInitialized } = usePlugins();
+
+  if (!hasInitialized) return <div>Loading...</div>;
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
       <TooltipProvider>

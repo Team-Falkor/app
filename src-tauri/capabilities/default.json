@@ -6,6 +6,10 @@
   "permissions": [
     "core:app:default",
     "shell:allow-open",
+    "fs:default",
+    "fs:allow-create",
+    "fs:allow-appdata-read",
+    "fs:allow-appdata-write",
     {
       "identifier": "http:default",
       "allow": [
