@@ -1,15 +1,12 @@
+import { BaseProvider } from "@falkor/sdk";
 import { BaseDirectory, exists, readDir } from "@tauri-apps/plugin-fs";
+import { fetch } from "@tauri-apps/plugin-http";
 
 let instance: PluginLoader | null = null;
 
-interface Plugin {
-  new (): any;
-  // Add any common methods or properties your plugins are expected to have
-}
-
 class PluginLoader {
   private pluginPath: string = "plugins";
-  private plugins: Plugin[] = [];
+  private plugins: BaseProvider[] = [];
 
   private initialized = false;
 
@@ -20,7 +17,16 @@ class PluginLoader {
     instance = this;
   }
 
+  reinitialize(): void {
+    this.initialized = false;
+    this.plugins = [];
+
+    this.load();
+  }
+
   async load(): Promise<void> {
+    if (this.initialized) return;
+
     try {
       // Get the list of plugin directories
       const pluginFolders = await readDir(this.pluginPath, {
@@ -40,11 +46,18 @@ class PluginLoader {
           try {
             const pluginModule = await import(pluginFilePath);
             const { default: PluginClass } = pluginModule as {
-              default: Plugin;
+              default: new (fetchApi: typeof fetch) => BaseProvider;
             };
 
-            // Instantiate and store the plugin
-            this.plugins.push(new PluginClass());
+            // Instantiate and store the plugin with `fetch` passed to the constructor
+            const pluginInstance = new PluginClass(fetch);
+            if (pluginInstance instanceof BaseProvider) {
+              this.plugins.push(pluginInstance);
+            } else {
+              console.warn(
+                `Loaded plugin from ${pluginFilePath} does not extend BaseProvider.`
+              );
+            }
           } catch (importError) {
             console.error(
               `Failed to load plugin from ${pluginFilePath}:`,
@@ -55,9 +68,20 @@ class PluginLoader {
       });
 
       await Promise.all(loadPromises);
+
+      this.initialized = true;
     } catch (error) {
       console.error("Failed to load plugins:", error);
       throw new Error("PluginLoader: An error occurred while loading plugins.");
     }
+  }
+
+  // Additional methods to interact with the loaded plugins
+  getPlugins(): BaseProvider[] {
+    return this.plugins;
+  }
+
+  getPluginByName(name: string): BaseProvider | undefined {
+    return this.plugins.find((plugin) => plugin.constructor.name === name);
   }
 }

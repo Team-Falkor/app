@@ -11,6 +11,7 @@
     "tauri:dev": "tauri dev"
   },
   "dependencies": {
+    "@falkor/sdk": "https://github.com/Team-Falkor/SDK",
     "@hookform/resolvers": "^3.9.0",
     "@radix-ui/react-accordion": "^1.2.0",
     "@radix-ui/react-alert-dialog": "^1.1.1",
