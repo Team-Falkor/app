@@ -1,0 +1,80 @@
+{
+  "popular": "Populaire",
+  "top_rated": "Les Mieux Notés",
+  "new_releases": "Nouvelles Sorties",
+  "most_anticipated": "Les Plus Attendus",
+  "continue_playing": "Continuer à Jouer",
+  "search_placeholder": "Quel jeu cherchez-vous?",
+  "home": "Accueil",
+  "settings": "Paramètres",
+  "search": "Recherche",
+  "my_games": "Mes Jeux",
+  "new_game": "Nouveau Jeu",
+  "downloads": "Téléchargements",
+  "logo_hover": "Falkor La chance du tirage au sort",
+  "more_info": "Plus d'Info",
+  "trailer": "Bande-Annonce",
+  "about_this_game": "À Propos de ce Jeu",
+  "you_may_also_like": "Vous Pourriez Aussi Aimer",
+  "media": "Médias",
+  "system_requirements": "Configuration Système",
+  "genres": "Genres",
+  "rating": "Note",
+  "release_date": "Date de Sortie",
+  "developer": "Développeur",
+  "publisher": "Éditeur",
+  "general": "Général",
+  "torrent_configuration": "Configuration de Torrent",
+  "accounts": "Comptes",
+  "plugins": "Plugins",
+  "miscellaneous": "Divers",
+  "join_the_discord": "Rejoignez le Discord!",
+  "star_us_on_github": "Donnez-nous une étoile sur GitHub!",
+  "buy_me_a_coffee": "Achetez-moi un Café!",
+  "add_account": "Ajouter un Compte",
+  "username": "Nom d'Utilisateur",
+  "status": "Statut",
+  "expiry_date": "Date d'Expiration",
+  "service": "Service",
+  "manage": "Gérer",
+  "what_plugin_are_you_looking_for": "Quel plugin cherchez-vous?",
+  "add_local_plugin": "Ajouter un Plugin Local",
+  "add_custom_plugin_repository": "Ajouter un Référentiel de Plugins Personnalisé",
+  "show_installed_only": "Afficher Seulement Installé",
+  "sort_alphabeticly_asc": "Trier par Ordre Alphabétique Ascendant",
+  "sort_alphabeticly_desc": "Trier par Ordre Alphabétique Descendant",
+  "show_list": "Afficher la Liste",
+  "show_grid": "Afficher la Grille",
+  "install": "Installer",
+  "uninstall": "Désinstaller",
+  "update": "Mettre à Jour",
+  "view_more": "Voir plus",
+  "Settings": {
+    "titles": {
+      "general": "Paramètres Généraux",
+      "torrent": "Paramètres de Configuration de Torrent",
+      "accounts": "Paramètres des Comptes",
+      "plugins": "Paramètres des Plugins",
+      "developer": "Paramètres Développeur",
+      "miscellaneous": "Paramètres Divers"
+    },
+    "change_local": {
+      "title": "Changer de Local",
+      "description": "Changer la Local Utilisée Pour les Prix ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Chemin de Téléchargement",
+      "description": "Définir le Chemin de Téléchargement pour les Torrents"
+    },
+    "torrent_dht_configuration": {
+      "title": "Configuration DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Utiliser compte(s) pour les téléchargements"
+    },
+    "developer_enable_console": {
+      "title": "Activer la Console Développeur",
+      "description": "Activer la Console Développeur pour le Débogage"
+    }
+  }
+}

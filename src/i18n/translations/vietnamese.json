@@ -1,0 +1,80 @@
+{
+  "popular": "Phổ biến",
+  "top_rated": "Được đánh giá cao",
+  "new_releases": "Mới phát hành",
+  "most_anticipated": "Được mong đợi nhất",
+  "continue_playing": "Tiếp tục chơi",
+  "search_placeholder": "Bạn đang tìm kiếm game gì?",
+  "home": "Trang chủ",
+  "settings": "Cài đặt",
+  "search": "Tìm kiếm",
+  "my_games": "Game của tôi",
+  "new_game": "Game mới",
+  "downloads": "Tải xuống",
+  "logo_hover": "Falkor Vận may của sự lựa chọn",
+  "more_info": "Thông tin thêm",
+  "trailer": "Trailer",
+  "about_this_game": "Về Game này",
+  "you_may_also_like": "Bạn cũng có thể thích",
+  "media": "Truyền thông",
+  "system_requirements": "Yêu cầu hệ thống",
+  "genres": "Thể loại",
+  "rating": "Đánh giá",
+  "release_date": "Ngày phát hành",
+  "developer": "Nhà phát triển",
+  "publisher": "Nhà xuất bản",
+  "general": "Chung",
+  "torrent_configuration": "Cấu hình Torrent",
+  "accounts": "Tài khoản",
+  "plugins": "Plugin",
+  "miscellaneous": "Khác",
+  "join_the_discord": "Tham gia Discord!",
+  "star_us_on_github": "Đánh dấu chúng tôi trên GitHub!",
+  "buy_me_a_coffee": "Mua cho tôi một ly cà phê!",
+  "add_account": "Thêm tài khoản",
+  "username": "Tên người dùng",
+  "status": "Trạng thái",
+  "expiry_date": "Ngày hết hạn",
+  "service": "Dịch vụ",
+  "manage": "Quản lý",
+  "what_plugin_are_you_looking_for": "Bạn đang tìm kiếm plugin nào?",
+  "add_local_plugin": "Thêm Plugin cục bộ",
+  "add_custom_plugin_repository": "Thêm kho Plugin tùy chỉnh",
+  "show_installed_only": "Chỉ hiển thị đã cài đặt",
+  "sort_alphabeticly_asc": "Sắp xếp theo thứ tự chữ cái tăng dần",
+  "sort_alphabeticly_desc": "Sắp xếp theo thứ tự chữ cái giảm dần",
+  "show_list": "Hiển thị danh sách",
+  "show_grid": "Hiển thị lưới",
+  "install": "Cài đặt",
+  "uninstall": "Gỡ cài đặt",
+  "update": "Cập nhật",
+  "view_more": "Xem thêm",
+  "Settings": {
+    "titles": {
+      "general": "Cài đặt Chung",
+      "torrent": "Cài đặt Cấu hình Torrent",
+      "accounts": "Cài đặt Tài khoản",
+      "plugins": "Cài đặt Plugin",
+      "developer": "Cài đặt Nhà phát triển",
+      "miscellaneous": "Cài đặt Khác"
+    },
+    "change_local": {
+      "title": "Thay đổi Ngôn ngữ",
+      "description": "Thay đổi ngôn ngữ được sử dụng cho giá ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Đường dẫn Tải xuống",
+      "description": "Đặt Đường dẫn Tải xuống cho Torrent"
+    },
+    "torrent_dht_configuration": {
+      "title": "Cấu hình DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Sử dụng tài khoản để tải xuống"
+    },
+    "developer_enable_console": {
+      "title": "Bật Bảng điều khiển Nhà phát triển",
+      "description": "Bật Bảng điều khiển Nhà phát triển để gỡ lỗi"
+    }
+  }
+}

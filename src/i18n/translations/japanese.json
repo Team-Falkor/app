@@ -1,0 +1,80 @@
+{
+  "popular": "人気",
+  "top_rated": "高評価",
+  "new_releases": "新作",
+  "most_anticipated": "最も期待される",
+  "continue_playing": "続ける",
+  "search_placeholder": "どのゲームを探していますか？",
+  "home": "ホーム",
+  "settings": "設定",
+  "search": "検索",
+  "my_games": "マイゲーム",
+  "new_game": "新しいゲーム",
+  "downloads": "ダウンロード",
+  "logo_hover": "幸運のファルコア",
+  "more_info": "もっと詳しく",
+  "trailer": "予告編",
+  "about_this_game": "このゲームについて",
+  "you_may_also_like": "あなたも好きかもしれません",
+  "media": "メディア",
+  "system_requirements": "システム要件",
+  "genres": "ジャンル",
+  "rating": "評価",
+  "release_date": "発売日",
+  "developer": "開発者",
+  "publisher": "出版社",
+  "general": "一般",
+  "torrent_configuration": "トレント設定",
+  "accounts": "アカウント",
+  "plugins": "プラグイン",
+  "miscellaneous": "その他",
+  "join_the_discord": "Discordに参加！",
+  "star_us_on_github": "GitHubでスターを付けてください！",
+  "buy_me_a_coffee": "コーヒーを買ってください！",
+  "add_account": "アカウントを追加",
+  "username": "ユーザー名",
+  "status": "ステータス",
+  "expiry_date": "有効期限",
+  "service": "サービス",
+  "manage": "管理",
+  "what_plugin_are_you_looking_for": "どのプラグインを探していますか？",
+  "add_local_plugin": "ローカルプラグインを追加",
+  "add_custom_plugin_repository": "カスタムプラグインリポジトリを追加",
+  "show_installed_only": "インストール済みのみ表示",
+  "sort_alphabeticly_asc": "アルファベット順（昇順）",
+  "sort_alphabeticly_desc": "アルファベット順（降順）",
+  "show_list": "リストを表示",
+  "show_grid": "グリッドを表示",
+  "install": "インストール",
+  "uninstall": "アンインストール",
+  "update": "更新",
+  "view_more": "もっと見る",
+  "Settings": {
+    "titles": {
+      "general": "一般設定",
+      "torrent": "トレント設定",
+      "accounts": "アカウント設定",
+      "plugins": "プラグイン設定",
+      "developer": "開発者設定",
+      "miscellaneous": "その他の設定"
+    },
+    "change_local": {
+      "title": "ロケールを変更",
+      "description": "ITAD価格に使用されるロケールを変更"
+    },
+    "torrent_download_path": {
+      "title": "ダウンロードパス",
+      "description": "トレントのダウンロードパスを設定"
+    },
+    "torrent_dht_configuration": {
+      "title": "DHT設定"
+    },
+    "accounts_use_to_download": {
+      "title": "ダウンロードにアカウントを使用"
+    },
+    "developer_enable_console": {
+      "title": "開発者コンソールを有効にする",
+      "description": "デバッグ用に開発者コンソールを有効にする"
+    }
+  }
+}

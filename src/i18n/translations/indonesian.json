@@ -1,0 +1,80 @@
+{
+  "popular": "Populer",
+  "top_rated": "Paling Dinilai",
+  "new_releases": "Rilisan Baru",
+  "most_anticipated": "Paling Dinanti",
+  "continue_playing": "Lanjutkan Bermain",
+  "search_placeholder": "Game apa yang Anda cari?",
+  "home": "Beranda",
+  "settings": "Pengaturan",
+  "search": "Cari",
+  "my_games": "Game Saya",
+  "new_game": "Game Baru",
+  "downloads": "Unduhan",
+  "logo_hover": "Falkor Keberuntungan undian",
+  "more_info": "Info Lebih Lanjut",
+  "trailer": "Trailer",
+  "about_this_game": "Tentang Game Ini",
+  "you_may_also_like": "Anda Mungkin Juga Menyukai",
+  "media": "Media",
+  "system_requirements": "Persyaratan Sistem",
+  "genres": "Genre",
+  "rating": "Penilaian",
+  "release_date": "Tanggal Rilis",
+  "developer": "Pengembang",
+  "publisher": "Penerbit",
+  "general": "Umum",
+  "torrent_configuration": "Konfigurasi Torrent",
+  "accounts": "Akun",
+  "plugins": "Plugin",
+  "miscellaneous": "Lain-lain",
+  "join_the_discord": "Bergabunglah dengan Discord!",
+  "star_us_on_github": "Beri bintang kami di GitHub!",
+  "buy_me_a_coffee": "Beli saya kopi!",
+  "add_account": "Tambah Akun",
+  "username": "Nama Pengguna",
+  "status": "Status",
+  "expiry_date": "Tanggal Kedaluwarsa",
+  "service": "Layanan",
+  "manage": "Kelola",
+  "what_plugin_are_you_looking_for": "Plugin apa yang Anda cari?",
+  "add_local_plugin": "Tambah Plugin Lokal",
+  "add_custom_plugin_repository": "Tambah Repositori Plugin Kustom",
+  "show_installed_only": "Tampilkan yang Terpasang Saja",
+  "sort_alphabeticly_asc": "Urutkan Abjad (A-Z)",
+  "sort_alphabeticly_desc": "Urutkan Abjad (Z-A)",
+  "show_list": "Tampilkan Daftar",
+  "show_grid": "Tampilkan Grid",
+  "install": "Instal",
+  "uninstall": "Copot",
+  "update": "Perbarui",
+  "view_more": "Lihat Lebih Banyak",
+  "Settings": {
+    "titles": {
+      "general": "Pengaturan Umum",
+      "torrent": "Pengaturan Konfigurasi Torrent",
+      "accounts": "Pengaturan Akun",
+      "plugins": "Pengaturan Plugin",
+      "developer": "Pengaturan Pengembang",
+      "miscellaneous": "Pengaturan Lain-lain"
+    },
+    "change_local": {
+      "title": "Ubah Lokal",
+      "description": "Ubah Lokal yang Digunakan untuk Harga ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Jalur Unduhan",
+      "description": "Tetapkan Jalur Unduhan untuk Torrent"
+    },
+    "torrent_dht_configuration": {
+      "title": "Konfigurasi DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Gunakan akun untuk mengunduh"
+    },
+    "developer_enable_console": {
+      "title": "Aktifkan Konsol Pengembang",
+      "description": "Aktifkan Konsol Pengembang untuk Debugging"
+    }
+  }
+}
