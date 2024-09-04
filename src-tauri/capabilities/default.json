@@ -10,6 +10,8 @@
     "fs:allow-create",
     "fs:allow-appdata-read",
     "fs:allow-appdata-write",
+    "core:path:default",
+    "core:path:allow-resolve-directory",
     {
       "identifier": "http:default",
       "allow": [

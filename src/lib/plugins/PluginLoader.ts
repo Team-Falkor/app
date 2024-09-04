@@ -1,12 +1,15 @@
+import * as FalkorSDK from "@falkor/sdk";
 import { BaseProvider } from "@falkor/sdk";
-import { BaseDirectory, exists, mkdir, readDir } from "@tauri-apps/plugin-fs";
+import { convertFileSrc } from "@tauri-apps/api/core";
+import * as path from "@tauri-apps/api/path";
+import { BaseDirectory, mkdir, readDir } from "@tauri-apps/plugin-fs";
 import { fetch } from "@tauri-apps/plugin-http";
 
 let instance: PluginLoader | null = null;
 
 export class PluginLoader {
   private pluginPath: string = "plugins";
-  private plugins: BaseProvider[] = [];
+  private plugins: Map<string, BaseProvider> = new Map();
 
   private initialized = false;
 
@@ -17,77 +20,114 @@ export class PluginLoader {
 
   reinitialize(): void {
     this.initialized = false;
-    this.plugins = [];
+    this.plugins.clear();
 
     this.load();
   }
 
+  // Load all plugins from the specified directory
   async load(): Promise<void> {
+    this.setupWindow();
     if (this.initialized) return;
 
     try {
-      // Get the list of plugin directories
+      // Ensure the plugin directory exists
       await mkdir(this.pluginPath, {
         baseDir: BaseDirectory.AppData,
         recursive: true,
       });
 
+      // Read the plugin directories
       const pluginFolders = await readDir(this.pluginPath, {
         baseDir: BaseDirectory.AppData,
       });
 
       if (!pluginFolders) return;
 
-      // Load plugins in parallel
-      const loadPromises = pluginFolders.map(async (folder) => {
-        if (!folder.name) return;
+      // Iterate through each plugin directory
+      for (const folder of pluginFolders) {
+        if (!folder.name) continue;
 
-        const pluginFilePath = `${this.pluginPath}/${folder.name}/index.js`;
-        const fileExists = await exists(pluginFilePath, {
+        const folders = await readDir(`${this.pluginPath}/${folder.name}`, {
           baseDir: BaseDirectory.AppData,
         });
 
-        if (fileExists) {
-          try {
-            /* @vite-ignore */
-            const pluginModule = await import(pluginFilePath);
-            const { default: PluginClass } = pluginModule as {
-              default: new (fetchApi: typeof fetch) => BaseProvider;
-            };
+        if (!folders) continue;
 
-            // Instantiate and store the plugin with `fetch` passed to the constructor
-            const pluginInstance = new PluginClass(fetch);
-            if (pluginInstance instanceof BaseProvider) {
-              this.plugins.push(pluginInstance);
-            } else {
-              console.warn(
-                `Loaded plugin from ${pluginFilePath} does not extend BaseProvider.`
-              );
-            }
-          } catch (importError) {
-            console.error(
-              `Failed to load plugin from ${pluginFilePath}:`,
-              importError
-            );
-          }
-        }
-      });
+        // Check if the plugin has a manifest file
+        const manifestFile = folders.find(
+          (file) => file.name === "plugin.json"
+        );
 
-      await Promise.all(loadPromises);
+        if (!manifestFile) continue;
+
+        // Load the plugin (index.js)
+        const pathing = await path.join(
+          await path.appDataDir(),
+          this.pluginPath,
+          folder.name,
+          "index.js"
+        );
+
+        const src = convertFileSrc(pathing);
+
+        const plugin = await import(src);
+
+        if (!this.validatePlugin(plugin)) continue;
+        console.log(`Loaded plugin: ${folder.name}`);
+
+        this.plugins.set(folder.name, new plugin.default());
+      }
 
       this.initialized = true;
     } catch (error) {
       console.error("Failed to load plugins:", error);
-      throw new Error("PluginLoader: An error occurred while loading plugins.");
     }
+  }
+
+  setupWindow() {
+    if (!window?.FalkorSDK) window.FalkorSDK = FalkorSDK;
+    if (!window.FalkorFetch) window.FalkorFetch = fetch;
+  }
+
+  // Start all plugins
+  startAllPlugins(): void {
+    this.plugins.forEach((plugin) => {
+      if (typeof plugin.initialize === "function") {
+        plugin.initialize();
+      }
+    });
+  }
+
+  // Stop all plugins
+  stopAllPlugins(): void {
+    this.plugins.forEach((plugin) => {
+      if (typeof plugin.destroy === "function") {
+        plugin.destroy();
+      }
+    });
+  }
+
+  unloadAllPlugins(): void {
+    this.stopAllPlugins();
+    this.plugins.clear();
+    this.initialized = false;
   }
 
   // Additional methods to interact with the loaded plugins
   getPlugins(): BaseProvider[] {
-    return this.plugins;
+    return Array.from(this.plugins.values());
   }
 
   getPluginByName(name: string): BaseProvider | undefined {
-    return this.plugins.find((plugin) => plugin.constructor.name === name);
+    if (!this.plugins) return undefined;
+    return this.plugins.get(name);
+  }
+
+  private validatePlugin(pluginModule: any): boolean {
+    const requiredMethods = ["initialize", "destroy", "info", "search"];
+    return requiredMethods.every(
+      (method) => typeof pluginModule.default.prototype[method] === "function"
+    );
   }
 }
