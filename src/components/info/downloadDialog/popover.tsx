@@ -31,8 +31,9 @@ const DownloadDialogPopover = ({
           role="combobox"
           aria-expanded={isOpen}
           className="justify-between w-full"
+          key={selectedProvider.value}
         >
-          {selectedProvider.label}
+          <span className="capitalize">{selectedProvider.label}</span>
           <ChevronsUpDown className="w-4 h-4 ml-2 opacity-50 shrink-0" />
         </Button>
       </PopoverTrigger>

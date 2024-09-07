@@ -53,17 +53,23 @@ const InfoTop = (props: Props) => {
           )}
 
           <div className="flex justify-end gap-4">
-            {!isPending ? (
-              <DownloadDialog
-                title={data!.name}
-                isReleased={isReleased}
-                websites={data!.websites}
-                itadData={itadData}
-                itadError={itadError}
-                itadPending={itadPending}
-              />
+            {!isPending && data ? (
+              <>
+                {/* <ListsDropdown {...data} /> */}
+                <DownloadDialog
+                  title={data!.name}
+                  isReleased={isReleased}
+                  websites={data!.websites}
+                  itadData={itadData}
+                  itadError={itadError}
+                  itadPending={itadPending}
+                />
+              </>
             ) : (
-              <Skeleton className="w-32 h-10" />
+              <>
+                {/* <Skeleton className="w-32 h-10" /> */}
+                <Skeleton className="w-32 h-10" />
+              </>
             )}
           </div>
         </section>

@@ -47,7 +47,8 @@ const DownloadDialogCommand = ({
                     "text-transparent"
                 )}
               />
-              {provider.label}
+
+              <span className="capitalize">{provider.label}</span>
             </CommandItem>
           ))}
         </CommandGroup>

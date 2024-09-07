@@ -1,3 +1,4 @@
+import { neededByAppStore } from "@/lib/stores/neededByApp";
 import { FilterOutNonePcGames } from "@/lib/utils";
 import { BaseApi } from "../base";
 import { defaultFields } from "./constants";
@@ -11,7 +12,24 @@ class IGDB extends BaseApi {
   private clientAccessToken?: string;
   private tokenExpiration: number = 0;
 
+  private gettingAccessToken = false;
+
   async getAccessToken() {
+    if (this.gettingAccessToken) return;
+    if (this.clientAccessToken && Date.now() < this.tokenExpiration)
+      return this.clientAccessToken;
+
+    const token = await neededByAppStore.get<string>("igdb-access-token");
+    const tokenExpiration =
+      (await neededByAppStore.get<number>("igdb-access-token-expiration")) ?? 0;
+
+    if (token && Date.now() < tokenExpiration) {
+      this.clientAccessToken = token;
+      this.tokenExpiration = tokenExpiration;
+      return this.clientAccessToken;
+    }
+
+    this.gettingAccessToken = true;
     const response = await (
       await fetch(
         `https://id.twitch.tv/oauth2/token?client_id=${this.clientId}&client_secret=${this.clientSecret}&grant_type=client_credentials`,
@@ -21,8 +39,16 @@ class IGDB extends BaseApi {
 
     console.log(`Getting a new access token`);
 
+    this.gettingAccessToken = false;
     this.clientAccessToken = response.access_token;
     this.tokenExpiration = Date.now() + response.expires_in * 1000; // Convert to milliseconds
+
+    await neededByAppStore.set("igdb-access-token", response.access_token);
+    await neededByAppStore.set(
+      "igdb-access-token-expiration",
+      this.tokenExpiration
+    );
+
     return this.clientAccessToken;
   }
 
@@ -53,7 +79,7 @@ class IGDB extends BaseApi {
 
     const item = igdbData[0];
 
-    const find_steam_id = (item.websites || []).find((site) =>
+    const find_steam_id = (item.websites ?? [])?.find((site) =>
       site.url.startsWith("https://store.steampowered.com/app")
     );
 
@@ -103,6 +129,10 @@ class IGDB extends BaseApi {
       offset?: string;
     }
   ): Promise<T> {
+    while (this.gettingAccessToken) {
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+
     try {
       await this.checkAndRenewToken();
 
@@ -161,8 +191,7 @@ class IGDB extends BaseApi {
 
       return data[appid];
     } catch (error) {
-      console.log(error);
-      throw new Error((error as Error).message);
+      console.error(error);
     }
   }
 }

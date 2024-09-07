@@ -1,9 +1,9 @@
 import { InfoProps } from "@/@types";
 import { useLanguageContext } from "@/contexts/I18N";
+import { timeSince } from "@/lib";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { useMemo } from "react";
 import QuickInfoItem from "./item";
-import { timeSince } from "@/lib";
 
 interface QuickInfoProps extends InfoProps {
   isReleased: boolean;
@@ -19,11 +19,11 @@ const QuickInfo = (props: QuickInfoProps) => {
   const { genres, aggregated_rating, involved_companies, release_dates } = data;
 
   const publisher = useMemo(
-    () => involved_companies.find((item) => item.publisher),
+    () => involved_companies?.find((item) => item.publisher),
     []
   );
   const developer = useMemo(
-    () => involved_companies.find((item) => item.developer),
+    () => involved_companies?.find((item) => item.developer),
     []
   );
 

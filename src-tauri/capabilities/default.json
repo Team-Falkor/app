@@ -19,6 +19,11 @@
           "url": "https://*"
         }
       ]
-    }
+    },
+    "sql:default",
+    "sql:allow-execute",
+    "sql:allow-load",
+    "sql:allow-select",
+    "store:default"
   ]
 }

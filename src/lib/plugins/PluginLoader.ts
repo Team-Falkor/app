@@ -55,7 +55,7 @@ export class PluginLoader {
         if (!folders) continue;
 
         // Check if the plugin has a manifest file
-        const manifestFile = folders.find(
+        const manifestFile = folders?.find(
           (file) => file.name === "plugin.json"
         );
 
@@ -71,7 +71,10 @@ export class PluginLoader {
 
         const src = convertFileSrc(pathing);
 
-        const plugin = await import(src);
+        const plugin = await import(
+          /* @vite-ignore */
+          src
+        );
 
         if (!this.validatePlugin(plugin)) continue;
         console.log(`Loaded plugin: ${folder.name}`);
@@ -117,6 +120,10 @@ export class PluginLoader {
   // Additional methods to interact with the loaded plugins
   getPlugins(): BaseProvider[] {
     return Array.from(this.plugins.values());
+  }
+
+  getPluginsNames(): string[] {
+    return Array.from(this.plugins.keys());
   }
 
   getPluginByName(name: string): BaseProvider | undefined {

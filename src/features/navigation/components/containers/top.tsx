@@ -6,12 +6,16 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useLanguageContext } from "@/contexts/I18N";
+import Search from "@/features/search/components/search";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { HomeIcon, LibraryIcon, SearchIcon, Settings2 } from "lucide-react";
+import { useState } from "react";
 import NavItem from "../item";
 
 const NavBarTop = () => {
+  const [open, setOpen] = useState(false);
+
   const { t } = useLanguageContext();
   return (
     <>
@@ -39,7 +43,7 @@ const NavBarTop = () => {
       </div>
 
       <div className="grid gap-2">
-        <Popover>
+        <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger>
             <Button
               variant="ghost"
@@ -51,6 +55,8 @@ const NavBarTop = () => {
               <SearchIcon className="size-5" />
             </Button>
           </PopoverTrigger>
+
+          <Search setOpen={setOpen} />
         </Popover>
 
         <NavItem href="/" title={t("home")} icon={<HomeIcon />} />

@@ -33,3 +33,35 @@ export interface infoHLTBProps {
   hltbPending: boolean;
   hltbError: Error | null;
 }
+
+export type NonDefaultSource = {
+  url: string;
+  type: "magnet" | "torrent" | "ddl";
+  title: string;
+  name: string;
+};
+
+export type ItemDownload =
+  | {
+      sources: ITADPrice[];
+      name: "itad";
+    }
+  | {
+      sources: NonDefaultSource[];
+      name: Exclude<string, "itad">;
+    };
+
+export interface ListGame {
+  gameId: number;
+  title: string;
+  description?: string;
+  image?: string;
+  release_date?: string;
+  genre?: string;
+}
+
+export interface List {
+  id: number;
+  name: string;
+  description?: string;
+}

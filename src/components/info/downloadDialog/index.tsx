@@ -1,4 +1,4 @@
-import { InfoItadProps } from "@/@types";
+import { InfoItadProps, ItemDownload } from "@/@types";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -10,12 +10,11 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip";
 import { Website } from "@/lib/api/igdb/types";
-import { TooltipContent } from "@radix-ui/react-tooltip";
-import { Coins, Download, ShoppingCart, StarIcon, XCircle } from "lucide-react";
+import { Download, XCircle } from "lucide-react";
 import { useState } from "react";
 import DownloadDialogPopover from "./popover";
+import DownloadDialogSources from "./sources";
 
 interface DownloadDialogProps extends InfoItadProps {
   title: string;
@@ -30,9 +29,15 @@ const providers = [
   },
 ];
 
-const DownloadDialog = ({ isReleased, itadData }: DownloadDialogProps) => {
+const DownloadDialog = ({
+  isReleased,
+  itadData,
+  itadPending,
+}: DownloadDialogProps) => {
+  const [names, setNames] = useState<string[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(providers[0]);
+  const [sources, setSources] = useState<ItemDownload[]>([]);
 
   return (
     <Dialog>
@@ -48,7 +53,13 @@ const DownloadDialog = ({ isReleased, itadData }: DownloadDialogProps) => {
 
           <DialogDescription className="w-full mx-auto">
             <DownloadDialogPopover
-              providers={providers}
+              providers={[
+                ...providers,
+                ...names.map((name) => ({
+                  value: name,
+                  label: name.replace(/-/g, " "),
+                })),
+              ]}
               selectedProvider={selectedProvider}
               setSelectedProvider={setSelectedProvider}
               isOpen={isOpen}
@@ -58,7 +69,7 @@ const DownloadDialog = ({ isReleased, itadData }: DownloadDialogProps) => {
         </DialogHeader>
 
         <ScrollArea className="w-full border rounded-md h-72">
-          <div>
+          <div className="pb-5">
             <div className="sticky top-0 left-0 right-0 mb-3 bg-muted">
               <h4 className="p-3 pb-1 text-sm font-medium leading-none">
                 Sources
@@ -68,45 +79,8 @@ const DownloadDialog = ({ isReleased, itadData }: DownloadDialogProps) => {
             </div>
 
             <ul className="flex flex-col gap-4 p-4 py-0">
-              {!!itadData && !!itadData.length ? (
-                itadData.map((itad) => {
-                  return itad.deals.map((deal) => (
-                    <Tooltip delayDuration={1500}>
-                      <TooltipTrigger>
-                        <button
-                          key={deal.url}
-                          className="flex flex-col items-start justify-center w-full gap-2 text-sm cursor-pointer group text-start hover:opacity-60"
-                          onClick={() => {
-                            open(deal.url);
-                          }}
-                        >
-                          {deal.shop.name}
-
-                          <div className="flex flex-row items-center justify-start w-full gap-3">
-                            <div className="flex items-center gap-1 text-xs text-slate-300">
-                              <ShoppingCart className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-                              Buy
-                            </div>
-
-                            <div className="flex items-center gap-1 text-xs text-slate-300">
-                              <Coins className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-                              {deal.price.amount} {deal.price.currency}
-                            </div>
-
-                            <div className="flex items-center gap-1 text-xs text-slate-300">
-                              <StarIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-                              {deal.historyLow.amount}{" "}
-                              {deal.historyLow.currency}
-                            </div>
-                          </div>
-                        </button>
-                      </TooltipTrigger>
-                      <TooltipContent asChild side="bottom">
-                        <div className="">{deal.url}</div>
-                      </TooltipContent>
-                    </Tooltip>
-                  ));
-                })
+              {!!sources ? (
+                <DownloadDialogSources sources={sources} />
               ) : (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
                   <XCircle className="size-5" />
