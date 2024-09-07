@@ -1,7 +1,7 @@
 {
   "name": "falkor",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -47,6 +47,8 @@
     "@tauri-apps/plugin-http": "^2.0.0-rc.2",
     "@tauri-apps/plugin-os": "^2.0.0-rc.1",
     "@tauri-apps/plugin-shell": "^2.0.0-rc.1",
+    "@tauri-apps/plugin-sql": "^2.0.0-rc.1",
+    "@tauri-apps/plugin-store": "^2.0.0-rc.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",
