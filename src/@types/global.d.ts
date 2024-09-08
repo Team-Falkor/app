@@ -1,5 +1,5 @@
-import * as FalkorSDK from "@falkor/sdk";
 import { fetch } from "@tauri-apps/plugin-http";
+import * as FalkorSDK from "@team-falkor/sdk";
 
 declare global {
   interface Window {

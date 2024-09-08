@@ -1,9 +1,9 @@
-import * as FalkorSDK from "@falkor/sdk";
-import { BaseProvider } from "@falkor/sdk";
 import { convertFileSrc } from "@tauri-apps/api/core";
 import * as path from "@tauri-apps/api/path";
 import { BaseDirectory, mkdir, readDir } from "@tauri-apps/plugin-fs";
 import { fetch } from "@tauri-apps/plugin-http";
+import * as FalkorSDK from "@team-falkor/sdk";
+import { BaseProvider } from "@team-falkor/sdk";
 import { toast } from "sonner";
 
 let instance: PluginLoader | null = null;

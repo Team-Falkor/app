@@ -1,5 +1,5 @@
 import { PluginLoader } from "@/lib";
-import { BaseProvider } from "@falkor/sdk";
+import { BaseProvider } from "@team-falkor/sdk";
 import { useCallback, useEffect, useState } from "react";
 
 type UsePluginsResponse = {
