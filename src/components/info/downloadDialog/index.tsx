@@ -12,7 +12,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { Website } from "@/lib/api/igdb/types";
 import { Download, XCircle } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DownloadDialogPopover from "./popover";
 import DownloadDialogSources from "./sources";
 
@@ -38,6 +38,18 @@ const DownloadDialog = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(providers[0]);
   const [sources, setSources] = useState<ItemDownload[]>([]);
+
+  useEffect(() => {
+    if (!itadData || itadPending) return;
+    if (!isReleased) return;
+
+    setSources([
+      {
+        name: "itad",
+        sources: itadData ?? [],
+      },
+    ]);
+  }, [itadData, isReleased, itadPending]);
 
   return (
     <Dialog>
@@ -68,9 +80,9 @@ const DownloadDialog = ({
           </DialogDescription>
         </DialogHeader>
 
-        <ScrollArea className="w-full border rounded-md h-72">
+        <ScrollArea className="w-full border rounded-md h-72 mt-1">
           <div className="pb-5">
-            <div className="sticky top-0 left-0 right-0 mb-3 bg-muted">
+            <div className="sticky top-0 left-0 right-0 mb-3 bg-muted z-10">
               <h4 className="p-3 pb-1 text-sm font-medium leading-none">
                 Sources
               </h4>
@@ -78,8 +90,8 @@ const DownloadDialog = ({
               <Separator orientation="horizontal" className="mt-2" />
             </div>
 
-            <ul className="flex flex-col gap-4 p-4 py-0">
-              {!!sources ? (
+            <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
+              {!!sources?.length ? (
                 <DownloadDialogSources sources={sources} />
               ) : (
                 <div className="flex flex-row items-center justify-center w-full gap-2">

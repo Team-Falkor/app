@@ -4,6 +4,7 @@ import { convertFileSrc } from "@tauri-apps/api/core";
 import * as path from "@tauri-apps/api/path";
 import { BaseDirectory, mkdir, readDir } from "@tauri-apps/plugin-fs";
 import { fetch } from "@tauri-apps/plugin-http";
+import { toast } from "sonner";
 
 let instance: PluginLoader | null = null;
 
@@ -78,6 +79,9 @@ export class PluginLoader {
 
         if (!this.validatePlugin(plugin)) continue;
         console.log(`Loaded plugin: ${folder.name}`);
+        toast.info(`Loaded plugin: ${folder.name}`, {
+          description: "Plugin loaded successfully",
+        });
 
         this.plugins.set(folder.name, new plugin.default());
       }
@@ -85,6 +89,9 @@ export class PluginLoader {
       this.initialized = true;
     } catch (error) {
       console.error("Failed to load plugins:", error);
+      toast.error(`Failed to load plugins`, {
+        description: `${error}`,
+      });
     }
   }
 
