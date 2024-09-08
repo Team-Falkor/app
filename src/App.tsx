@@ -4,6 +4,7 @@ import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { ThemeProvider } from "./components/theme-provider";
 import { TooltipProvider } from "./components/ui/tooltip";
 
+import usePlugins from "./hooks/plugins/usePlugins";
 import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
@@ -28,7 +29,7 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-  // const { hasInitialized } = usePlugins();
+  usePlugins();
 
   // if (!hasInitialized) return <div>Loading...</div>;
   return (

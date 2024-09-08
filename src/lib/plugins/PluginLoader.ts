@@ -12,7 +12,7 @@ export class PluginLoader {
   private pluginPath: string = "plugins";
   private plugins: Map<string, BaseProvider> = new Map();
 
-  private initialized = false;
+  initialized = false;
 
   constructor() {
     if (instance) return instance;

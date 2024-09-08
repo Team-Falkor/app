@@ -99,7 +99,7 @@ class IGDB extends BaseApi {
     const DateNow = (new Date().getTime() / 1000).toFixed();
     return await this.request<IGDBReturnDataType[]>("games", {
       sort: "hypes desc",
-      where: `platforms.abbreviation = "PC" & hypes != n & first_release_date > ${DateNow}`,
+      where: `platforms.abbreviation = "PC" & hypes != n & first_release_date > ${DateNow} & category = 0`,
     });
   }
 
@@ -107,7 +107,7 @@ class IGDB extends BaseApi {
     const DateNow = (new Date().getTime() / 1000).toFixed();
     return await this.request<IGDBReturnDataType[]>("games", {
       sort: "first_release_date desc",
-      where: `platforms.abbreviation = "PC" & hypes != n & first_release_date < ${DateNow}`,
+      where: `platforms.abbreviation = "PC" & hypes != n & first_release_date < ${DateNow} & category = 0 & version_parent = null`,
     });
   }
 

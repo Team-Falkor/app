@@ -14,21 +14,22 @@ const QuickInfo = (props: QuickInfoProps) => {
   const { t } = useLanguageContext();
   const { isReleased, data } = props;
 
-  if (!data) return;
-
-  const { genres, aggregated_rating, involved_companies, release_dates } = data;
-
   const publisher = useMemo(
-    () => involved_companies?.find((item) => item.publisher),
+    () => data?.involved_companies?.find((item) => item.publisher),
     []
   );
   const developer = useMemo(
-    () => involved_companies?.find((item) => item.developer),
+    () => data?.involved_companies?.find((item) => item.developer),
     []
   );
 
   const releaseDate =
-    release_dates?.find((item) => item.platform === 6) ?? release_dates[0];
+    data?.release_dates?.find((item) => item.platform === 6) ??
+    data?.release_dates[0];
+
+  if (!data) return;
+
+  const { genres, aggregated_rating } = data;
 
   return (
     <section className="overflow-hidden text-sm whitespace-normal text-ellipsis text-slate-400">
