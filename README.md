@@ -71,7 +71,7 @@ That's it! Thank you for helping make Falkor accessible to more users.
 
 - All game data comes from the following apis [IGDB](https://www.igdb.com/), [ITAD](https://isthereanydeal.com/), and [Steam](https://store.steampowered.com/). We are not affiliated with any of these services; we simply utilize their APIs for data.
 
-Thanks to everyone who helps us make this possible. A list of contributors can be found [here](https://github.com/team-Falkor/Falkor/graphs/contributors).
+Thanks to everyone who helps us make this possible. A list of contributors can be found [here](https://github.com/team-Falkor/app/graphs/contributors).
 
 <br />
 
