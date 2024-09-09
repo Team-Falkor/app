@@ -15,6 +15,7 @@ import Portuguese from "./translations/portuguese.json";
 import Spanish from "./translations/spanish.json";
 import Thai from "./translations/thai.json";
 import Vietnamese from "./translations/vietnamese.json";
+import Italian from "./translations/italian.json";
 
 /**
  * Resources for i18n
@@ -34,6 +35,7 @@ const resources: Resource = {
   id: { translation: Indonesian },
   ms: { translation: Malay },
   pt: { translation: Portuguese },
+  it: { translation: Italian },
 };
 
 i18next
