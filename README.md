@@ -31,7 +31,7 @@ To get started with Falkor, follow these steps:
 
 4. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
 
-5. Run `bun tauri:dev` to build the executable. Once the command finishes running it will be found at `[Your Falkor Directory]\src-tauri\target\debug`.
+5. Run `bun tauri:dev` to build the program. 
 
 ### IGDB (Twitch)
 
