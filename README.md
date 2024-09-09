@@ -10,13 +10,16 @@ Built with the cutting-edge technology of Tauri and React, Falkor offers an unpa
 
 ## Features
 
-While the project is still under development, we have a plethora of features in the works, including:
+As the project continues to evolve, we have an exciting lineup of features in development, including:
 
-- A range of tools to organize your game collection.
-- A built-in torrent client.
-- A calendar to remind you about upcoming game releases.
-- An API to enable the community to develop third-party plugins.
-- And much more planned for the future...
+- Comprehensive tools to help you organize and manage your game collection effortlessly (W.I.P).
+- An integrated torrent client for seamless game downloads (W.I.P).
+- A release calendar to keep you updated on upcoming game launches.
+- A powerful API that allows the community to create third-party plugins (currently limited to providers, but with plans to expand soon).
+- And much more on the horizon...
+
+Stay tuned—there’s plenty more to come!
+
 
 ## Getting Started
 
