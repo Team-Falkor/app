@@ -2,7 +2,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { ThemeProvider } from "./components/theme-provider";
-import { TooltipProvider } from "./components/ui/tooltip";
 
 import usePlugins from "./hooks/plugins/usePlugins";
 import { routeTree } from "./routeTree.gen";
@@ -34,14 +33,12 @@ function App() {
   // if (!hasInitialized) return <div>Loading...</div>;
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
-      <TooltipProvider>
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          {/* <TorrentProvider> */}
-          <RouterProvider router={router} />
-          {/* </TorrentProvider> */}
-        </QueryClientProvider>
-      </TooltipProvider>
+      <QueryClientProvider client={queryClient}>
+        <Toaster />
+        {/* <TorrentProvider> */}
+        <RouterProvider router={router} />
+        {/* </TorrentProvider> */}
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

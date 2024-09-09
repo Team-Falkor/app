@@ -61,7 +61,7 @@ const NavBarTop = () => {
 
         <NavItem href="/" title={t("home")} icon={<HomeIcon />} />
 
-        <NavItem href="/libary" title={t("my_games")} icon={<LibraryIcon />} />
+        <NavItem href="/library" title={t("my_games")} icon={<LibraryIcon />} />
 
         <NavItem href="/settings" title={t("settings")} icon={<Settings2 />} />
       </div>
