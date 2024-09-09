@@ -25,11 +25,13 @@ Stay tuned—there’s plenty more to come!
 
 To get started with Falkor, follow these steps:
 
-1. Ensure that you have Bun installed on your system. You can find installation instructions [here](https://bun.sh/docs/installation).
+1. Ensure that you have Bun installed on your system. You can find installation instructions [here](https://bun.sh/docs/installation). (NOTE: You will also need [Rust](https://www.rust-lang.org/tools/install) installed if it is not already.)
 
-2. Navigate to the main directory and execute `bun install`. Wait patiently for it to complete the installation of all dependencies.
+3. Navigate to the main directory and execute `bun install`. Wait patiently for it to complete the installation of all dependencies.
 
-3. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
+4. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
+
+5. Run `bun tauri:dev` to build the executable. Once the command finishes running it will be found at `[Your Falkor Directory]\src-tauri\target\debug`.
 
 ### IGDB (Twitch)
 
