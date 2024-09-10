@@ -1,4 +1,5 @@
 import { InfoItadProps, ItemDownload } from "@/@types";
+import Spinner from "@/components/spinner"; // assuming there's a spinner component
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -13,7 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import usePlugins from "@/hooks/plugins/usePlugins";
 import { Website } from "@/lib/api/igdb/types";
 import { Download, XCircle } from "lucide-react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import DownloadDialogPopover from "./popover";
 import DownloadDialogSources from "./sources";
 
@@ -23,16 +24,16 @@ interface DownloadDialogProps extends InfoItadProps {
   websites: Website[];
 }
 
+// Centralized provider management
 const baseProviders = [{ value: "itad", label: "IsThereAnyDeal" }];
 
-// Utility function to create a provider object
 const createProvider = (value: string, label: string) => ({ value, label });
 
-// Function to initialize the provider list, mapping over baseProviders
-const createProviderList = () => {
-  return baseProviders.map((provider) =>
-    createProvider(provider.value, provider.label)
+const getProviders = (plugins: any[]) => {
+  const pluginProviders = plugins.map((plugin) =>
+    createProvider(plugin.metadata.name, plugin.metadata.name)
   );
+  return [...baseProviders, ...pluginProviders];
 };
 
 const DownloadDialog = ({
@@ -42,60 +43,58 @@ const DownloadDialog = ({
 }: DownloadDialogProps) => {
   const { loadPlugins, plugins } = usePlugins();
   const [isOpen, setIsOpen] = useState(false);
+  const [loadingPlugins, setLoadingPlugins] = useState(true); // Track plugin loading
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const [providers, setProviders] = useState(createProviderList());
   const [sources, setSources] = useState<ItemDownload[]>([]);
 
-  const updatePluginProviders = useCallback(() => {
-    if (plugins?.length) {
-      setProviders((prev) => [
-        ...prev,
-        ...plugins.map((plugin) =>
-          createProvider(plugin.metadata.name, plugin.metadata.name)
-        ),
-      ]);
-    }
-  }, [plugins]);
+  // Memoized providers to avoid re-calculating on every render
+  const providers = useMemo(() => getProviders(plugins), [plugins]);
 
+  // Only update sources if itadData is available
   const initializeSources = useCallback(() => {
-    if (itadData) {
-      setSources([
-        {
-          name: "itad",
-          sources: itadData,
-        },
-      ]);
-      setProviders((_prev) => [
-        ...createProviderList(),
-        ...plugins.map((plugin) =>
-          createProvider(plugin.metadata.name, plugin.metadata.name)
-        ),
-      ]);
-    }
-  }, [itadData, plugins]);
+    if (!itadData) return;
+    setSources([
+      {
+        name: "itad",
+        sources: itadData,
+      },
+    ]);
+  }, [itadData]);
 
-  // This useEffect only runs once when the component mounts
+  // Load plugins and set loading state
   useEffect(() => {
-    if (!isReleased) return;
-    if (!plugins) return;
+    const load = async () => {
+      await loadPlugins();
+      setLoadingPlugins(false); // Update loading state after plugins load
+    };
+    load();
+  }, [loadPlugins]);
 
-    plugins && updatePluginProviders();
-  }, [loadPlugins, loadPlugins]); // Removed updatePluginProviders from deps
-
-  // This useEffect ensures that sources are initialized after plugins are loaded
+  // Effect for initializing sources when itadData is ready
   useEffect(() => {
-    if (!itadData && !isReleased) return;
-    if (itadPending) return;
-
+    if (itadPending || !isReleased) return;
     initializeSources();
   }, [itadData, isReleased, itadPending, initializeSources]);
 
+  // Show loading indicator for plugins and sources
+  const isLoading = loadingPlugins || itadPending;
+
+  // Early return if not released
+  if (!isReleased) {
+    return (
+      <Button variant="secondary" disabled>
+        <Download className="mr-2 size-4" />
+        Not Released
+      </Button>
+    );
+  }
+
   return (
     <Dialog>
-      <DialogTrigger disabled={!isReleased}>
-        <Button variant="secondary" disabled={!isReleased}>
+      <DialogTrigger>
+        <Button variant="secondary">
           <Download className="mr-2 size-4" />
-          {isReleased ? "Download" : "Not Released"}
+          {isLoading ? <Spinner /> : "Download"}
         </Button>
       </DialogTrigger>
       <DialogContent>
@@ -122,8 +121,12 @@ const DownloadDialog = ({
             </div>
 
             <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
-              {sources?.length ? (
+              {sources.length ? (
                 <DownloadDialogSources sources={sources} />
+              ) : isLoading ? (
+                <div className="flex flex-row items-center justify-center w-full gap-2">
+                  <Spinner /> {/* Loading indicator */}
+                </div>
               ) : (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
                   <XCircle className="size-5" />

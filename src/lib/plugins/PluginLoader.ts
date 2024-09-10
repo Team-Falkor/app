@@ -13,6 +13,7 @@ export class PluginLoader {
   private plugins: Map<string, BaseProvider> = new Map();
 
   initialized = false;
+  initializing = false;
 
   constructor() {
     if (instance) return instance;
@@ -29,7 +30,8 @@ export class PluginLoader {
   // Load all plugins from the specified directory
   async load(): Promise<void> {
     this.setupWindow();
-    if (this.initialized) return;
+    if (this.initialized || this.initializing) return;
+    this.initializing = true;
 
     try {
       // Ensure the plugin directory exists
@@ -87,6 +89,7 @@ export class PluginLoader {
       }
 
       this.initialized = true;
+      this.initializing = false;
     } catch (error) {
       console.error("Failed to load plugins:", error);
       toast.error(`Failed to load plugins`, {
