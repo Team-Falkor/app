@@ -76,8 +76,13 @@ const DownloadDialog = ({
     initializeSources();
   }, [itadData, isReleased, itadPending, initializeSources]);
 
+  const sourcesIsEmpty = useMemo(
+    () => sources?.some((source) => source?.sources?.length === 0),
+    [sources]
+  );
+
   // Show loading indicator for plugins and sources
-  const isLoading = loadingPlugins || itadPending;
+  const isLoading = itadPending || loadingPlugins;
 
   // Early return if not released
   if (!isReleased) {
@@ -121,9 +126,9 @@ const DownloadDialog = ({
             </div>
 
             <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
-              {sources.length ? (
+              {!sourcesIsEmpty ? (
                 <DownloadDialogSources sources={sources} />
-              ) : isLoading ? (
+              ) : isLoading && !itadPending ? (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
                   <Spinner /> {/* Loading indicator */}
                 </div>
