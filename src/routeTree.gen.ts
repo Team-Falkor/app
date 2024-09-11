@@ -93,13 +93,59 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
-export const routeTree = rootRoute.addChildren({
-  IndexLazyRoute,
-  DownloadsRoute,
-  LibraryRoute,
-  SettingsRoute,
-  InfoIdRoute,
-})
+export interface FileRoutesByFullPath {
+  '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
+  '/info/$id': typeof InfoIdRoute
+}
+
+export interface FileRoutesByTo {
+  '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
+  '/info/$id': typeof InfoIdRoute
+}
+
+export interface FileRoutesById {
+  __root__: typeof rootRoute
+  '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
+  '/info/$id': typeof InfoIdRoute
+}
+
+export interface FileRouteTypes {
+  fileRoutesByFullPath: FileRoutesByFullPath
+  fullPaths: '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
+  fileRoutesByTo: FileRoutesByTo
+  to: '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
+  id: '__root__' | '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
+  fileRoutesById: FileRoutesById
+}
+
+export interface RootRouteChildren {
+  IndexLazyRoute: typeof IndexLazyRoute
+  DownloadsRoute: typeof DownloadsRoute
+  LibraryRoute: typeof LibraryRoute
+  SettingsRoute: typeof SettingsRoute
+  InfoIdRoute: typeof InfoIdRoute
+}
+
+const rootRouteChildren: RootRouteChildren = {
+  IndexLazyRoute: IndexLazyRoute,
+  DownloadsRoute: DownloadsRoute,
+  LibraryRoute: LibraryRoute,
+  SettingsRoute: SettingsRoute,
+  InfoIdRoute: InfoIdRoute,
+}
+
+export const routeTree = rootRoute
+  ._addFileChildren(rootRouteChildren)
+  ._addFileTypes<FileRouteTypes>()
 
 /* prettier-ignore-end */
 

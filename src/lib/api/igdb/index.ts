@@ -19,16 +19,6 @@ class IGDB extends BaseApi {
     if (this.clientAccessToken && Date.now() < this.tokenExpiration)
       return this.clientAccessToken;
 
-    const token = await neededByAppStore.get<string>("igdb-access-token");
-    const tokenExpiration =
-      (await neededByAppStore.get<number>("igdb-access-token-expiration")) ?? 0;
-
-    if (token && Date.now() < tokenExpiration) {
-      this.clientAccessToken = token;
-      this.tokenExpiration = tokenExpiration;
-      return this.clientAccessToken;
-    }
-
     this.gettingAccessToken = true;
     const response = await (
       await fetch(
