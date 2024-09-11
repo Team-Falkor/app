@@ -83,7 +83,7 @@ const InfoTop = (props: Props) => {
           />
 
           {!!hltbData && !hltbError && !hltbPending && (
-            <div className="w-full ">
+            <div className="w-full">
               <HLTBComponent
                 times={[
                   Math.floor(hltbData.comp_main / 60 / 60),

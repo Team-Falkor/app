@@ -16,11 +16,12 @@ const QuickInfo = (props: QuickInfoProps) => {
 
   const publisher = useMemo(
     () => data?.involved_companies?.find((item) => item.publisher),
-    []
+    [data]
   );
+
   const developer = useMemo(
     () => data?.involved_companies?.find((item) => item.developer),
-    []
+    [data]
   );
 
   const releaseDate =
