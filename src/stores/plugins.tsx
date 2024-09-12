@@ -13,7 +13,7 @@ type PluginsState = {
   invokeOnAllPlugins: <T, P>(
     methodName: keyof BaseProvider,
     params: P
-  ) => Promise<Array<T[]>>;
+  ) => Promise<Array<T>>;
 };
 
 export const usePluginsStore = create<PluginsState>((set, get) => ({
@@ -60,7 +60,7 @@ export const usePluginsStore = create<PluginsState>((set, get) => ({
   invokeOnAllPlugins: async <T, P>(
     methodName: keyof BaseProvider,
     params: P
-  ): Promise<Array<T[]>> => {
+  ): Promise<Array<T>> => {
     const { plugins } = get();
     const results = await Promise.all(
       plugins.map(async (plugin) => {
@@ -79,6 +79,7 @@ export const usePluginsStore = create<PluginsState>((set, get) => ({
         }
       })
     );
-    return results;
+
+    return results.filter((result) => result.length > 0)?.flat();
   },
 }));

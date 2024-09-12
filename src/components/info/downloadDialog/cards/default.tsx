@@ -19,12 +19,12 @@ const DefaultDownloadCard = (props: NonDefaultSource) => {
           {props.title}
 
           <div className="flex flex-row items-center justify-start w-full gap-3">
-            <div className="flex items-center gap-1 text-xs text-slate-300">
+            <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
               <DownloadIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-              Download
+              {props.type}
             </div>
 
-            <div className="flex items-center gap-1 text-xs text-slate-300">
+            <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
               <UserIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
               {props.name}
             </div>

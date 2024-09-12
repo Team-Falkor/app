@@ -12,7 +12,7 @@ type UsePluginsResponse = {
   invokeOnAllPlugins: <T, P>(
     methodName: keyof BaseProvider,
     params: P
-  ) => Promise<Array<T[]>>;
+  ) => Promise<Array<T>>;
 };
 
 const usePlugins = (): UsePluginsResponse => {

@@ -16,12 +16,14 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
     if (item.name === "itad") {
       // Narrowing item.sources to ITADPrice[]
       return (item.sources as ITADPrice[]).map((source) => {
-        return source.deals.map((deal) => <ITADDownloadCard {...deal} />);
+        return source.deals.map((deal, i) => (
+          <ITADDownloadCard {...deal} key={`deal-${i}`} />
+        ));
       });
     } else {
       // Narrowing item.sources to NonDefaultSource[]
       return (item.sources as NonDefaultSource[]).map((source) => (
-        <DefaultDownloadCard {...source} />
+        <DefaultDownloadCard {...source} key={source.name} />
       ));
     }
   });

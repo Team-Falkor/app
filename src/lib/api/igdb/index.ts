@@ -1,5 +1,4 @@
 import { neededByAppStore } from "@/lib/stores/neededByApp";
-import { FilterOutNonePcGames } from "@/lib/utils";
 import { BaseApi } from "../base";
 import { defaultFields } from "./constants";
 import { ApiResponse, IGDBReturnDataType, InfoReturn } from "./types";
@@ -57,8 +56,7 @@ class IGDB extends BaseApi {
       search: realQuery,
     });
 
-    // filter out none pc games and category !== 0
-    return FilterOutNonePcGames(data);
+    return data;
   }
 
   async info(id: string): Promise<InfoReturn> {

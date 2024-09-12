@@ -1,6 +1,5 @@
 import { InfoItadProps, ItemDownload } from "@/@types";
-import Spinner from "@/components/spinner"; // assuming there's a spinner component
-import { Button } from "@/components/ui/button";
+import Spinner from "@/components/spinner";
 import {
   Dialog,
   DialogContent,
@@ -9,10 +8,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import usePlugins from "@/hooks/plugins/usePlugins";
 import { Website } from "@/lib/api/igdb/types";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import usePluginStore from "@/stores/plugin";
+import { Separator } from "@radix-ui/react-separator";
+import { ProviderSourceResponse } from "@team-falkor/sdk/dist";
 import { Download, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import DownloadDialogPopover from "./popover";
@@ -41,34 +44,58 @@ const DownloadDialog = ({
   itadData,
   itadPending,
 }: DownloadDialogProps) => {
-  const { loadPlugins, plugins } = usePlugins();
+  const { loadPlugins, plugins, invokeOnAllPlugins } = usePlugins();
+  const { sources, isLoadingPlugins, setLoadingState, appendSources } =
+    usePluginStore();
   const [isOpen, setIsOpen] = useState(false);
-  const [loadingPlugins, setLoadingPlugins] = useState(true); // Track plugin loading
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const [sources, setSources] = useState<ItemDownload[]>([]);
 
   // Memoized providers to avoid re-calculating on every render
   const providers = useMemo(() => getProviders(plugins), [plugins]);
 
   // Only update sources if itadData is available
   const initializeSources = useCallback(() => {
-    if (!itadData) return;
-    setSources([
+    if (!itadData || itadPending) return;
+
+    const newSources: ItemDownload[] = [
       {
         name: "itad",
         sources: itadData,
       },
-    ]);
-  }, [itadData]);
+    ];
+
+    appendSources(newSources); // Append new sources to the store
+  }, [itadData, appendSources]);
 
   // Load plugins and set loading state
   useEffect(() => {
     const load = async () => {
+      setLoadingState(true);
       await loadPlugins();
-      setLoadingPlugins(false); // Update loading state after plugins load
+      setLoadingState(false);
     };
     load();
-  }, [loadPlugins]);
+  }, [loadPlugins, setLoadingState]);
+
+  // Fetch plugin sources and update state
+  const getPluginSources = useCallback(async () => {
+    const pluginSources = await invokeOnAllPlugins<
+      ProviderSourceResponse,
+      { name: string }
+    >("sources", { name: "test" });
+
+    const newSources: ItemDownload[] = pluginSources.map((pluginSource) => ({
+      name: pluginSource.name,
+      sources: pluginSource.sources.map((item) => ({
+        name: "fitgirl repack",
+        title: pluginSource.name,
+        type: item.type,
+        url: item.url,
+      })),
+    }));
+
+    appendSources(newSources);
+  }, [invokeOnAllPlugins, appendSources]);
 
   // Effect for initializing sources when itadData is ready
   useEffect(() => {
@@ -76,13 +103,19 @@ const DownloadDialog = ({
     initializeSources();
   }, [itadData, isReleased, itadPending, initializeSources]);
 
+  // Effect to fetch plugin sources after plugins are loaded
+  useEffect(() => {
+    if (!isLoadingPlugins) {
+      getPluginSources();
+    }
+  }, [isLoadingPlugins, getPluginSources]);
+
   const sourcesIsEmpty = useMemo(
     () => sources?.some((source) => source?.sources?.length === 0),
     [sources]
   );
 
-  // Show loading indicator for plugins and sources
-  const isLoading = itadPending || loadingPlugins;
+  const isLoading = itadPending || isLoadingPlugins;
 
   // Early return if not released
   if (!isReleased) {
