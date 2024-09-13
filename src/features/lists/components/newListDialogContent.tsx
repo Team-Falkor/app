@@ -64,6 +64,7 @@ const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
           className="w-full"
           minLength={1}
           maxLength={64}
+          autoComplete={"off"}
           disabled={loading} // Disable input while loading
         />
       </div>
