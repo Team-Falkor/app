@@ -24,6 +24,11 @@ const QuickInfo = (props: QuickInfoProps) => {
     [data]
   );
 
+  const isSameDevAndPublisher =
+    !!developer && !!publisher
+      ? developer.developer === publisher.publisher
+      : false;
+
   const releaseDate =
     data?.release_dates?.find((item) => item.platform === 6) ??
     data?.release_dates[0];
@@ -33,7 +38,7 @@ const QuickInfo = (props: QuickInfoProps) => {
   const { genres, aggregated_rating } = data;
 
   return (
-    <section className="overflow-hidden text-sm whitespace-normal text-ellipsis text-slate-400">
+    <section className="overflow-hidden text-sm whitespace-normal text-ellipsis text-slate-400 mt-1">
       <ul className="flex flex-col justify-center gap-2 -mt-1 border-gray-200 divide-gray-200 rounded-lg dark:divide-gray-700 dark:border-gray-700 dark:text-gray-100">
         <QuickInfoItem
           title={t("genres")}
@@ -60,7 +65,9 @@ const QuickInfo = (props: QuickInfoProps) => {
         <QuickInfoItem
           title={`${t("developer")} / ${t("publisher")}`}
           data={
-            `${developer?.company.name ?? "N/A"} / ${publisher?.company.name ?? "N/A"}` ??
+            (isSameDevAndPublisher
+              ? developer?.company.name
+              : `${developer?.company.name ?? "N/A"} / ${publisher?.company.name ?? "N/A"}`) ??
             "N/A"
           }
         />
