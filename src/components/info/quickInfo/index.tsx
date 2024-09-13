@@ -26,7 +26,8 @@ const QuickInfo = (props: QuickInfoProps) => {
 
   const isSameDevAndPublisher =
     !!developer && !!publisher
-      ? developer.developer === publisher.publisher
+      ? developer?.company?.name.toLowerCase() ===
+        publisher?.company?.name?.toLowerCase()
       : false;
 
   const releaseDate =
