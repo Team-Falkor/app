@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useListsDatabase } from "@/hooks";
+import { useLists } from "@/hooks";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { toast } from "sonner";
 
@@ -19,22 +19,24 @@ interface NewListDialogContentProps {
 }
 
 const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
-  const { createList } = useListsDatabase();
+  const { createList, loading } = useLists(); // Using Zustand's `useLists` hook
   const ref = useRef<HTMLInputElement>(null);
 
   const onSubmit = async () => {
     if (!open) return;
-    if (!ref?.current) {
-      toast.error("There was an error creating the list", {
-        description: "Please try again",
+    const name = ref.current?.value.trim();
+
+    if (!name) {
+      toast.error("List name cannot be empty", {
+        description: "Please provide a valid name.",
       });
       return;
     }
-    const name = ref.current?.value;
 
     try {
       await createList(name);
       setOpen(false);
+      toast.success("List created successfully!");
     } catch (error) {
       console.error(error);
       toast.error("There was an error creating the list", {
@@ -62,15 +64,18 @@ const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
           className="w-full"
           minLength={1}
           maxLength={64}
+          disabled={loading} // Disable input while loading
         />
       </div>
 
       <DialogFooter>
         <DialogClose asChild>
-          <Button variant={"destructive"}>Cancel</Button>
+          <Button variant={"destructive"} disabled={loading}>
+            Cancel
+          </Button>
         </DialogClose>
-        <Button variant={"secondary"} onClick={onSubmit}>
-          Create
+        <Button variant={"secondary"} onClick={onSubmit} disabled={loading}>
+          {loading ? "Creating..." : "Create"}
         </Button>
       </DialogFooter>
     </DialogContent>

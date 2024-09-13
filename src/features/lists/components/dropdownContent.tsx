@@ -5,17 +5,18 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
-import { useListsDatabase } from "@/hooks";
+import { useLists } from "@/hooks";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { PlusIcon } from "lucide-react";
 import { useEffect } from "react";
 import ListsDropdownItem from "./dropdownItem";
 
 const ListsDropdownContent = (props: IGDBReturnDataType) => {
-  const { lists, fetchLists } = useListsDatabase();
+  const { fetchLists, lists } = useLists();
 
   useEffect(() => {
     fetchLists();
+    console.log({ lists });
   }, []);
 
   return (
@@ -33,7 +34,9 @@ const ListsDropdownContent = (props: IGDBReturnDataType) => {
           </div>
         ) : (
           lists.map((list) => (
-            <ListsDropdownItem key={list.id} list_id={list.id} game={props} />
+            <ListsDropdownItem key={list.id} list_id={list.id} game={props}>
+              {list.name}
+            </ListsDropdownItem>
           ))
         )}
       </div>

@@ -61,7 +61,7 @@ class ListsDatabase {
   }
 
   // Add a game to the games table, and link it to a specific list
-  async addGameToList(listId: number, game: ListGame): Promise<void> {
+  async addGameToList(list_id: number, game: ListGame): Promise<void> {
     await this.init();
     if (!this.lists) throw new Error("Database not initialized");
 
@@ -71,7 +71,7 @@ class ListsDatabase {
       VALUES (?, ?, ?, ?, ?, ?)
     `;
     await this.lists.execute(insertGameQuery, [
-      game.gameId,
+      game.game_id,
       game.title,
       game.description || null,
       game.image || null,
@@ -81,7 +81,7 @@ class ListsDatabase {
 
     // Link the game to the list in the list_games table
     const linkGameQuery = `INSERT INTO list_games (list_id, game_id) VALUES (?, ?)`;
-    await this.lists.execute(linkGameQuery, [listId, game.gameId]);
+    await this.lists.execute(linkGameQuery, [list_id, game.game_id]);
   }
 
   // Get all games in a specific list
@@ -109,36 +109,36 @@ class ListsDatabase {
   }
 
   // Remove a game from a specific list
-  async removeGameFromList(listId: number, gameId: number): Promise<void> {
+  async removeGameFromList(list_id: number, game_id: number): Promise<void> {
     await this.init();
     if (!this.lists) throw new Error("Database not initialized");
 
     const query = `DELETE FROM list_games WHERE list_id = ? AND game_id = ?`;
-    await this.lists.execute(query, [listId, gameId]);
+    await this.lists.execute(query, [list_id, game_id]);
   }
 
   // Delete a list and all its games (removes the links, not the games themselves)
-  async deleteList(listId: number): Promise<void> {
+  async deleteList(list_id: number): Promise<void> {
     await this.init();
     if (!this.lists) throw new Error("Database not initialized");
 
     const deleteListQuery = `DELETE FROM lists WHERE id = ?`;
-    await this.lists.execute(deleteListQuery, [listId]);
+    await this.lists.execute(deleteListQuery, [list_id]);
 
     const deleteLinkQuery = `DELETE FROM list_games WHERE list_id = ?`;
-    await this.lists.execute(deleteLinkQuery, [listId]);
+    await this.lists.execute(deleteLinkQuery, [list_id]);
   }
 
   // Optionally, you could add a method to delete a game entirely
-  async deleteGame(gameId: number): Promise<void> {
+  async deleteGame(game_id: number): Promise<void> {
     await this.init();
     if (!this.lists) throw new Error("Database not initialized");
 
     const deleteGameQuery = `DELETE FROM games WHERE game_id = ?`;
-    await this.lists.execute(deleteGameQuery, [gameId]);
+    await this.lists.execute(deleteGameQuery, [game_id]);
 
     const deleteLinksQuery = `DELETE FROM list_games WHERE game_id = ?`;
-    await this.lists.execute(deleteLinksQuery, [gameId]);
+    await this.lists.execute(deleteLinksQuery, [game_id]);
   }
 }
 

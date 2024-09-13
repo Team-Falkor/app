@@ -52,7 +52,7 @@ export type ItemDownload =
     };
 
 export interface ListGame {
-  gameId: number;
+  game_id: number;
   title: string;
   description?: string;
   image?: string;

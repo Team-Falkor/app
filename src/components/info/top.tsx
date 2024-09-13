@@ -1,4 +1,5 @@
 import { InfoItadProps, InfoProps, infoHLTBProps } from "@/@types";
+import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import HLTBComponent from "../hltb";
 import IGDBImage from "../IGDBImage";
@@ -55,7 +56,7 @@ const InfoTop = (props: Props) => {
           <div className="flex justify-end gap-4">
             {!isPending && data ? (
               <>
-                {/* <ListsDropdown {...data} /> */}
+                <ListsDropdown {...data} />
                 <DownloadDialog
                   title={data!.name}
                   isReleased={isReleased}
@@ -67,7 +68,7 @@ const InfoTop = (props: Props) => {
               </>
             ) : (
               <>
-                {/* <Skeleton className="w-32 h-10" /> */}
+                <Skeleton className="w-32 h-10" />
                 <Skeleton className="w-32 h-10" />
               </>
             )}

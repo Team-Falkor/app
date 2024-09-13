@@ -1,10 +1,14 @@
 import { convertFileSrc } from "@tauri-apps/api/core";
 import * as path from "@tauri-apps/api/path";
 import { BaseDirectory, mkdir, readDir } from "@tauri-apps/plugin-fs";
-import { fetch } from "@tauri-apps/plugin-http";
 import * as FalkorSDK from "@team-falkor/sdk";
-import { BaseProvider } from "@team-falkor/sdk";
+import { BaseProvider, PluginContext } from "@team-falkor/sdk";
 import { toast } from "sonner";
+
+import { fetch } from "@tauri-apps/plugin-http";
+import * as cheerio from "cheerio";
+
+import fuse from "fuse.js";
 
 let instance: PluginLoader | null = null;
 
@@ -74,18 +78,38 @@ export class PluginLoader {
 
         const src = convertFileSrc(pathing);
 
-        const plugin = await import(
+        const pluginContext: PluginContext = {
+          cheerio: cheerio,
+          fetch,
+          fuse,
+          toast,
+        };
+
+        const pluginModule = await import(
           /* @vite-ignore */
           src
         );
 
-        if (!this.validatePlugin(plugin)) continue;
+        // Check if the default export exists and extends BaseProvider
+        if (
+          !pluginModule?.default ||
+          !(pluginModule?.default?.prototype instanceof BaseProvider)
+        ) {
+          console.warn(`Invalid plugin found: ${folder.name}`);
+          continue;
+        }
+
+        if (!this.validatePlugin(pluginModule)) continue;
+        const pluginInstance: BaseProvider = new pluginModule.default();
+
+        pluginInstance.setContext(pluginContext);
+
         console.log(`Loaded plugin: ${folder.name}`);
         toast.info(`Loaded plugin: ${folder.name}`, {
           description: "Plugin loaded successfully",
         });
 
-        this.plugins.set(folder.name, new plugin.default());
+        this.plugins.set(folder.name, pluginInstance);
       }
 
       this.initialized = true;
@@ -100,7 +124,6 @@ export class PluginLoader {
 
   setupWindow() {
     if (!window?.FalkorSDK) window.FalkorSDK = FalkorSDK;
-    if (!window.FalkorFetch) window.FalkorFetch = fetch;
   }
 
   // Start all plugins
@@ -142,9 +165,10 @@ export class PluginLoader {
   }
 
   private validatePlugin(pluginModule: any): boolean {
-    const requiredMethods = ["initialize", "destroy", "info", "search"];
+    const requiredMethods = ["initialize", "destroy"];
     return requiredMethods.every(
-      (method) => typeof pluginModule.default.prototype[method] === "function"
+      (method) =>
+        typeof pluginModule?.default?.prototype?.[method] === "function"
     );
   }
 }
