@@ -49,6 +49,7 @@
     "@tauri-apps/plugin-sql": "^2.0.0-rc.1",
     "@tauri-apps/plugin-store": "^2.0.0-rc.1",
     "@team-falkor/sdk": "^0.1.8",
+    "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.0",

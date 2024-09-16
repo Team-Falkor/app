@@ -3,6 +3,7 @@ import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import HLTBComponent from "../hltb";
 import IGDBImage from "../IGDBImage";
+import ProtonDbBadge from "../protonDbBadge";
 import { Skeleton } from "../ui/skeleton";
 import DownloadDialog from "./downloadDialog";
 import QuickInfo from "./quickInfo";
@@ -31,17 +32,35 @@ const InfoTop = (props: Props) => {
 
   if (error) return null;
 
+  const find_steam_id = data
+    ? (data.websites ?? [])?.find((site) =>
+        site.url.startsWith("https://store.steampowered.com/app")
+      )
+    : undefined;
+
+  const steam_id = find_steam_id?.url.split("/").pop();
+
   return (
     <div className="sm:-mt-28 sm:flex sm:items-start sm:space-x-5">
       <div className="relative flex">
-        {isPending && <Skeleton className="rounded-lg w-[230px] h-80" />}
-        {!isPending && (
-          <IGDBImage
-            imageId={data!.cover?.image_id ?? ""}
-            alt={data!.name}
-            className="object-cover rounded-lg h-80"
-            imageSize={"cover_big"}
-          />
+        {!isPending ? (
+          <div className="rounded-lg h-80 relative overflow-hidden">
+            <IGDBImage
+              imageId={data!.cover?.image_id ?? ""}
+              alt={data!.name}
+              className="object-cover h-80"
+              imageSize={"cover_big"}
+            />
+            <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+              <div className="flex pt-5 justify-end items-start size-full">
+                <div className="rounded-l-lg overflow-hidden">
+                  {steam_id ? <ProtonDbBadge appId={steam_id} /> : null}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <Skeleton className="rounded-lg w-[230px] h-80" />
         )}
       </div>
 

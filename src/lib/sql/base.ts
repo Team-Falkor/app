@@ -1,4 +1,3 @@
-import { appConfigDir } from "@tauri-apps/api/path";
 import Database from "@tauri-apps/plugin-sql";
 
 class BaseDatabase {
@@ -6,9 +5,6 @@ class BaseDatabase {
   private initialized = false;
 
   async init() {
-    console.log({
-      test: await appConfigDir(),
-    });
     if (this.initialized) return this;
     this.lists = await Database.load("sqlite:lists.db");
 

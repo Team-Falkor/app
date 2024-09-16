@@ -65,14 +65,15 @@ function Info() {
         return result as HLTBSearchGameData;
       }
     },
-    enabled: !!id && isReleased,
+    enabled: false,
+    // enabled: !!id && isReleased,
   });
 
   if (error) return null;
 
   return (
     <div className="relative w-full h-full pb-20 overflow-x-hidden max-w-[100vw]">
-      <div className="absolute top-0 left-0 z-10 mx-10 mt-3">
+      <div className="absolute top-0 left-0 z-10 mx-10 mt-3 flex w-full">
         <Button variant="ghost" size="icon" onClick={() => history.back()}>
           <ChevronLeft />
         </Button>

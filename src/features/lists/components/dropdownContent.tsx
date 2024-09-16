@@ -16,7 +16,6 @@ const ListsDropdownContent = (props: IGDBReturnDataType) => {
 
   useEffect(() => {
     fetchLists();
-    console.log({ lists });
   }, []);
 
   return (

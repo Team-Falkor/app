@@ -24,6 +24,10 @@
     "sql:allow-execute",
     "sql:allow-load",
     "sql:allow-select",
-    "store:default"
+    "store:default",
+    "http:allow-fetch",
+    "http:allow-fetch-read-body",
+    "http:allow-fetch-cancel",
+    "http:allow-fetch-send"
   ]
 }
