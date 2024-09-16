@@ -38,7 +38,7 @@ const InfoTop = (props: Props) => {
       )
     : undefined;
 
-  const steam_id = find_steam_id?.url.split("/").pop();
+  const steam_id = find_steam_id?.url.match(/\/app\/(\d+)\//)?.[1];
 
   return (
     <div className="sm:-mt-28 sm:flex sm:items-start sm:space-x-5">

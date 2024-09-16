@@ -67,11 +67,13 @@ class IGDB extends BaseApi {
 
     const item = igdbData[0];
 
-    const find_steam_id = (item.websites ?? [])?.find((site) =>
-      site.url.startsWith("https://store.steampowered.com/app")
-    );
+    const find_steam_id = item
+      ? (item.websites ?? [])?.find((site) =>
+          site.url.startsWith("https://store.steampowered.com/app")
+        )
+      : undefined;
 
-    const steam_id = find_steam_id?.url.split("/").pop();
+    const steam_id = find_steam_id?.url.match(/\/app\/(\d+)\//)?.[1];
 
     const steam = steam_id ? await this.steamStoreInfo(steam_id) : null;
 
