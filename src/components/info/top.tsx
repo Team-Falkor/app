@@ -1,6 +1,7 @@
 import { InfoItadProps, InfoProps, infoHLTBProps } from "@/@types";
 import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
+import { getSteamIdFromWebsites } from "@/lib/helpers";
 import HLTBComponent from "../hltb";
 import IGDBImage from "../IGDBImage";
 import ProtonDbBadge from "../protonDbBadge";
@@ -32,13 +33,7 @@ const InfoTop = (props: Props) => {
 
   if (error) return null;
 
-  const find_steam_id = data
-    ? (data.websites ?? [])?.find((site) =>
-        site.url.startsWith("https://store.steampowered.com/app")
-      )
-    : undefined;
-
-  const steam_id = find_steam_id?.url.match(/\/app\/(\d+)\//)?.[1];
+  const steam_id = getSteamIdFromWebsites(data?.websites ?? []);
 
   return (
     <div className="sm:-mt-28 sm:flex sm:items-start sm:space-x-5">
