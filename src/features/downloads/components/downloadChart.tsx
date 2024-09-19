@@ -38,14 +38,14 @@ const DownloadChart = ({ chartData }: Props) => {
         <Area
           dataKey="download_speed"
           type="natural"
-          fill="hsl(var(--chart-1))"
-          stroke="hsl(var(--chart-1))"
+          fill="hsl(var(--chart-4))"
+          stroke="hsl(var(--chart-4))"
           isAnimationActive={false}
         />
         <Bar
           isAnimationActive={false}
           dataKey="download_speed"
-          fill="hsl(var(--chart-1))"
+          fill="hsl(var(--chart-4))"
           radius={4}
         />
       </BarChart>
