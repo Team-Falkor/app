@@ -131,8 +131,12 @@ const DownloadDialog = ({
     <Dialog>
       <DialogTrigger>
         <Button variant="secondary">
-          <Download className="mr-2 size-4" />
-          {isLoading ? <Spinner /> : "Download"}
+          {!isLoading ? (
+            <Download className="mr-2 size-4" />
+          ) : (
+            <Spinner className="mr-2 size-4" />
+          )}
+          Download
         </Button>
       </DialogTrigger>
       <DialogContent>
