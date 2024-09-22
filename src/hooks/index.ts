@@ -1,3 +1,3 @@
-export * from "./lists";
+export * from "../features/lists/hooks/useLists";
 export * from "./plugins";
 export * from "./useProtonDb";

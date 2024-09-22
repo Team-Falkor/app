@@ -13,7 +13,9 @@ const IGDBImage = ({
   alt,
   ...restProps
 }: IGDBImageProps) => {
-  const src = `https://images.igdb.com/igdb/image/upload/t_${imageSize}/${imageId}.png`;
+  const src = imageId.startsWith("http")
+    ? imageId
+    : `https://images.igdb.com/igdb/image/upload/t_${imageSize}/${imageId}.png`;
 
   return <img src={src} alt={alt} {...restProps} />;
 };

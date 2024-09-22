@@ -7,12 +7,14 @@ interface ListsState {
   gamesInList: Record<number, ListGame[]>; // Store games for each list by listId
   loading: boolean;
   error: string | null;
+  hasDoneFirstFetch: boolean;
   fetchLists: () => Promise<void>;
   createList: (name: string, description?: string) => Promise<void>;
   addGameToList: (listId: number, game: ListGame) => Promise<void>;
   removeGameFromList: (listId: number, gameId: number) => Promise<void>;
-  fetchGamesInList: (listId: number) => Promise<void>;
+  fetchGamesInList: (listId: number) => Promise<Array<ListGame>>;
   deleteList: (listId: number) => Promise<void>;
+  setHasDoneFirstFetch: () => void;
 }
 
 // Zustand store to handle lists and games globally
@@ -21,6 +23,11 @@ export const useListsStore = create<ListsState>((set) => ({
   gamesInList: {},
   loading: false,
   error: null,
+  hasDoneFirstFetch: false,
+
+  setHasDoneFirstFetch: () => {
+    set({ hasDoneFirstFetch: true });
+  },
 
   fetchLists: async () => {
     set({ loading: true, error: null });
@@ -80,8 +87,11 @@ export const useListsStore = create<ListsState>((set) => ({
           [listId]: games,
         },
       }));
+
+      return games;
     } catch {
       set({ error: "Failed to load games" });
+      return [];
     } finally {
       set({ loading: false });
     }

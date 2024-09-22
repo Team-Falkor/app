@@ -1,4 +1,5 @@
 import { useListsStore } from "@/stores/lists";
+import { useEffect } from "react";
 
 export const useLists = () => {
   const {
@@ -12,7 +13,16 @@ export const useLists = () => {
     removeGameFromList,
     fetchGamesInList,
     deleteList,
+    hasDoneFirstFetch,
+    setHasDoneFirstFetch,
   } = useListsStore();
+
+  useEffect(() => {
+    if (hasDoneFirstFetch) return;
+
+    fetchLists();
+    setHasDoneFirstFetch();
+  }, [fetchLists]);
 
   return {
     removeGameFromList,
