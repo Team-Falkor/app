@@ -1,0 +1,80 @@
+{
+  "popular": "Popular",
+  "top_rated": "Mais bem avaliados",
+  "new_releases": "Novos lançamentos",
+  "most_anticipated": "Mais aguardados",
+  "continue_playing": "Continuar jogando",
+  "search_placeholder": "Qual jogo você está procurando?",
+  "home": "Início",
+  "settings": "Configurações",
+  "search": "Pesquisar",
+  "my_games": "Meus jogos",
+  "new_game": "Novo jogo",
+  "downloads": "Downloads",
+  "logo_hover": "Falkor A sorte do sorteio",
+  "more_info": "Mais informações",
+  "trailer": "Trailer",
+  "about_this_game": "Sobre este jogo",
+  "you_may_also_like": "Você também pode gostar",
+  "media": "Mídia",
+  "system_requirements": "Requisitos do sistema",
+  "genres": "Gêneros",
+  "rating": "Classificação",
+  "release_date": "Data de lançamento",
+  "developer": "Desenvolvedor",
+  "publisher": "Publicadora",
+  "general": "Geral",
+  "torrent_configuration": "Configuração de Torrent",
+  "accounts": "Contas",
+  "plugins": "Plugins",
+  "miscellaneous": "Diversos",
+  "join_the_discord": "Junte-se ao Discord!",
+  "star_us_on_github": "Dê-nos uma estrela no GitHub!",
+  "buy_me_a_coffee": "Compre-me um café!",
+  "add_account": "Adicionar conta",
+  "username": "Nome de usuário",
+  "status": "Status",
+  "expiry_date": "Data de expiração",
+  "service": "Serviço",
+  "manage": "Gerenciar",
+  "what_plugin_are_you_looking_for": "Qual plugin você está procurando?",
+  "add_local_plugin": "Adicionar plugin local",
+  "add_custom_plugin_repository": "Adicionar repositório de plugin personalizado",
+  "show_installed_only": "Mostrar apenas instalados",
+  "sort_alphabeticly_asc": "Ordenar alfabeticamente (ascendente)",
+  "sort_alphabeticly_desc": "Ordenar alfabeticamente (descendente)",
+  "show_list": "Mostrar lista",
+  "show_grid": "Mostrar grade",
+  "install": "Instalar",
+  "uninstall": "Desinstalar",
+  "update": "Atualizar",
+  "view_more": "Ver mais",
+  "Settings": {
+    "titles": {
+      "general": "Configurações Gerais",
+      "torrent": "Configurações de Torrent",
+      "accounts": "Configurações de Contas",
+      "plugins": "Configurações de Plugins",
+      "developer": "Configurações de Desenvolvedor",
+      "miscellaneous": "Configurações Diversas"
+    },
+    "change_local": {
+      "title": "Alterar Localidade",
+      "description": "Alterar a localidade usada para preços ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Caminho de Download",
+      "description": "Definir o caminho de download para torrents"
+    },
+    "torrent_dht_configuration": {
+      "title": "Configuração de DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Usar conta(s) para downloads"
+    },
+    "developer_enable_console": {
+      "title": "Habilitar Console do Desenvolvedor",
+      "description": "Habilitar console do desenvolvedor para depuração"
+    }
+  }
+}

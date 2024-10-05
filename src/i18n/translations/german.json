@@ -1,0 +1,80 @@
+{
+  "popular": "Beliebt",
+  "top_rated": "Bestbewertet",
+  "new_releases": "Neuerscheinungen",
+  "most_anticipated": "Am Meisten Erwartet",
+  "continue_playing": "Weiter Spielen",
+  "search_placeholder": "Welches Spiel suchst du?",
+  "home": "Startseite",
+  "settings": "Einstellungen",
+  "search": "Suche",
+  "my_games": "Meine Spiele",
+  "new_game": "Neues Spiel",
+  "downloads": "Downloads",
+  "logo_hover": "Falkor Das Glück des Loses",
+  "more_info": "Mehr Info",
+  "trailer": "Trailer",
+  "about_this_game": "Über Dieses Spiel",
+  "you_may_also_like": "Das Könnte Ihnen Auch Gefallen",
+  "media": "Medien",
+  "system_requirements": "Systemanforderungen",
+  "genres": "Genres",
+  "rating": "Bewertung",
+  "release_date": "Erscheinungsdatum",
+  "developer": "Entwickler",
+  "publisher": "Verlag",
+  "general": "Allgemein",
+  "torrent_configuration": "Torrent-Konfiguration",
+  "accounts": "Konten",
+  "plugins": "Plugins",
+  "miscellaneous": "Verschiedenes",
+  "join_the_discord": "Treten Sie dem Discord bei!",
+  "star_us_on_github": "Geben Sie uns einen Stern auf GitHub!",
+  "buy_me_a_coffee": "Kaufen Sie mir einen Kaffee!",
+  "add_account": "Konto Hinzufügen",
+  "username": "Benutzername",
+  "status": "Status",
+  "expiry_date": "Ablaufdatum",
+  "service": "Dienst",
+  "manage": "Verwalten",
+  "what_plugin_are_you_looking_for": "Welches Plugin suchst du?",
+  "add_local_plugin": "Lokales Plugin Hinzufügen",
+  "add_custom_plugin_repository": "Benutzerdefiniertes Plugin-Repository Hinzufügen",
+  "show_installed_only": "Nur Installiert Anzeigen",
+  "sort_alphabeticly_asc": "Alphabetisch Aufsteigend Sortieren",
+  "sort_alphabeticly_desc": "Alphabetisch Absteigend Sortieren",
+  "show_list": "Liste Anzeigen",
+  "show_grid": "Gitter Anzeigen",
+  "install": "Installieren",
+  "uninstall": "Deinstallieren",
+  "update": "Aktualisieren",
+  "view_more": "Mehr anzeigen",
+  "Settings": {
+    "titles": {
+      "general": "Allgemeine Einstellungen",
+      "torrent": "Torrent-Konfigurationseinstellungen",
+      "accounts": "Konteneinstellungen",
+      "plugins": "Plugin-Einstellungen",
+      "developer": "Entwicklereinstellungen",
+      "miscellaneous": "Verschiedene Einstellungen"
+    },
+    "change_local": {
+      "title": "Lokale Ändern",
+      "description": "Die für ITAD-Preise verwendete Lokale ändern"
+    },
+    "torrent_download_path": {
+      "title": "Download-Pfad",
+      "description": "Den Download-Pfad für Torrents festlegen"
+    },
+    "torrent_dht_configuration": {
+      "title": "DHT-Konfiguration"
+    },
+    "accounts_use_to_download": {
+      "title": "Konto(s) für Downloads verwenden"
+    },
+    "developer_enable_console": {
+      "title": "Entwicklerkonsole Aktivieren",
+      "description": "Entwicklerkonsole für das Debuggen Aktivieren"
+    }
+  }
+}

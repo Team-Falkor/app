@@ -1,0 +1,80 @@
+{
+  "popular": "Popular",
+  "top_rated": "Mejor Calificados",
+  "new_releases": "Nuevos Lanzamientos",
+  "most_anticipated": "Más Anticipados",
+  "continue_playing": "Continuar Jugando",
+  "search_placeholder": "¿Qué juego estás buscando?",
+  "home": "Inicio",
+  "settings": "Configuraciones",
+  "search": "Buscar",
+  "my_games": "Mis Juegos",
+  "new_game": "Nuevo Juego",
+  "downloads": "Descargas",
+  "logo_hover": "Falkor La suerte del sorteo",
+  "more_info": "Más Información",
+  "trailer": "Tráiler",
+  "about_this_game": "Sobre Este Juego",
+  "you_may_also_like": "También Te Puede Gustar",
+  "media": "Medios",
+  "system_requirements": "Requisitos del Sistema",
+  "genres": "Géneros",
+  "rating": "Calificación",
+  "release_date": "Fecha de Lanzamiento",
+  "developer": "Desarrollador",
+  "publisher": "Editor",
+  "general": "General",
+  "torrent_configuration": "Configuración de Torrent",
+  "accounts": "Cuentas",
+  "plugins": "Complementos",
+  "miscellaneous": "Misceláneo",
+  "join_the_discord": "¡Únete a Discord!",
+  "star_us_on_github": "¡Danos una estrella en GitHub!",
+  "buy_me_a_coffee": "¡Cómprame un café!",
+  "add_account": "Agregar Cuenta",
+  "username": "Nombre de Usuario",
+  "status": "Estado",
+  "expiry_date": "Fecha de Expiración",
+  "service": "Servicio",
+  "manage": "Gestionar",
+  "what_plugin_are_you_looking_for": "¿Qué complemento estás buscando?",
+  "add_local_plugin": "Agregar Complemento Local",
+  "add_custom_plugin_repository": "Agregar Repositorio de Complementos Personalizado",
+  "show_installed_only": "Mostrar Solo Instalados",
+  "sort_alphabeticly_asc": "Ordenar Alfabéticamente Ascendente",
+  "sort_alphabeticly_desc": "Ordenar Alfabéticamente Descendente",
+  "show_list": "Mostrar Lista",
+  "show_grid": "Mostrar Cuadrícula",
+  "install": "Instalar",
+  "uninstall": "Desinstalar",
+  "update": "Actualizar",
+  "view_more": "Ver más",
+  "Settings": {
+    "titles": {
+      "general": "Configuraciones Generales",
+      "torrent": "Configuraciones de Torrent",
+      "accounts": "Configuraciones de Cuentas",
+      "plugins": "Configuraciones de Complementos",
+      "developer": "Configuraciones de Desarrollador",
+      "miscellaneous": "Configuraciones Misceláneas"
+    },
+    "change_local": {
+      "title": "Cambiar Localidad",
+      "description": "Cambiar la Localidad Utilizada Para los Precios de ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Ruta de Descarga",
+      "description": "Establecer la Ruta de Descarga para Torrents"
+    },
+    "torrent_dht_configuration": {
+      "title": "Configuración de DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Usar cuenta(s) para descargas"
+    },
+    "developer_enable_console": {
+      "title": "Habilitar Consola de Desarrollador",
+      "description": "Habilitar Consola de Desarrollador Para Depuración"
+    }
+  }
+}

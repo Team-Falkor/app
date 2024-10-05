@@ -1,0 +1,80 @@
+{
+  "popular": "인기",
+  "top_rated": "최고 평점",
+  "new_releases": "새 출시",
+  "most_anticipated": "가장 기대되는",
+  "continue_playing": "계속 플레이",
+  "search_placeholder": "어떤 게임을 찾고 있습니까?",
+  "home": "홈",
+  "settings": "설정",
+  "search": "검색",
+  "my_games": "내 게임",
+  "new_game": "새 게임",
+  "downloads": "다운로드",
+  "logo_hover": "행운의 팔코르",
+  "more_info": "자세히 보기",
+  "trailer": "예고편",
+  "about_this_game": "이 게임에 대해",
+  "you_may_also_like": "당신이 좋아할 수도 있습니다",
+  "media": "미디어",
+  "system_requirements": "시스템 요구 사항",
+  "genres": "장르",
+  "rating": "평점",
+  "release_date": "출시일",
+  "developer": "개발자",
+  "publisher": "배급사",
+  "general": "일반",
+  "torrent_configuration": "토렌트 설정",
+  "accounts": "계정",
+  "plugins": "플러그인",
+  "miscellaneous": "기타",
+  "join_the_discord": "Discord에 참여하세요!",
+  "star_us_on_github": "GitHub에서 스타를 눌러주세요!",
+  "buy_me_a_coffee": "커피를 사주세요!",
+  "add_account": "계정 추가",
+  "username": "사용자 이름",
+  "status": "상태",
+  "expiry_date a": "만료 날짜",
+  "service": "서비스",
+  "manage": "관리",
+  "what_plugin_are_you_looking_for": "어떤 플러그인을 찾고 있습니까?",
+  "add_local_plugin": "로컬 플러그인 추가",
+  "add_custom_plugin_repository": "맞춤 플러그인 저장소 추가",
+  "show_installed_only": "설치된 것만 표시",
+  "sort_alphabeticly_asc": "알파벳 순 (오름차순)",
+  "sort_alphabeticly_desc": "알파벳 순 (내림차순)",
+  "show_list": "목록 보기",
+  "show_grid": "격자 보기",
+  "install": "설치",
+  "uninstall": "제거",
+  "update": "업데이트",
+  "view_more": "더보기",
+  "Settings": {
+    "titles": {
+      "general": "일반 설정",
+      "torrent": "토렌트 설정",
+      "accounts": "계정 설정",
+      "plugins": "플러그인 설정",
+      "developer": "개발자 설정",
+      "miscellaneous": "기타 설정"
+    },
+    "change_local": {
+      "title": "로케일 변경",
+      "description": "ITAD 가격에 사용되는 로케일 변경"
+    },
+    "torrent_download_path": {
+      "title": "다운로드 경로",
+      "description": "토렌트 다운로드 경로 설정"
+    },
+    "torrent_dht_configuration": {
+      "title": "DHT 설정"
+    },
+    "accounts_use_to_download": {
+      "title": "다운로드에 계정 사용"
+    },
+    "developer_enable_console": {
+      "title": "개발자 콘솔 활성화",
+      "description": "디버깅을 위한 개발자 콘솔 활성화"
+    }
+  }
+}

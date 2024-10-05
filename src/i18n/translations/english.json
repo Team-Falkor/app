@@ -1,0 +1,80 @@
+{
+  "popular": "Popular",
+  "top_rated": "Top Rated",
+  "new_releases": "New Releases",
+  "most_anticipated": "Most Anticipated",
+  "continue_playing": "Continue Playing",
+  "search_placeholder": "What game are you looking for?",
+  "home": "Home",
+  "settings": "Settings",
+  "search": "Search",
+  "my_games": "My Games",
+  "new_game": "New Game",
+  "downloads": "Downloads",
+  "logo_hover": "Falkor The luck of the draw",
+  "more_info": "More Info",
+  "trailer": "Trailer",
+  "about_this_game": "About This Game",
+  "you_may_also_like": "You May Also Like",
+  "media": "Media",
+  "system_requirements": "System Requirements",
+  "genres": "Genres",
+  "rating": "Rating",
+  "release_date": "Release Date",
+  "developer": "Developer",
+  "publisher": "Publisher",
+  "general": "General",
+  "torrent_configuration": "Torrent Configuration",
+  "accounts": "Accounts",
+  "plugins": "Plugins",
+  "miscellaneous": "Miscellaneous",
+  "join_the_discord": "Join the Discord!",
+  "star_us_on_github": "Star us on GitHub!",
+  "buy_me_a_coffee": "Buy me a Coffee!",
+  "add_account": "Add Account",
+  "username": "Username",
+  "status": "Status",
+  "expiry_date": "Expiry Date",
+  "service": "Service",
+  "manage": "Manage",
+  "what_plugin_are_you_looking_for": "What plugin are you looking for?",
+  "add_local_plugin": "Add Local Plugin",
+  "add_custom_plugin_repository": "Add Custom Plugin Repository",
+  "show_installed_only": "Show Installed Only",
+  "sort_alphabeticly_asc": "Sort Alphabeticly Ascending",
+  "sort_alphabeticly_desc": "Sort Alphabeticly Descending",
+  "show_list": "Show List",
+  "show_grid": "Show Grid",
+  "install": "Install",
+  "uninstall": "Uninstall",
+  "update": "Update",
+  "view_more": "View More",
+  "Settings": {
+    "titles": {
+      "general": "General Settings",
+      "torrent": "Torrent Configuration Settings",
+      "accounts": "Accounts Settings",
+      "plugins": "Plugins Settings",
+      "developer": "Developer Settings",
+      "miscellaneous": "Miscellaneous Settings"
+    },
+    "change_local": {
+      "title": "Change Local",
+      "description": "Change The Local Used For ITAD Prices"
+    },
+    "torrent_download_path": {
+      "title": "Download Path",
+      "description": "Set The Download Path For Torrents"
+    },
+    "torrent_dht_configuration": {
+      "title": "DHT Configuration"
+    },
+    "accounts_use_to_download": {
+      "title": "Use account(s) to downloads"
+    },
+    "developer_enable_console": {
+      "title": "Enable Developer Console",
+      "description": "Enable Developer Console For Debugging"
+    }
+  }
+}

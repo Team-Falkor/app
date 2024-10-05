@@ -1,0 +1,80 @@
+{
+  "popular": "ยอดนิยม",
+  "top_rated": "คะแนนสูงสุด",
+  "new_releases": "ออกใหม่",
+  "most_anticipated": "คาดหวังมากที่สุด",
+  "continue_playing": "เล่นต่อ",
+  "search_placeholder": "คุณกำลังมองหาเกมอะไร?",
+  "home": "หน้าแรก",
+  "settings": "การตั้งค่า",
+  "search": "ค้นหา",
+  "my_games": "เกมของฉัน",
+  "new_game": "เกมใหม่",
+  "downloads": "ดาวน์โหลด",
+  "logo_hover": "ฟัลคอร์ โชคดีในการเลือก",
+  "more_info": "ข้อมูลเพิ่มเติม",
+  "trailer": "ตัวอย่าง",
+  "about_this_game": "เกี่ยวกับเกมนี้",
+  "you_may_also_like": "คุณอาจชอบ",
+  "media": "สื่อ",
+  "system_requirements": "ความต้องการของระบบ",
+  "genres": "ประเภท",
+  "rating": "คะแนน",
+  "release_date": "วันวางจำหน่าย",
+  "developer": "ผู้พัฒนา",
+  "publisher": "ผู้จัดจำหน่าย",
+  "general": "ทั่วไป",
+  "torrent_configuration": "การตั้งค่า Torrent",
+  "accounts": "บัญชี",
+  "plugins": "ปลั๊กอิน",
+  "miscellaneous": "เบ็ดเตล็ด",
+  "join_the_discord": "เข้าร่วม Discord!",
+  "star_us_on_github": "ให้ดาวเราบน GitHub!",
+  "buy_me_a_coffee": "ซื้อกาแฟให้ฉัน!",
+  "add_account": "เพิ่มบัญชี",
+  "username": "ชื่อผู้ใช้",
+  "status": "สถานะ",
+  "expiry_date": "วันหมดอายุ",
+  "service": "บริการ",
+  "manage": "จัดการ",
+  "what_plugin_are_you_looking_for": "คุณกำลังมองหาปลั๊กอินอะไร?",
+  "add_local_plugin": "เพิ่มปลั๊กอินในเครื่อง",
+  "add_custom_plugin_repository": "เพิ่มที่เก็บปลั๊กอินแบบกำหนดเอง",
+  "show_installed_only": "แสดงเฉพาะที่ติดตั้ง",
+  "sort_alphabeticly_asc": "เรียงตามลำดับตัวอักษรจากน้อยไปมาก",
+  "sort_alphabeticly_desc": "เรียงตามลำดับตัวอักษรจากมากไปน้อย",
+  "show_list": "แสดงรายการ",
+  "show_grid": "แสดงตาราง",
+  "install": "ติดตั้ง",
+  "uninstall": "ถอนการติดตั้ง",
+  "update": "อัปเดต",
+  "view_more": "ดูเพิ่มเติม",
+  "Settings": {
+    "titles": {
+      "general": "การตั้งค่าทั่วไป",
+      "torrent": "การตั้งค่าการกำหนดค่า Torrent",
+      "accounts": "การตั้งค่าบัญชี",
+      "plugins": "การตั้งค่าปลั๊กอิน",
+      "developer": "การตั้งค่านักพัฒนา",
+      "miscellaneous": "การตั้งค่าเบ็ดเตล็ด"
+    },
+    "change_local": {
+      "title": "เปลี่ยนท้องถิ่น",
+      "description": "เปลี่ยนท้องถิ่นที่ใช้สำหรับราคา ITAD"
+    },
+    "torrent_download_path": {
+      "title": "เส้นทางการดาวน์โหลด",
+      "description": "ตั้งค่าเส้นทางการดาวน์โหลดสำหรับ Torrent"
+    },
+    "torrent_dht_configuration": {
+      "title": "การตั้งค่า DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "ใช้บัญชีเพื่อดาวน์โหลด"
+    },
+    "developer_enable_console": {
+      "title": "เปิดใช้งานคอนโซลนักพัฒนา",
+      "description": "เปิดใช้งานคอนโซลนักพัฒนาเพื่อการดีบัก"
+    }
+  }
+}

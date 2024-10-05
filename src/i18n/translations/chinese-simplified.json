@@ -1,0 +1,80 @@
+{
+  "popular": "热门",
+  "top_rated": "最高评分",
+  "new_releases": "新发布",
+  "most_anticipated": "最受期待",
+  "continue_playing": "继续游戏",
+  "search_placeholder": "你在找什么游戏？",
+  "home": "主页",
+  "settings": "设置",
+  "search": "搜索",
+  "my_games": "我的游戏",
+  "new_game": "新游戏",
+  "downloads": "下载",
+  "logo_hover": "幸运的Falkor",
+  "more_info": "更多信息",
+  "trailer": "预告片",
+  "about_this_game": "关于这款游戏",
+  "you_may_also_like": "你可能也喜欢",
+  "media": "媒体",
+  "system_requirements": "系统要求",
+  "genres": "类型",
+  "rating": "评分",
+  "release_date": "发布日期",
+  "developer": "开发者",
+  "publisher": "出版商",
+  "general": "通用",
+  "torrent_configuration": "Torrent配置",
+  "accounts": "账户",
+  "plugins": "插件",
+  "miscellaneous": "杂项",
+  "join_the_discord": "加入Discord！",
+  "star_us_on_github": "在GitHub上给我们星星！",
+  "buy_me_a_coffee": "请我喝咖啡！",
+  "add_account": "添加账户",
+  "username": "用户名",
+  "status": "状态",
+  "expiry_date": "到期日期",
+  "service": "服务",
+  "manage": "管理",
+  "what_plugin_are_you_looking_for": "你在找什么插件？",
+  "add_local_plugin": "添加本地插件",
+  "add_custom_plugin_repository": "添加自定义插件仓库",
+  "show_installed_only": "仅显示已安装",
+  "sort_alphabeticly_asc": "按字母升序排序",
+  "sort_alphabeticly_desc": "按字母降序排序",
+  "show_list": "显示列表",
+  "show_grid": "显示网格",
+  "install": "安装",
+  "uninstall": "卸载",
+  "update": "更新",
+  "view_more": "查看更多",
+  "Settings": {
+    "titles": {
+      "general": "通用设置",
+      "torrent": "Torrent配置设置",
+      "accounts": "账户设置",
+      "plugins": "插件设置",
+      "developer": "开发者设置",
+      "miscellaneous": "杂项设置"
+    },
+    "change_local": {
+      "title": "更改语言环境",
+      "description": "更改用于ITAD价格的语言环境"
+    },
+    "torrent_download_path": {
+      "title": "下载路径",
+      "description": "设置Torrent下载路径"
+    },
+    "torrent_dht_configuration": {
+      "title": "DHT配置"
+    },
+    "accounts_use_to_download": {
+      "title": "使用账户下载"
+    },
+    "developer_enable_console": {
+      "title": "启用开发者控制台",
+      "description": "启用开发者控制台进行调试"
+    }
+  }
+}

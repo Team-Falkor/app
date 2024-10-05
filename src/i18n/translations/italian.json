@@ -1,0 +1,80 @@
+{
+  "popular": "Popolari",
+  "top_rated": "Più votati",
+  "new_releases": "Nuove uscite",
+  "most_anticipated": "Più atteso",
+  "continue_playing": "Continua a giocare",
+  "search_placeholder": "Che gioco stai cercando?",
+  "home": "Home",
+  "settings": "Impostazioni",
+  "search": "Cerca",
+  "my_games": "I miei giochi",
+  "new_game": "Nuovo gioco",
+  "downloads": "Downloads",
+  "logo_hover": "Falkor The luck of the draw",
+  "more_info": "Maggiori informazioni",
+  "trailer": "Trailer",
+  "about_this_game": "Informazioni sul gioco",
+  "you_may_also_like": "Potrebbe piacerti anche",
+  "media": "Media",
+  "system_requirements": "Requisiti di sistema",
+  "genres": "Generi",
+  "rating": "Valutazione",
+  "release_date": "Data di rilascio",
+  "developer": "Sviluppatore",
+  "publisher": "Publisher",
+  "general": "Generale",
+  "torrent_configuration": "Configurazione torrent",
+  "accounts": "Accounts",
+  "plugins": "Plugins",
+  "miscellaneous": "Varie",
+  "join_the_discord": "Unisciti a Discord!",
+  "star_us_on_github": "Dacci una stella su GitHub!",
+  "buy_me_a_coffee": "Offrimi un caffè!",
+  "add_account": "Aggiungi account",
+  "username": "Username",
+  "status": "Status",
+  "expiry_date": "Data di scadenza",
+  "service": "Servizio",
+  "manage": "Gestisci",
+  "what_plugin_are_you_looking_for": "Che plugin stai cercando?",
+  "add_local_plugin": "Aggiungi plugin locale",
+  "add_custom_plugin_repository": "Aggiungi repository plugin personalizzato",
+  "show_installed_only": "Mostra solo installati",
+  "sort_alphabeticly_asc": "Ordina alfabeticamente ascendente",
+  "sort_alphabeticly_desc": "Ordina alfabeticamente discendente",
+  "show_list": "Mostra elenco",
+  "show_grid": "Mostra griglia",
+  "install": "Installa",
+  "uninstall": "Disinstalla",
+  "update": "Aggiorna",
+  "view_more": "Visualizza altro",
+  "Settings": {
+    "titles": {
+      "general": "Impostazioni generali",
+      "torrent": "Impostazioni di configurazione torrent",
+      "accounts": "Impostazioni account",
+      "plugins": "Impostazioni plugin",
+      "developer": "Impostazioni sviluppatore",
+      "miscellaneous": "Impostazioni varie"
+    },
+    "change_local": {
+      "title": "Cambia locale",
+      "description": "Cambia locale utilizzato per i prezzi ITAD"
+    },
+    "torrent_download_path": {
+      "title": "Percorso di download",
+      "description": "Percorso di download per i torrent"
+    },
+    "torrent_dht_configuration": {
+      "title": "Configurazione DHT"
+    },
+    "accounts_use_to_download": {
+      "title": "Account utilizzati per il download"
+    },
+    "developer_enable_console": {
+      "title": "Abilita console sviluppatore",
+      "description": "Abilita console sviluppatore per il debug"
+    }
+  }
+}
