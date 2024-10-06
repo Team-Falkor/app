@@ -13,4 +13,4 @@ const deleteList = async (
   }
 };
 
-registerEvent("delete-list", deleteList);
+registerEvent("lists:delete-list", deleteList);

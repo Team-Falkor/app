@@ -14,4 +14,4 @@ const removeGameFromList = async (
   }
 };
 
-registerEvent("remove-game-from-list", removeGameFromList);
+registerEvent("lists:remove-game-from-list", removeGameFromList);

@@ -1,20 +1,23 @@
 import { List, ListGame } from "@/@types";
 import { create } from "zustand";
 
-const listsDB = window?.ipcRenderer.invoke;
+const listsDB = (name: string, ...args: any[]) =>
+  window?.ipcRenderer.invoke(`lists:${name}`, ...args);
+
+type ListId = number;
 
 interface ListsState {
   lists: List[];
-  gamesInList: Record<number, ListGame[]>; // Store games for each list by listId
+  gamesInList: Record<ListId, ListGame[]>; // Store games for each list by listId
   loading: boolean;
   error: string | null;
   hasDoneFirstFetch: boolean;
   fetchLists: () => Promise<void>;
   createList: (name: string, description?: string) => Promise<void>;
-  addGameToList: (listId: number, game: ListGame) => Promise<void>;
-  removeGameFromList: (listId: number, gameId: number) => Promise<void>;
-  fetchGamesInList: (listId: number) => Promise<Array<ListGame>>;
-  deleteList: (listId: number) => Promise<void>;
+  addGameToList: (listId: ListId, game: ListGame) => Promise<void>;
+  removeGameFromList: (listId: ListId, gameId: number) => Promise<void>;
+  fetchGamesInList: (listId: ListId) => Promise<Array<ListGame>>;
+  deleteList: (listId: ListId) => Promise<void>;
   setHasDoneFirstFetch: () => void;
 }
 

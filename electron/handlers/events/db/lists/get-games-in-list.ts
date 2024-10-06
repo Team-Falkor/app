@@ -13,4 +13,4 @@ const getGamesInList = async (
   }
 };
 
-registerEvent("get-games-in-list", getGamesInList);
+registerEvent("lists:get-games-in-list", getGamesInList);

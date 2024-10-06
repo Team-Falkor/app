@@ -10,4 +10,4 @@ const getAllLists = async (_event: Electron.IpcMainInvokeEvent) => {
   }
 };
 
-registerEvent("get-all-lists", getAllLists);
+registerEvent("lists:get-all-lists", getAllLists);

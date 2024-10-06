@@ -14,4 +14,4 @@ const createList = async (
   }
 };
 
-registerEvent("create-list", createList);
+registerEvent("lists:create-list", createList);

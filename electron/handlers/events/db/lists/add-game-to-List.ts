@@ -15,4 +15,4 @@ const addGameToList = async (
   }
 };
 
-registerEvent("add-game-to-list", addGameToList);
+registerEvent("lists:add-game-to-list", addGameToList);
