@@ -1,8 +1,8 @@
 import { app } from "electron";
-import knexClass from "knex";
-import { constants } from "../utils";
+import { default as knexConstructor } from "knex";
+import { constants } from "../../src/lib/utils";
 
-export const db = knexClass({
+export const knex = knexConstructor({
   debug: !app.isPackaged,
   client: "better-sqlite3",
   connection: {

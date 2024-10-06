@@ -13,6 +13,9 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as SettingsImport } from './routes/settings'
+import { Route as LibraryImport } from './routes/library'
+import { Route as DownloadsImport } from './routes/downloads'
 import { Route as InfoIdImport } from './routes/info/$id'
 
 // Create Virtual Routes
@@ -20,6 +23,21 @@ import { Route as InfoIdImport } from './routes/info/$id'
 const IndexLazyImport = createFileRoute('/')()
 
 // Create/Update Routes
+
+const SettingsRoute = SettingsImport.update({
+  path: '/settings',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LibraryRoute = LibraryImport.update({
+  path: '/library',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const DownloadsRoute = DownloadsImport.update({
+  path: '/downloads',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
   path: '/',
@@ -42,6 +60,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsImport
+      parentRoute: typeof rootRoute
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryImport
+      parentRoute: typeof rootRoute
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsImport
+      parentRoute: typeof rootRoute
+    }
     '/info/$id': {
       id: '/info/$id'
       path: '/info/$id'
@@ -56,36 +95,51 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/downloads': typeof DownloadsRoute
+  '/library': typeof LibraryRoute
+  '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/info/$id'
+  fullPaths: '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/info/$id'
-  id: '__root__' | '/' | '/info/$id'
+  to: '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
+  id: '__root__' | '/' | '/downloads' | '/library' | '/settings' | '/info/$id'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  DownloadsRoute: typeof DownloadsRoute
+  LibraryRoute: typeof LibraryRoute
+  SettingsRoute: typeof SettingsRoute
   InfoIdRoute: typeof InfoIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  DownloadsRoute: DownloadsRoute,
+  LibraryRoute: LibraryRoute,
+  SettingsRoute: SettingsRoute,
   InfoIdRoute: InfoIdRoute,
 }
 
@@ -102,11 +156,23 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/downloads",
+        "/library",
+        "/settings",
         "/info/$id"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
+    },
+    "/downloads": {
+      "filePath": "downloads.tsx"
+    },
+    "/library": {
+      "filePath": "library.tsx"
+    },
+    "/settings": {
+      "filePath": "settings.tsx"
     },
     "/info/$id": {
       "filePath": "info/$id.tsx"

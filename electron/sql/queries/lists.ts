@@ -1,5 +1,5 @@
 import { List, ListGame } from "@/@types";
-import { knex } from "../knex";
+import { db } from "../knex";
 
 class ListsDatabase {
   private initialized = false;
@@ -9,19 +9,19 @@ class ListsDatabase {
 
     // Ensure tables are created only once
     try {
-      await knex.schema.hasTable("lists").then(async (exists) => {
+      await db.schema.hasTable("lists").then(async (exists) => {
         if (exists) return;
-        await knex.schema.createTable("lists", (table) => {
+        await db.schema.createTable("lists", (table) => {
           table.increments("id").primary();
           table.string("name").notNullable().unique();
           table.string("description");
         });
       });
 
-      await knex.schema.hasTable("games").then(async (exists) => {
+      await db.schema.hasTable("games").then(async (exists) => {
         if (exists) return;
 
-        await knex.schema.createTable("games", (table) => {
+        await db.schema.createTable("games", (table) => {
           table.increments("id").primary();
           table.integer("game_id").notNullable().unique();
           table.string("title").notNullable();
@@ -32,9 +32,9 @@ class ListsDatabase {
         });
       });
 
-      await knex.schema.hasTable("list_games").then(async (exists) => {
+      await db.schema.hasTable("list_games").then(async (exists) => {
         if (exists) return;
-        await knex.schema.createTable("list_games", (table) => {
+        await db.schema.createTable("list_games", (table) => {
           table.integer("list_id").unsigned().notNullable();
           table.integer("game_id").unsigned().notNullable();
           table.primary(["list_id", "game_id"]);
@@ -62,7 +62,7 @@ class ListsDatabase {
   async createList(name: string, description?: string): Promise<void> {
     await this.init();
     try {
-      await knex("lists").insert({ name, description: description || null });
+      await db("lists").insert({ name, description: description || null });
     } catch (error) {
       console.error(`Error creating list: ${error}`);
       throw error;
@@ -75,7 +75,7 @@ class ListsDatabase {
 
     try {
       // Insert the game if it doesn't already exist
-      await knex("games")
+      await db("games")
         .insert({
           game_id: game.game_id,
           title: game.title,
@@ -88,7 +88,7 @@ class ListsDatabase {
         .ignore(); // Ignore if the game already exists
 
       // Link the game to the list
-      await knex("list_games").insert({ list_id, game_id: game.game_id });
+      await db("list_games").insert({ list_id, game_id: game.game_id });
     } catch (error) {
       console.error(`Error adding game to list: ${error}`);
       throw error;
@@ -100,7 +100,7 @@ class ListsDatabase {
     await this.init();
 
     try {
-      return knex("games as g")
+      return db("games as g")
         .join("list_games as lg", "g.game_id", "lg.game_id")
         .where("lg.list_id", listId)
         .select("g.*");
@@ -115,7 +115,7 @@ class ListsDatabase {
     await this.init();
 
     try {
-      return knex("lists").select("*");
+      return db("lists").select("*");
     } catch (error) {
       console.error(`Error getting all lists: ${error}`);
       throw error;
@@ -127,7 +127,7 @@ class ListsDatabase {
     await this.init();
 
     try {
-      await knex("list_games").where({ list_id, game_id }).del();
+      await db("list_games").where({ list_id, game_id }).del();
     } catch (error) {
       console.error(`Error removing game from list: ${error}`);
       throw error;
@@ -140,10 +140,10 @@ class ListsDatabase {
 
     try {
       // Delete the list
-      await knex("lists").where({ id: list_id }).del();
+      await db("lists").where({ id: list_id }).del();
 
       // Remove all links between the list and games
-      await knex("list_games").where({ list_id }).del();
+      await db("list_games").where({ list_id }).del();
     } catch (error) {
       console.error(`Error deleting list: ${error}`);
       throw error;
@@ -156,10 +156,10 @@ class ListsDatabase {
 
     try {
       // Delete the game
-      await knex("games").where({ game_id }).del();
+      await db("games").where({ game_id }).del();
 
       // Remove all links to the game
-      await knex("list_games").where({ game_id }).del();
+      await db("list_games").where({ game_id }).del();
     } catch (error) {
       console.error(`Error deleting game: ${error}`);
       throw error;

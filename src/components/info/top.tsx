@@ -1,4 +1,5 @@
 import { InfoItadProps, InfoProps } from "@/@types";
+import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { getSteamIdFromWebsites } from "@/lib/helpers";
 import IGDBImage from "../IGDBImage";
@@ -65,7 +66,7 @@ const InfoTop = (props: Props) => {
           <div className="flex justify-end gap-4">
             {!isPending && data ? (
               <>
-                {/* <ListsDropdown {...data} /> */}
+                <ListsDropdown {...data} />
                 <DownloadDialog
                   title={data!.name}
                   isReleased={isReleased}

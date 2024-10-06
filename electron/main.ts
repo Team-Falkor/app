@@ -92,4 +92,6 @@ app.on("activate", () => {
 
 app.whenReady().then(() => {
   createWindow();
+
+  import("./handlers/events");
 });
