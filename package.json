@@ -1,5 +1,5 @@
 {
-  "name": "app-electron-rewrite",
+  "name": "falkor",
   "private": true,
   "version": "0.0.0",
   "type": "module",

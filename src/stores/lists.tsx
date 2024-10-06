@@ -1,7 +1,7 @@
 import { List, ListGame } from "@/@types";
 import { create } from "zustand";
 
-const listsDB = window?.sql?.lists;
+const listsDB = window?.ipcRenderer.invoke;
 
 interface ListsState {
   lists: List[];
@@ -33,7 +33,7 @@ export const useListsStore = create<ListsState>((set) => ({
   fetchLists: async () => {
     set({ loading: true, error: null });
     try {
-      const fetchedLists = await listsDB.getAllLists();
+      const fetchedLists = await listsDB("get-all-lists");
       set({ lists: fetchedLists });
     } catch {
       set({ error: "Failed to load lists" });
@@ -45,7 +45,7 @@ export const useListsStore = create<ListsState>((set) => ({
   createList: async (name: string, description?: string) => {
     set({ loading: true, error: null });
     try {
-      await listsDB.createList(name, description);
+      await listsDB("create-list", name, description);
       await useListsStore.getState().fetchLists(); // Refresh lists after creating a new one
     } catch {
       set({ error: "Failed to create list" });
@@ -57,7 +57,7 @@ export const useListsStore = create<ListsState>((set) => ({
   addGameToList: async (listId: number, game: ListGame) => {
     set({ loading: true, error: null });
     try {
-      await listsDB.addGameToList(listId, game);
+      await listsDB("add-game-to-list", listId, game);
       await useListsStore.getState().fetchGamesInList(listId); // Refresh games after adding a new one
     } catch {
       set({ error: "Failed to add game to list" });
@@ -69,7 +69,7 @@ export const useListsStore = create<ListsState>((set) => ({
   removeGameFromList: async (listId: number, gameId: number) => {
     set({ loading: true, error: null });
     try {
-      await listsDB.removeGameFromList(listId, gameId);
+      await listsDB("remove-game-from-list", listId, gameId);
       await useListsStore.getState().fetchGamesInList(listId); // Refresh games after removing a game
     } catch {
       set({ error: "Failed to remove game from list" });
@@ -81,7 +81,7 @@ export const useListsStore = create<ListsState>((set) => ({
   fetchGamesInList: async (listId: number) => {
     set({ loading: true, error: null });
     try {
-      const games = await listsDB.getGamesInList(listId);
+      const games = await listsDB("get-games-in-list", listId);
       set((state) => ({
         gamesInList: {
           ...state.gamesInList,
@@ -101,7 +101,7 @@ export const useListsStore = create<ListsState>((set) => ({
   deleteList: async (listId: number) => {
     set({ loading: true, error: null });
     try {
-      await listsDB.deleteList(listId);
+      await listsDB("delete-list", listId);
       await useListsStore.getState().fetchLists(); // Refresh lists after deleting a list
     } catch {
       set({ error: "Failed to delete list" });

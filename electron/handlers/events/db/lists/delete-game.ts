@@ -1,17 +1,16 @@
 import { listsDB } from "../../../../sql/queries";
 import { registerEvent } from "../../utils/registerEvent";
 
-const createList = async (
+const deleteGame = async (
   _event: Electron.IpcMainInvokeEvent,
-  name: string,
-  description?: string
+  gameId: number
 ) => {
   try {
-    return await listsDB.createList(name, description);
+    return await listsDB.deleteGame(gameId);
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-registerEvent("create-list", createList);
+registerEvent("delete-game", deleteGame);

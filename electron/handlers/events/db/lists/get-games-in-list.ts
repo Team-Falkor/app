@@ -1,18 +1,16 @@
-import { ListGame } from "@/@types";
 import { listsDB } from "../../../../sql/";
 import { registerEvent } from "../../utils/registerEvent";
 
-const addGameToList = async (
+const getGamesInList = async (
   _event: Electron.IpcMainInvokeEvent,
-  listId: number,
-  game: ListGame
+  listId: number
 ) => {
   try {
-    return await listsDB.addGameToList(listId, game);
+    return await listsDB.getGamesInList(listId);
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-registerEvent("add-game-to-list", addGameToList);
+registerEvent("get-games-in-list", getGamesInList);
