@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { loadPlugins } from "./handlers/plugins/loadPlugins";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -91,7 +92,8 @@ app.on("activate", () => {
 });
 
 app.whenReady().then(() => {
-  createWindow();
-
   import("./handlers/events");
+  loadPlugins(); // Load plugins before creating the window
+
+  createWindow();
 });

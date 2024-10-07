@@ -1,4 +1,4 @@
-import { BaseProvider, PluginContext } from "@team-falkor/sdk";
+import { BaseProvider, PluginContext } from "@team-falkor/sdk/dist";
 import * as cheerio from "cheerio";
 import * as fs from "fs";
 import fuse from "fuse.js";
@@ -47,6 +47,11 @@ const loadPlugin = async (pluginPath: string): Promise<void> => {
 
 // Function to load all plugins
 export async function loadPlugins(): Promise<void> {
+  if (!fs.existsSync(pluginDirectory)) {
+    console.error(`Plugin directory at ${pluginDirectory} does not exist.`);
+    return;
+  }
+
   const pluginFolders = await fs.readdirSync(constants.pluginsPath);
 
   await Promise.all(
@@ -55,8 +60,19 @@ export async function loadPlugins(): Promise<void> {
       const indexJsPath = path.join(pluginPath, "index.js");
 
       if (await fs.existsSync(indexJsPath)) {
-        await loadPlugin(pluginPath);
+        try {
+          console.log(`Loading plugin at ${pluginPath}`);
+
+          await loadPlugin(pluginPath);
+        } catch (error) {
+          console.error(`Error loading plugin at ${pluginPath}:`, error);
+        }
       }
     })
   );
+}
+
+// Expose the list of loaded plugins
+export function getLoadedPlugins(): Record<string, BaseProvider> {
+  return loadedPlugins;
 }
