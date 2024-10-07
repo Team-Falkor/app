@@ -155,3 +155,4 @@ dist
 .pnp.*
 
 /dist-electron
+/release
