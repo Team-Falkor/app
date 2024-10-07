@@ -1,6 +1,8 @@
 import { ProtonDBTierColor } from "@/@types";
 import { useProtonDb } from "@/hooks";
 
+import protonDBBadge from "@/assets/protondb.png";
+
 interface Props {
   appId: string;
 }
@@ -22,7 +24,7 @@ const ProtonDbBadge = ({ appId }: Props) => {
       className="flex items-center gap-1 h-8 overflow-hidden px-3 py-1"
       style={{ backgroundColor: color }}
     >
-      <img src="/protondb.png" className=" size-full object-contain" />
+      <img src={protonDBBadge} className=" size-full object-contain" />
       {/* <span className="text-lg uppercase text-black font-bold">{tier}</span> */}
     </div>
   );

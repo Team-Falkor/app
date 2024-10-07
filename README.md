@@ -20,18 +20,17 @@ As the project continues to evolve, we have an exciting lineup of features in de
 
 Stay tuned—there’s plenty more to come!
 
-
 ## Getting Started
 
 To get started with Falkor, follow these steps:
 
 1. Ensure that you have Bun installed on your system. You can find installation instructions [here](https://bun.sh/docs/installation).
 
-3. Navigate to the main directory and execute `bun install`. Wait patiently for it to complete the installation of all dependencies.
+2. Navigate to the main directory and execute `bun install`. Wait patiently for it to complete the installation of all dependencies.
 
-4. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
+3. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
 
-5. Run `bun dev` to kick off the development server and watch your changes in real-time. 
+4. Run `bun dev` to kick off the development server and watch your changes in real-time.
 
 ### IGDB (Twitch)
 

@@ -2,7 +2,7 @@ import fs from "fs";
 import { join } from "node:path";
 import { homedir } from "os";
 
-const appDataPath = join(homedir(), "falkor");
+const appDataPath = join(homedir(), "moe.falkor");
 
 if (!fs.existsSync(appDataPath)) {
   fs.mkdirSync(appDataPath);

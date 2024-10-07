@@ -13,6 +13,8 @@ import { HomeIcon, LibraryIcon, SearchIcon, Settings2 } from "lucide-react";
 import { useState } from "react";
 import NavItem from "../item";
 
+import logo from "@/assets/icon.png";
+
 const NavBarTop = () => {
   const [open, setOpen] = useState(false);
 
@@ -32,7 +34,7 @@ const NavBarTop = () => {
               to="/"
             >
               <img
-                src="/icon.png"
+                src={logo}
                 alt="logo"
                 className="size-9 group-hover:opacity-80 transition-all"
               />

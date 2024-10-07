@@ -1,6 +1,10 @@
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { createRouter, RouterProvider } from "@tanstack/react-router";
+import {
+  createMemoryHistory,
+  createRouter,
+  RouterProvider,
+} from "@tanstack/react-router";
 import { ThemeProvider } from "./components/theme-provider";
 
 // import usePlugins from "./hooks/plugins/usePlugins";
@@ -8,9 +12,15 @@ import { routeTree } from "./routeTree.gen";
 
 const queryClient = new QueryClient();
 
+// Create a memory history instance to initialize the router so it doesn't break when compiled:
+const memoryHistory = createMemoryHistory({
+  initialEntries: ["/"], // Pass your initial url
+});
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
+  history: memoryHistory,
   context: {
     queryClient,
   },

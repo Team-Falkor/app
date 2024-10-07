@@ -8,7 +8,8 @@
     "build": "tsc && vite build && electron-builder",
     "rebuild": "electron-rebuild -f -w better-sqlite3",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
