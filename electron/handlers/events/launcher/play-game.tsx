@@ -10,6 +10,7 @@ const playGame = async (
   }
 ) => {
   try {
+    // TODO: Launch and track process
     console.log("Launching game: ", game_path);
     await shell.openPath(game_path);
 
