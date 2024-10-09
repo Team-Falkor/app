@@ -1,10 +1,13 @@
-import { igdb } from "@/lib";
+import { cn, igdb } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
+import { HTMLAttributes } from "react";
 import BannerCard from "../cards/bannerCard";
 import BannerSkeleton from "../skeletons/banner";
 import { CarouselContent, CarouselItem } from "../ui/carousel";
 
-const Banner = () => {
+type Props = HTMLAttributes<HTMLDivElement>;
+
+const Banner = ({ className, ...props }: Props) => {
   const fetch = async () => {
     const data = await igdb.topRated();
     return data;
@@ -22,7 +25,7 @@ const Banner = () => {
   if (error) return <div>Error</div>;
 
   return (
-    <div className="w-full">
+    <div className={cn("w-full", className)} {...props}>
       <CarouselContent>
         {data?.map((game) => (
           <CarouselItem key={game.id}>

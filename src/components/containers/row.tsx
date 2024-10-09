@@ -1,18 +1,25 @@
 import { useLanguageContext } from "@/contexts/I18N";
+import { cn } from "@/lib";
+import { HTMLAttributes } from "react";
 import GenericRow from "../genericRow";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 
-interface RowContainerProps {
+interface RowContainerProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   dataToFetch: "mostAnticipated" | "topRated" | "newReleases";
 }
 
-const RowContainer = ({ dataToFetch, title }: RowContainerProps) => {
+const RowContainer = ({
+  dataToFetch,
+  title,
+  className,
+  ...props
+}: RowContainerProps) => {
   const { t } = useLanguageContext();
 
   return (
-    <div className="mx-auto">
+    <div className={cn("mx-auto", className)} {...props}>
       <div className="flex items-center justify-between pt-20 pb-1">
         <h3 className="pb-2 font-mono text-lg font-medium leading-6">
           {title}

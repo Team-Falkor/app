@@ -29,11 +29,19 @@ const GenericRow = ({ dataToFetch, fetchKey }: GenericRowProps) => {
         skipSnaps: true,
       }}
     >
-      <CarouselContent>
+      <CarouselContent className="px-3">
         {data?.map((game) => (
           <CarouselItem
             key={game.id}
-            className="md:basis-[12%] basis-1/6 2xl:basis-[13.5%] xl:basis-[17.77%]"
+            className="
+              basis-1/2
+              sm:basis-1/3
+              md:basis-1/4
+              lg:basis-1/5
+              xl:basis-[17.77%]
+              2xl:basis-[13.5%]
+              px-2
+            "
           >
             <DefaultCard
               key={game.id}
