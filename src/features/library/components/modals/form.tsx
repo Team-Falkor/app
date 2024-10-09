@@ -35,21 +35,36 @@ const NewGameForm = () => {
   const { addGame, loading, error } = useGames(); // Use the hook
 
   const handlePathButton = async () => {
-    // const selected = await open({
-    //   multiple: false,
-    //   filters: [{ name: "Executable", extensions: ["exe"] }],
-    // });
-    // if (typeof selected !== "string") return;
-    // form.setValue("gamePath", selected.replace(/\\/g, "//"));
+    const selected: any = await window.ipcRenderer.invoke(
+      "generic:open-dialog",
+      {
+        properties: ["openFile"],
+        filters: [{ name: "Executable", extensions: ["exe"] }],
+      }
+    );
+
+    if (selected.canceled) return;
+    if (!selected.filePaths.length) return;
+
+    const selectedPath = selected.filePaths[0];
+
+    form.setValue("gamePath", selectedPath.replace(/\\/g, "//"));
   };
 
   const handleIconButton = async () => {
-    // const selected = await open({
-    //   multiple: false,
-    //   filters: [{ name: "Images", extensions: ["jpg", "png", "jpeg"] }],
-    // });
-    // if (typeof selected !== "string") return;
-    // form.setValue("gameIcon", selected.replace(/\\/g, "//"));
+    const selected: any = await window.ipcRenderer.invoke(
+      "generic:open-dialog",
+      {
+        properties: ["openFile"],
+        filters: [{ name: "Images", extensions: ["jpg", "png", "jpeg"] }],
+      }
+    );
+
+    if (selected.canceled) return;
+    if (!selected.filePaths.length) return;
+
+    const selectedPath = selected.filePaths[0];
+    form.setValue("gameIcon", selectedPath.replace(/\\/g, "//"));
   };
 
   const handleShuffleButton = () => {

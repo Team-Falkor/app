@@ -23,9 +23,7 @@ declare namespace NodeJS {
 
 // Used in Renderer process, expose in `preload.ts`
 interface Window {
-  ipcRenderer: import("electron").IpcRenderer;
-  sql: {
-    lists: typeof import("./sql/queries/lists").listsDB;
-    games: typeof import("./sql/queries/games").gamesDB;
+  ipcRenderer: import("electron").IpcRenderer & {
+    dialog: import("electron").Dialog;
   };
 }

@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from "electron";
+import { contextBridge, dialog, ipcRenderer } from "electron";
 
 // --------- Expose some API to the Renderer process ---------
 contextBridge.exposeInMainWorld("ipcRenderer", {
@@ -23,9 +23,5 @@ contextBridge.exposeInMainWorld("ipcRenderer", {
 
   // You can expose other APTs you need here.
   // ...
-});
-
-contextBridge.exposeInMainWorld("electron", {
-  request: (url: string, options?: RequestInit) =>
-    ipcRenderer.invoke("request", url, options),
+  dialog,
 });

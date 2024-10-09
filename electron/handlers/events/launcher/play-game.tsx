@@ -4,7 +4,7 @@ import { registerEvent } from "../utils/registerEvent";
 const playGame = (
   _event: Electron.IpcMainInvokeEvent,
   game_path: string,
-  extra?: {
+  _extra?: {
     args?: string;
     command?: string;
   }
