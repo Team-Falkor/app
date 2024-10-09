@@ -4,6 +4,7 @@ import { rmSync } from "node:fs";
 import path from "node:path";
 import { defineConfig } from "vite";
 import electron from "vite-plugin-electron/simple";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 import pkg from "./package.json";
 
 // https://vitejs.dev/config/
@@ -25,6 +26,14 @@ export default defineConfig(({ command }) => {
     plugins: [
       react(),
       TanStackRouterVite(),
+      nodePolyfills({
+        protocolImports: true,
+        globals: {
+          Buffer: true,
+          global: true,
+          process: true,
+        },
+      }),
       electron({
         main: {
           // Shortcut of `build.lib.entry`.
