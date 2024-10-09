@@ -1,7 +1,7 @@
 import { shell } from "electron";
 import { registerEvent } from "../utils/registerEvent";
 
-const playGame = (
+const playGame = async (
   _event: Electron.IpcMainInvokeEvent,
   game_path: string,
   _extra?: {
@@ -10,7 +10,8 @@ const playGame = (
   }
 ) => {
   try {
-    shell.openExternal(game_path);
+    console.log("Launching game: ", game_path);
+    await shell.openPath(game_path);
 
     return true;
   } catch (error) {
