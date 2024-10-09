@@ -1,3 +1,4 @@
+import { goBack } from "@/App";
 import IGDBImage from "@/components/IGDBImage";
 import InfoBottom from "@/components/info/bottom";
 import InfoMiddle from "@/components/info/middle";
@@ -54,7 +55,7 @@ function Info() {
   return (
     <div className="relative w-full h-full pb-20 overflow-x-hidden max-w-[100vw]">
       <div className="absolute top-0 left-0 z-10 mx-10 mt-3 flex w-full">
-        <Button variant="ghost" size="icon" onClick={() => history.back()}>
+        <Button variant="ghost" size="icon" onClick={() => goBack()}>
           <ChevronLeft />
         </Button>
       </div>

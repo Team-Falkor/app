@@ -17,6 +17,10 @@ const memoryHistory = createMemoryHistory({
   initialEntries: ["/"], // Pass your initial url
 });
 
+export const goBack = () => {
+  memoryHistory.go(-1);
+};
+
 // Create a new router instance
 const router = createRouter({
   routeTree,
