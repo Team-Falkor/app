@@ -20,6 +20,9 @@ const addTorrent = (event: Electron.IpcMainInvokeEvent, torrentId: string) => {
           infoHash: torrent.infoHash,
           name: torrent.name,
           progress: torrent.progress,
+          numPeers: torrent.numPeers,
+          downlaodSpeed: torrent.downloadSpeed,
+          uploadSpeed: torrent.uploadSpeed,
         });
       });
 
