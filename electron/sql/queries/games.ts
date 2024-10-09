@@ -7,10 +7,10 @@ class GamesDatabase {
     if (this.initialized) return;
 
     try {
-      // Ensure the "games" table exists
-      await db.schema.hasTable("games").then(async (exists) => {
+      // Ensure the "library_games" table exists
+      await db.schema.hasTable("library_games").then(async (exists) => {
         if (!exists) {
-          await db.schema.createTable("games", (table) => {
+          await db.schema.createTable("library_games", (table) => {
             table.increments("id").primary();
             table.string("game_name").notNullable().unique();
             table.string("game_path").notNullable().unique();
@@ -40,7 +40,7 @@ class GamesDatabase {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
 
-    await db("games").insert({
+    await db("library_games").insert({
       game_name: game.name,
       game_path: game.path,
       game_id: game.id,
@@ -55,7 +55,7 @@ class GamesDatabase {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
 
-    const game = await db("games").where({ game_id: gameId }).first();
+    const game = await db("library_games").where({ game_id: gameId }).first();
     return game;
   }
 
@@ -64,7 +64,7 @@ class GamesDatabase {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
 
-    const games = await db("games").select("*");
+    const games = await db("library_games").select("*");
     return games;
   }
 
@@ -85,7 +85,7 @@ class GamesDatabase {
     const currentGame = await this.getGameById(gameId);
     if (!currentGame) throw new Error("Game not found");
 
-    await db("games")
+    await db("library_games")
       .where({ game_id: gameId })
       .update({
         game_name: updates.name || currentGame.game_name,
@@ -101,7 +101,7 @@ class GamesDatabase {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
 
-    await db("games").where({ game_id: gameId }).del();
+    await db("library_games").where({ game_id: gameId }).del();
   }
 }
 
