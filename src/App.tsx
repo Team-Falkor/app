@@ -3,9 +3,11 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { ThemeProvider } from "./components/theme-provider";
+import SplashScreen from "./features/splashscreen/components";
+import { useAppStartup } from "./hooks/useAppStartup";
 import { useThemes } from "./hooks/useThemes";
-import { routeTree } from "./routeTree.gen";
 import { memoryHistory } from "./lib/history";
+import { routeTree } from "./routeTree.gen";
 
 // Create a new query client instance
 const createQueryClient = () => {
@@ -33,12 +35,16 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
+  const { hasLoaded } = useAppStartup();
+
   // Initialize theming logic
   useThemes();
 
   // Memoize queryClient and router to avoid recreating them on each render
   const queryClient = useMemo(createQueryClient, []);
   const router = useMemo(() => createAppRouter(queryClient), [queryClient]);
+
+  if (!hasLoaded) return <SplashScreen />;
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
