@@ -97,13 +97,14 @@ app.whenReady().then(async () => {
   await import("./handlers/events");
   await loadPlugins(); // Load plugins before creating the window
 
-  // TODO: Find a better way to wait for the backend to load
-
-  while (!win) {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-
-  setTimeout(() => {
-    win?.webContents.send("app:backend-loaded");
-  }, 5000);
+  let loaded = false;
+  const interval = setInterval(() => {
+    if (win?.webContents.getURL().startsWith("http://localhost")) {
+      loaded = true;
+    }
+    if (loaded) {
+      clearInterval(interval);
+      win?.webContents.send("app:backend-loaded");
+    }
+  }, 2500);
 });
