@@ -1,4 +1,4 @@
-import { themes } from "electron/handlers/themes";
+import { themes } from "../../../handlers/themes";
 import { registerEvent } from "../utils/registerEvent";
 
 const getTheme = async (_event: Electron.IpcMainInvokeEvent, name: string) => {

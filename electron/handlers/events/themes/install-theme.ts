@@ -1,13 +1,11 @@
-import { themes } from "electron/handlers/themes";
+import { ThemeResponse } from "../../../@types";
+import { themes } from "../../../handlers/themes";
 import { registerEvent } from "../utils/registerEvent";
 
 const installTheme = async (
   _event: Electron.IpcMainInvokeEvent,
   url: string
-): Promise<{
-  message: string;
-  success: boolean;
-}> => {
+): Promise<ThemeResponse> => {
   try {
     return await themes.install(url);
   } catch (error) {

@@ -1,13 +1,11 @@
-import { themes } from "electron/handlers/themes";
+import { ThemeResponse } from "../../../@types";
+import { themes } from "../../../handlers/themes";
 import { registerEvent } from "../utils/registerEvent";
 
 const deleteTheme = async (
   _event: Electron.IpcMainInvokeEvent,
   name: string
-): Promise<{
-  message: string;
-  success: boolean;
-}> => {
+): Promise<ThemeResponse> => {
   try {
     return await themes.delete(name);
   } catch (error) {

@@ -1,11 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
+import { ThemeResponse } from "../../@types";
 import { constants } from "../../utils";
-
-interface ThemeResponse {
-  message: string;
-  success: boolean;
-}
 
 class Themes {
   private themes_location = constants.themesPath;
