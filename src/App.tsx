@@ -44,10 +44,9 @@ function App() {
   const queryClient = useMemo(createQueryClient, []);
   const router = useMemo(() => createAppRouter(queryClient), [queryClient]);
 
-  if (!hasLoaded) return <SplashScreen />;
-
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
+      {!hasLoaded && <SplashScreen />}
       <QueryClientProvider client={queryClient}>
         <Toaster />
         <RouterProvider router={router} />

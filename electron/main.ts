@@ -91,9 +91,19 @@ app.on("activate", () => {
   }
 });
 
-app.whenReady().then(() => {
-  import("./handlers/events");
-  loadPlugins(); // Load plugins before creating the window
-
+app.whenReady().then(async () => {
   createWindow();
+
+  await import("./handlers/events");
+  await loadPlugins(); // Load plugins before creating the window
+
+  // TODO: Find a better way to wait for the backend to load
+
+  while (!win) {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+  }
+
+  setTimeout(() => {
+    win?.webContents.send("app:backend-loaded");
+  }, 5000);
 });
