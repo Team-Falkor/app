@@ -7,9 +7,16 @@ import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
 interface GenericRowProps {
   dataToFetch: "mostAnticipated" | "topRated" | "newReleases";
   fetchKey: string[];
+  className?: string; // Optional className prop for theming
+  id?: string; // Optional id for unique identification
 }
 
-const GenericRow = ({ dataToFetch, fetchKey }: GenericRowProps) => {
+const GenericRow = ({
+  dataToFetch,
+  fetchKey,
+  className,
+  id,
+}: GenericRowProps) => {
   const fetcher = async () => {
     const data = await igdb[dataToFetch]();
     return data;
@@ -25,6 +32,8 @@ const GenericRow = ({ dataToFetch, fetchKey }: GenericRowProps) => {
 
   return (
     <Carousel
+      className={className} // Apply custom className to the Carousel
+      id={id} // Apply custom id to the Carousel
       opts={{
         skipSnaps: true,
       }}
@@ -42,6 +51,7 @@ const GenericRow = ({ dataToFetch, fetchKey }: GenericRowProps) => {
               2xl:basis-[13.5%]
               px-2
             "
+            id={`carousel-item-${game.id}`} // Add unique id for each carousel item
           >
             <DefaultCard
               key={game.id}

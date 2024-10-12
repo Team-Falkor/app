@@ -1,7 +1,18 @@
-import { PropsWithChildren } from "react";
+import { cn } from "@/lib";
+import { HTMLAttributes, PropsWithChildren } from "react";
 
-const MainContainer = ({ children }: PropsWithChildren) => {
-  return <div className="p-6 lg:px-10">{children}</div>;
+type Props = HTMLAttributes<HTMLDivElement>;
+
+const MainContainer = ({
+  children,
+  className,
+  id,
+}: PropsWithChildren<Props>) => {
+  return (
+    <div className={cn("main-container", "p-6 lg:px-10", className)} id={id}>
+      {children}
+    </div>
+  );
 };
 
 export default MainContainer;

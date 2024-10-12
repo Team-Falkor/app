@@ -1,59 +1,53 @@
 import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import {
-  createMemoryHistory,
-  createRouter,
-  RouterProvider,
-} from "@tanstack/react-router";
+import { createRouter, RouterProvider } from "@tanstack/react-router";
+import { useMemo } from "react";
 import { ThemeProvider } from "./components/theme-provider";
-
-// import usePlugins from "./hooks/plugins/usePlugins";
+import { useThemes } from "./hooks/useThemes";
 import { routeTree } from "./routeTree.gen";
+import { memoryHistory } from "./lib/history";
 
-const queryClient = new QueryClient();
-
-// Create a memory history instance to initialize the router so it doesn't break when compiled:
-const memoryHistory = createMemoryHistory({
-  initialEntries: ["/"], // Pass your initial url
-});
-
-export const goBack = () => {
-  memoryHistory.go(-1);
+// Create a new query client instance
+const createQueryClient = () => {
+  return new QueryClient();
 };
 
-// Create a new router instance
-const router = createRouter({
-  routeTree,
-  history: memoryHistory,
-  context: {
-    queryClient,
-  },
-  defaultPreload: "intent",
-  // Since we're using React Query, we don't want loader calls to ever be stale
-  // This will ensure that the loader is always called when the route is preloaded or visited
-  defaultPreloadStaleTime: 0,
-});
+// Create the router instance
+const createAppRouter = (queryClient: QueryClient) => {
+  return createRouter({
+    routeTree,
+    history: memoryHistory, // Use global memory history
+    context: {
+      queryClient,
+    },
+    defaultPreload: "intent",
+    defaultPreloadStaleTime: 0,
+  });
+};
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
   interface Register {
-    router: typeof router;
+    router: ReturnType<typeof createAppRouter>;
   }
 }
 
 function App() {
-  // usePlugins();
+  // Initialize theming logic
+  useThemes();
 
-  // if (!hasInitialized) return <div>Loading...</div>;
+  // Memoize queryClient and router to avoid recreating them on each render
+  const queryClient = useMemo(createQueryClient, []);
+  const router = useMemo(() => createAppRouter(queryClient), [queryClient]);
+
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">
       <QueryClientProvider client={queryClient}>
         <Toaster />
-        {/* <TorrentProvider> */}
         <RouterProvider router={router} />
-        {/* </TorrentProvider> */}
       </QueryClientProvider>
     </ThemeProvider>
   );
 }
+
 export default App;

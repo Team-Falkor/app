@@ -1,4 +1,3 @@
-import { goBack } from "@/App";
 import IGDBImage from "@/components/IGDBImage";
 import InfoBottom from "@/components/info/bottom";
 import InfoMiddle from "@/components/info/middle";
@@ -6,6 +5,7 @@ import InfoTop from "@/components/info/top";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { getUserCountry, igdb, itad } from "@/lib";
+import { goBack } from "@/lib/history";
 import { Mapping } from "@/lib/mapping";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";

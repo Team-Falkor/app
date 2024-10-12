@@ -8,18 +8,20 @@ import { Separator } from "../ui/separator";
 interface RowContainerProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
   dataToFetch: "mostAnticipated" | "topRated" | "newReleases";
+  id?: string; // Added optional id prop
 }
 
 const RowContainer = ({
   dataToFetch,
   title,
   className,
+  id, // Add id prop here
   ...props
 }: RowContainerProps) => {
   const { t } = useLanguageContext();
 
   return (
-    <div className={cn("mx-auto", className)} {...props}>
+    <div className={cn("mx-auto", className)} id={id} {...props}>
       <div className="flex items-center justify-between pt-20 pb-1">
         <h3 className="pb-2 font-mono text-lg font-medium leading-6">
           {title}

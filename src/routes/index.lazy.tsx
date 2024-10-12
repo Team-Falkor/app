@@ -19,22 +19,30 @@ function Index() {
   );
 
   return (
-    <MainContainer>
-      <Carousel plugins={[autoplay.current]}>
-        <h3 className="pb-2 text-lg lg:text-xl xl:text-2xl font-mono font-medium leading-6 flex justify-between items-center mb-4">
+    <MainContainer id="main-page">
+      <Carousel id="top-rated-carousel" plugins={[autoplay.current]}>
+        <h3
+          id="top-rated-heading"
+          className="pb-2 text-lg lg:text-xl xl:text-2xl font-mono font-medium leading-6 flex justify-between items-center mb-4"
+        >
           {t("top_rated")}
           <div className="flex space-x-4">
-            <CarouselButton direction="left" />
-            <CarouselButton direction="right" />
+            <CarouselButton direction="left" id="top-rated-left-btn" />
+            <CarouselButton direction="right" id="top-rated-right-btn" />
           </div>
         </h3>
 
-        <Banner className="h-64 lg:h-80 xl:h-96" />
+        <Banner id="top-rated-banner" className="h-64 lg:h-80 xl:h-96" />
       </Carousel>
 
-      <RowContainer title={t("new_releases")} dataToFetch="newReleases" />
+      <RowContainer
+        id="new-releases-row"
+        title={t("new_releases")}
+        dataToFetch="newReleases"
+      />
 
       <RowContainer
+        id="most-anticipated-row"
         title={t("most_anticipated")}
         dataToFetch="mostAnticipated"
         className="mb-8"
