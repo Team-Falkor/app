@@ -1,13 +1,11 @@
 import { shell } from "electron";
+import { LauncherExtra } from "../../../@types";
 import { registerEvent } from "../utils/registerEvent";
 
 const playGame = async (
   _event: Electron.IpcMainInvokeEvent,
   game_path: string,
-  _extra?: {
-    args?: string;
-    command?: string;
-  }
+  _extra?: LauncherExtra
 ) => {
   try {
     // TODO: Launch and track process
