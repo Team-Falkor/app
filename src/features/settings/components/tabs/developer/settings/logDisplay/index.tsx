@@ -9,8 +9,8 @@ const LogDisplay = () => {
   const { t } = useLanguageContext();
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex items-center space-x-2">
+    <div className="flex flex-col gap-4" id="developer-settings">
+      <div className="flex items-center space-x-2" id="enable-dev-console">
         <Switch
           id="enable-dev-console"
           onCheckedChange={setEnabled}
