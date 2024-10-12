@@ -1,6 +1,7 @@
 import { useLanguageContext } from "@/contexts/I18N";
-import SettingTitle from "../title";
-import SettingsContainer from "./container";
+import SettingTitle from "../../title";
+import SettingsContainer from "../container";
+import LogDisplay from "./settings/logDisplay";
 
 const DeveloperSettings = () => {
   const { t } = useLanguageContext();
@@ -9,7 +10,11 @@ const DeveloperSettings = () => {
     <div>
       <SettingTitle>{t("Settings.titles.developer")}</SettingTitle>
 
-      <SettingsContainer>{/* SHOW BG ON SIDEBAR */}</SettingsContainer>
+      <SettingsContainer>
+        <div>
+          <LogDisplay />
+        </div>
+      </SettingsContainer>
     </div>
   );
 };

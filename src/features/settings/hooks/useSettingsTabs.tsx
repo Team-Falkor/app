@@ -5,10 +5,10 @@ const GeneralSettings = lazy(() => import("../components/tabs/general"));
 const TorrentSettings = lazy(() => import("../components/tabs/torrent"));
 const AccountSettings = lazy(() => import("../components/tabs/accounts"));
 const PluginSettings = lazy(() => import("../components/tabs/plugins"));
-const DeveloperSettings = lazy(() => import("../components/tabs/developer"));
 const MiscellaneousSettings = lazy(
   () => import("../components/tabs/miscellaneous")
 );
+const DeveloperSettings = lazy(() => import("../components/tabs/developer"));
 
 interface Tab {
   icon: ReactElement;

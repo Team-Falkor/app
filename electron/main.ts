@@ -97,14 +97,13 @@ app.whenReady().then(async () => {
   await import("./handlers/events");
   await loadPlugins(); // Load plugins before creating the window
 
-  let loaded = false;
-  const interval = setInterval(() => {
-    if (win?.webContents.getURL().startsWith("http://localhost")) {
-      loaded = true;
-    }
-    if (loaded) {
-      clearInterval(interval);
+  while (!win) {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+  }
+
+  win.webContents.once("did-finish-load", () => {
+    setTimeout(() => {
       win?.webContents.send("app:backend-loaded");
-    }
-  }, 2500);
+    }, 1000);
+  });
 });
