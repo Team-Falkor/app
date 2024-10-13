@@ -5,14 +5,16 @@ interface ConsoleInfoDisplayProps {
   customIcon?: JSX.Element;
   // title: string;
   description: string;
+  timestamp?: string;
 }
 
 const ConsoleInfoDisplay = ({
   description,
   customIcon,
+  timestamp,
 }: ConsoleInfoDisplayProps) => {
   return (
-    <BaseLog>
+    <BaseLog timestamp={timestamp}>
       <div className="text-orange-400">
         {customIcon ? customIcon : <Info />}
       </div>

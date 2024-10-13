@@ -5,14 +5,16 @@ interface ConsoleErrorDisplayProps {
   customIcon?: JSX.Element;
   // title: string;
   description: string;
+  timestamp?: string;
 }
 
 const ConsoleErrorDisplay = ({
   description,
   customIcon,
+  timestamp,
 }: ConsoleErrorDisplayProps) => {
   return (
-    <BaseLog>
+    <BaseLog timestamp={timestamp}>
       <div className="text-red-400">{customIcon ? customIcon : <Ban />}</div>
       <p className="text-sm text-muted-foreground">{description}</p>
     </BaseLog>

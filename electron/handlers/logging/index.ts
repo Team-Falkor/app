@@ -4,9 +4,24 @@ import { constants } from "../../utils";
 
 class Logger {
   private logsPath = constants.logsPath;
+  private hasInitalized = false;
+
+  public init = (): void => {
+    if (this.hasInitalized) return;
+
+    try {
+      console.log(this.logsPath);
+      fs.writeFileSync(this.logsPath, "");
+      this.hasInitalized = true;
+    } catch (error) {
+      console.error("Failed to initialize the log file", error);
+    }
+  };
 
   public log = (log: Log): void => {
     try {
+      this.init();
+
       this.appendLog(log);
     } catch (error) {
       console.error("Failed to log to the log file", error);
@@ -15,6 +30,8 @@ class Logger {
 
   public clear = async (): Promise<boolean> => {
     try {
+      this.init();
+
       await fs.promises.writeFile(this.logsPath, "");
       return true;
     } catch (error) {
@@ -25,6 +42,8 @@ class Logger {
 
   public deleteALog = async (id: number): Promise<boolean> => {
     try {
+      this.init();
+
       const oldData = fs.readFileSync(this.logsPath, "utf8");
       const newData = oldData
         .split("\n")
@@ -41,7 +60,12 @@ class Logger {
 
   public getLogs = async (): Promise<Log[]> => {
     try {
+      this.init();
+
       const data = fs.readFileSync(this.logsPath, "utf8");
+
+      if (!data?.length) return [];
+
       return JSON.parse(data);
     } catch (error) {
       console.error("Failed to get logs", error);
@@ -51,6 +75,8 @@ class Logger {
 
   public getLogById = async (id: number): Promise<Log | undefined> => {
     try {
+      this.init();
+
       const logs = await this.getLogs();
       return logs.find((log) => log.id === id);
     } catch (error) {

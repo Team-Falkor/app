@@ -1,7 +1,7 @@
 export interface Log {
   id: number;
   message: string;
-  timestamp: number;
+  timestamp: string;
   type: LogType;
 }
 
