@@ -113,3 +113,22 @@ export const FilterOutNonePcGames = <
 
 export const openLink = (url: string) =>
   window.ipcRenderer.invoke("openExternal", url);
+
+/**
+ * Invoke an IPC renderer method and return the result as `T` or `null`
+ * if the invocation fails.
+ * @param channel The IPC channel to invoke.
+ * @param args The arguments to pass to the invoked method.
+ * @returns The result of the invocation as `T` or `null`.
+ */
+export const invoke = async <T, A>(
+  channel: string,
+  ...args: A[]
+): Promise<T | null> => {
+  try {
+    return await window.ipcRenderer.invoke(channel, ...args);
+  } catch (error) {
+    console.error(error);
+    return null;
+  }
+};
