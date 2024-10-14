@@ -1,4 +1,4 @@
-import { SourceType } from "../types";
+import { SourceType } from "../../types";
 
 export interface PluginSourcesResponse {
   id: string;
