@@ -1,18 +1,20 @@
 import { PluginSearchResponse, PluginSourcesResponse } from "@/@types";
 import { invoke } from "@/lib";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 const UsePlugin = (pluginId: string) => {
   const [url, setUrl] = useState<string | null>(null);
 
-  const findPlugin = async () => {
+  const findPlugin = useCallback(async () => {
     try {
+      if (!pluginId) return null;
+
       return await invoke<string, string>("plugin:get-url", pluginId);
     } catch (error) {
       console.error(error);
       return null;
     }
-  };
+  }, [pluginId]);
 
   useEffect(() => {
     (async () => {
@@ -20,10 +22,12 @@ const UsePlugin = (pluginId: string) => {
 
       setUrl(plugin);
     })();
-  }, []);
+  }, [findPlugin]);
 
   const search = async (query: string) => {
     try {
+      if (!pluginId) return null;
+
       return await invoke<PluginSearchResponse, string>(
         "request",
         `${url}/search/${query}`
@@ -40,6 +44,8 @@ const UsePlugin = (pluginId: string) => {
     genres?: string[];
   }) => {
     try {
+      if (!pluginId) return null;
+
       const options: RequestInit = {
         method: "POST",
         headers: {
