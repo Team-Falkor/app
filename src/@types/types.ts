@@ -65,3 +65,5 @@ export interface List {
   name: string;
   description?: string;
 }
+
+export type SourceType = "magnet" | "torrent" | "ddl";
