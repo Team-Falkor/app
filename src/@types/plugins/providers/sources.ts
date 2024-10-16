@@ -4,7 +4,6 @@ export interface PluginSourcesResponse {
   id: string;
   title: string;
   release_date: string;
-  genres?: string[];
 
   sources: Array<PluginSource>;
 }
