@@ -1,5 +1,5 @@
 import { ListGame } from "@/@types";
-import { listsDB } from "../../../../sql/";
+import { listsDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
 const addGameToList = async (

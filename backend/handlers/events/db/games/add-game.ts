@@ -1,23 +1,23 @@
-import { gamesDB } from "../../../../sql/";
+import { gamesDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
-const updateGame = async (
+const addGameToGames = async (
   _event: Electron.IpcMainInvokeEvent,
-  gameId: string,
-  updates: {
-    name?: string;
-    path?: string;
+  game: {
+    name: string;
+    path: string;
+    id: string;
     icon?: string;
     args?: string;
     command?: string;
   }
 ) => {
   try {
-    return await gamesDB.updateGame(gameId, updates);
+    return await gamesDB.addGame(game);
   } catch (error) {
     console.error(error);
     throw error;
   }
 };
 
-registerEvent("games:update-game", updateGame);
+registerEvent("games:add-game", addGameToGames);

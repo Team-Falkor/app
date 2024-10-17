@@ -86,7 +86,14 @@
   },
   "main": "dist-electron/main.js",
   "trustedDependencies": [
+    "better-sqlite3",
+    "bufferutil",
+    "electron",
+    "esbuild",
+    "lzma-native",
     "node-datachannel",
+    "sqlite3",
+    "utf-8-validate",
     "utp-native"
   ]
 }
