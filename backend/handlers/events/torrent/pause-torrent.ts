@@ -8,10 +8,14 @@ const pauseTorrent = (event: Electron.IpcMainInvokeEvent, infoHash: string) => {
     torrent.pause();
     console.log(`paused torrent: ${torrent.name}`);
 
-    event.sender.send("torrent:paused", {
-      infoHash: torrent.infoHash,
-      name: torrent.name,
-    });
+    return {
+      message: `paused torrent: ${torrent.name}`,
+      error: false,
+      data: {
+        infoHash: torrent.infoHash,
+        name: torrent.name,
+      },
+    };
   } else {
     console.error(`Torrent with infoHash ${infoHash} not found`);
   }

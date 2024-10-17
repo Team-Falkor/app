@@ -12,17 +12,26 @@ const deleteTorrent = (
       infoHash,
       error: `Torrent with infoHash ${infoHash} not found`,
     });
-    return;
+    return {
+      message: `Torrent with infoHash ${infoHash} not found`,
+      error: true,
+      data: {
+        infoHash,
+      },
+    };
   }
 
   client.remove(torrent);
 
   console.log(`deleted torrent: ${torrent.name}`);
-  event.sender.send("torrent:deleted", {
-    infoHash: torrent.infoHash,
-    name: torrent.name,
-  });
-  return;
+  return {
+    message: "Torrent deleted",
+    error: false,
+    data: {
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+    },
+  };
 };
 
 registerEvent("torrent:delete-torrent", deleteTorrent);
