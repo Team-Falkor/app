@@ -56,7 +56,6 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   fetchDownloads: async () => {
     set({ loading: true });
     try {
-      // Fetch logic or invoke an IPC event for fetching downloads
       set({ loading: false });
     } catch (error) {
       set({ loading: false, error: String(error) });
