@@ -1,8 +1,19 @@
 import { create } from "zustand";
 
+interface Torrent {
+  infoHash: string;
+  name: string;
+  progress: number;
+  downloadSpeed: number;
+  uploadSpeed: number;
+  numPeers: number;
+  path: string;
+  paused: boolean;
+}
+
 interface DownloadState {
-  queue: any[];
-  downloading: any[];
+  queue: Torrent[];
+  downloading: Torrent[];
   error: string | null;
   loading: boolean;
   addDownload: (torrentId: string) => void;
@@ -10,6 +21,8 @@ interface DownloadState {
   clearQueue: () => void;
   fetchDownloads: () => void;
   pauseDownload: (infoHash: string) => void;
+  getTorrent: (torrentId: string) => void;
+  getTorrents: () => void;
 }
 
 export const useDownloadStore = create<DownloadState>((set, get) => ({
@@ -18,6 +31,7 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   error: null,
   loading: false,
 
+  // Add a torrent using ipcRenderer
   addDownload: async (torrentId: string) => {
     try {
       set({ loading: true });
@@ -36,6 +50,7 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
     }
   },
 
+  // Remove a torrent using ipcRenderer
   removeDownload: async (infoHash: string) => {
     try {
       set({ loading: true });
@@ -51,17 +66,55 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
     }
   },
 
+  // Clear all downloads
   clearQueue: () => set({ queue: [], downloading: [] }),
 
+  // Fetch the list of all torrents using ipcRenderer
   fetchDownloads: async () => {
     set({ loading: true });
     try {
-      set({ loading: false });
+      const torrents = await window.ipcRenderer.invoke("torrent:get-torrents");
+      set({
+        queue: torrents,
+        downloading: torrents.filter(
+          (torrent: Torrent) => torrent.progress < 1
+        ),
+        loading: false,
+      });
     } catch (error) {
-      set({ loading: false, error: String(error) });
+      set({ error: String(error), loading: false });
+      console.error("Failed to fetch torrents:", error);
     }
   },
 
+  // Fetch details of a single torrent using ipcRenderer
+  getTorrent: async (torrentId: string) => {
+    set({ loading: true });
+    try {
+      const torrent = await window.ipcRenderer.invoke(
+        "torrent:get-torrent",
+        torrentId
+      );
+      if (torrent) {
+        set((state) => ({
+          queue: state.queue.map((t) =>
+            t.infoHash === torrent.infoHash ? torrent : t
+          ),
+          loading: false,
+        }));
+      } else {
+        set({
+          error: `Torrent with ID ${torrentId} not found`,
+          loading: false,
+        });
+      }
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      console.error("Failed to get torrent:", error);
+    }
+  },
+
+  // Pause a torrent using ipcRenderer
   pauseDownload: async (infoHash: string) => {
     try {
       set({ loading: true });
@@ -75,6 +128,24 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to pause torrent:", error);
+    }
+  },
+
+  // Fetch all torrents (can be used to populate the UI with the torrent list)
+  getTorrents: async () => {
+    set({ loading: true });
+    try {
+      const torrents = await window.ipcRenderer.invoke("torrent:get-torrents");
+      set({
+        queue: torrents,
+        downloading: torrents.filter(
+          (torrent: Torrent) => torrent.progress < 1
+        ),
+        loading: false,
+      });
+    } catch (error) {
+      set({ error: String(error), loading: false });
+      console.error("Failed to get torrents list:", error);
     }
   },
 }));
