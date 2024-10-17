@@ -15,11 +15,18 @@ function Downloads() {
         downloading={true}
       />
 
-      <DownloadCard
-        image="https://images.igdb.com/igdb/image/upload/t_720p/ar2o80.webp"
-        poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
-        title="Dragon Ball: Sparking Zero"
-      />
+      <div className="p-3.5 mt-2 flex flex-col gap-4">
+        <DownloadCard
+          image="https://images.igdb.com/igdb/image/upload/t_720p/ar2o80.webp"
+          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
+          title="Dragon Ball: Sparking Zero"
+        />
+        <DownloadCard
+          image="https://images.igdb.com/igdb/image/upload/t_720p/scsvwb.webp"
+          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
+          title="Dragon Age: The Veilguard"
+        />
+      </div>
     </div>
   );
 }
