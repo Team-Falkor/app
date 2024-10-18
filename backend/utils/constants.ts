@@ -18,4 +18,5 @@ export const constants = {
   cachePath: join(appDataPath, "cache"),
   screenshotsPath: join(appDataPath, "screenshots"),
   logsPath: join(appDataPath, "logs.json"),
+  downloadsPath,
 };

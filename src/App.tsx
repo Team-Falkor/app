@@ -9,7 +9,16 @@ import { routeTree } from "./routeTree.gen";
 
 // Create a new query client instance
 const createQueryClient = () => {
-  return new QueryClient();
+  return new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchInterval: false,
+        refetchOnMount: false,
+        refetchOnWindowFocus: false,
+        refetchIntervalInBackground: false,
+      },
+    },
+  });
 };
 
 // Create the router instance
