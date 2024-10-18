@@ -9,6 +9,7 @@ interface Torrent {
   numPeers: number;
   path: string;
   paused: boolean;
+  igdb_id: string;
 }
 
 interface DownloadState {
@@ -16,7 +17,7 @@ interface DownloadState {
   downloading: Torrent[];
   error: string | null;
   loading: boolean;
-  addDownload: (torrentId: string) => void;
+  addDownload: (torrentId: string, igdb_id: string) => void;
   removeDownload: (infoHash: string) => void;
   clearQueue: () => void;
   fetchDownloads: () => void;
@@ -25,23 +26,26 @@ interface DownloadState {
   getTorrents: () => void;
 }
 
-export const useDownloadStore = create<DownloadState>((set, get) => ({
+export const useDownloadStore = create<DownloadState>((set) => ({
   queue: [],
   downloading: [],
   error: null,
   loading: false,
 
   // Add a torrent using ipcRenderer
-  addDownload: async (torrentId: string) => {
+  addDownload: async (torrentId: string, igdb_id: string) => {
     try {
       set({ loading: true });
       const torrent = await window.ipcRenderer.invoke(
         "torrent:add-torrent",
-        torrentId
+        torrentId,
+        igdb_id // Pass igdb_id as part of the IPC call
       );
+      const newTorrent = { ...torrent, igdb_id }; // Ensure igdb_id is part of the Torrent object
+
       set((state) => ({
-        queue: [...state.queue, torrent],
-        downloading: [...state.downloading, torrent],
+        queue: [...state.queue, newTorrent],
+        downloading: [...state.downloading, newTorrent],
         loading: false,
       }));
     } catch (error) {
@@ -118,10 +122,15 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   pauseDownload: async (infoHash: string) => {
     try {
       set({ loading: true });
-      await window.ipcRenderer.invoke("torrent:pause-torrent", infoHash);
+      const response = await window.ipcRenderer.invoke(
+        "torrent:pause-torrent",
+        infoHash
+      );
+      const { igdb_id } = response.data; // Get igdb_id from the response
+
       set((state) => ({
         downloading: state.downloading.map((t) =>
-          t.infoHash === infoHash ? { ...t, paused: true } : t
+          t.infoHash === infoHash ? { ...t, paused: true, igdb_id } : t
         ),
         loading: false,
       }));
