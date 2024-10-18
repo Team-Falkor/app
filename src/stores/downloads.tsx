@@ -22,7 +22,7 @@ interface DownloadState {
   clearQueue: () => void;
   fetchDownloads: () => void;
   pauseDownload: (infoHash: string) => void;
-  getTorrent: (torrentId: string) => void;
+  getTorrent: (torrentId: string) => Promise<Torrent | null>;
   getTorrents: () => void;
 }
 
@@ -95,26 +95,27 @@ export const useDownloadStore = create<DownloadState>((set) => ({
   getTorrent: async (torrentId: string) => {
     set({ loading: true });
     try {
-      const torrent = await window.ipcRenderer.invoke(
+      const torrent: Torrent = await window.ipcRenderer.invoke(
         "torrent:get-torrent",
         torrentId
       );
-      if (torrent) {
-        set((state) => ({
-          queue: state.queue.map((t) =>
-            t.infoHash === torrent.infoHash ? torrent : t
-          ),
-          loading: false,
-        }));
-      } else {
+      if (!torrent) {
         set({
           error: `Torrent with ID ${torrentId} not found`,
           loading: false,
         });
+        return null;
       }
+      set(() => ({
+        loading: false,
+      }));
+
+      return torrent;
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to get torrent:", error);
+
+      return null;
     }
   },
 

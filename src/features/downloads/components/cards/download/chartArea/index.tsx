@@ -1,7 +1,11 @@
 import PercentBar from "../percentBar";
 import DownloadCardChart from "./chart";
 
-const DownloadCardChartArea = () => {
+interface Props {
+  progress: number;
+}
+
+const DownloadCardChartArea = ({ progress }: Props) => {
   return (
     <div className="size-full p-3.5 py-4 bg-card border rounded-xl overflow-hidden">
       <div className="size-full flex flex-col relative gap-5 justify-between">
@@ -9,7 +13,7 @@ const DownloadCardChartArea = () => {
           <DownloadCardChart />
         </div>
         <div className="w-full">
-          <PercentBar percent={50} />
+          <PercentBar percent={progress ?? 0} />
         </div>
       </div>
     </div>

@@ -1,4 +1,8 @@
-import { cn } from "@/lib";
+import IGDBImage from "@/components/IGDBImage";
+import UseDownloads from "@/features/downloads/hooks/useDownloads";
+import { cn, igdb } from "@/lib";
+import { useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo, useState } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
 import DownloadCardStat from "./stat";
@@ -6,12 +10,37 @@ import DownloadCardTitle from "./title";
 
 interface Props {
   downloading?: boolean;
-  image?: string;
-  title: string;
-  poster: string;
+  igdb_id: string;
+  hash: string;
 }
 
-const DownloadCard = ({ downloading = false, image, title }: Props) => {
+const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
+  const [progress, setProgress] = useState<number>(0);
+  const { getTorrent } = UseDownloads();
+
+  const torrent = useMemo(() => getTorrent(igdb_id), [igdb_id, getTorrent]);
+
+  const { isPending, error, data } = useQuery({
+    queryKey: ["igdb", "info", igdb_id],
+    queryFn: async () => await igdb.info(igdb_id),
+    enabled: !!igdb_id,
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
+    refetchInterval: false,
+  });
+
+  useEffect(() => {
+    if (!downloading) return;
+
+    window.ipcRenderer.on("torrent:progress", (_event, data) => {
+      if (data.igdb_id !== igdb_id) return;
+      setProgress(parseInt(data?.progress) ?? 0);
+    });
+  }, [igdb_id, downloading]);
+
+  if (!torrent || isPending || error) return null;
+
   return (
     <div
       className={cn("w-full h-60 flex relative group", {
@@ -20,9 +49,9 @@ const DownloadCard = ({ downloading = false, image, title }: Props) => {
     >
       {/* BG */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-        <img
-          src={image}
-          alt={title}
+        <IGDBImage
+          imageId={data?.cover?.image_id ?? ""}
+          alt={data?.name ?? ""}
           className="object-cover w-full h-full relative z-[1]"
         />
 
@@ -44,7 +73,7 @@ const DownloadCard = ({ downloading = false, image, title }: Props) => {
           <div className="flex flex-col justify-start items-start gap-1.5">
             <div></div>
 
-            <DownloadCardTitle title={title} />
+            <DownloadCardTitle title={data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
               {/* Start hidden */}
               <DownloadCardActions
@@ -62,7 +91,7 @@ const DownloadCard = ({ downloading = false, image, title }: Props) => {
           {!!downloading && (
             <>
               <div className="size-full overflow-hidden">
-                <DownloadCardChartArea />
+                <DownloadCardChartArea progress={progress} />
               </div>
 
               <div className="flex gap-4 justify-between w-full">

@@ -12,12 +12,14 @@ function Downloads() {
   return (
     <div className="w-full h-full flex flex-col">
       {downloading?.length ? (
-        <DownloadCard
-          image="https://images.igdb.com/igdb/image/upload/t_720p/ar1ys1.webp"
-          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co5l7s.webp"
-          title="Silent Hill 2"
-          downloading={true}
-        />
+        downloading.map((torrent, i) => (
+          <DownloadCard
+            key={i}
+            downloading={!!torrent?.paused}
+            igdb_id={torrent.igdb_id}
+            hash={torrent.infoHash}
+          />
+        ))
       ) : (
         <div className="w-full flex justify-center items-center h-60 bg-primary/5">
           <h1 className="text-xl font-bold text-foreground">
@@ -28,16 +30,14 @@ function Downloads() {
 
       {!!queue.length && (
         <div className="p-3.5 mt-2 flex flex-col gap-4">
-          <DownloadCard
-            image="https://images.igdb.com/igdb/image/upload/t_720p/ar2o80.webp"
-            poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
-            title="Dragon Ball: Sparking Zero"
-          />
-          <DownloadCard
-            image="https://images.igdb.com/igdb/image/upload/t_720p/scsvwb.webp"
-            poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
-            title="Dragon Age: The Veilguard"
-          />
+          {queue.map((torrent, i) => (
+            <DownloadCard
+              key={i}
+              downloading={!!torrent?.paused}
+              igdb_id={torrent.igdb_id}
+              hash={torrent.infoHash}
+            />
+          ))}
         </div>
       )}
     </div>
