@@ -20,8 +20,8 @@ const BannerCard = ({
 
   const [screenshots, setScreenshots] = useState<IGDBReturnDataTypeCover[]>();
 
-  let start = 1;
-  let howMany = 3;
+  const start = 1;
+  const howMany = 3;
 
   useEffect(() => {
     if (screenshots) return;
@@ -31,7 +31,7 @@ const BannerCard = ({
     });
 
     setScreenshots(extractedArr);
-  }, [screenshots]);
+  }, [howMany, screenshots, ss, start]);
 
   return (
     <div className="relative w-full overflow-hidden rounded-lg h-80">
