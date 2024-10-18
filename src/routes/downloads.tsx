@@ -1,4 +1,5 @@
 import DownloadCard from "@/features/downloads/components/cards/download";
+import { useDownloadStore } from "@/stores/downloads";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/downloads")({
@@ -6,27 +7,39 @@ export const Route = createFileRoute("/downloads")({
 });
 
 function Downloads() {
+  const { downloading, queue } = useDownloadStore();
+
   return (
     <div className="w-full h-full flex flex-col">
-      <DownloadCard
-        image="https://images.igdb.com/igdb/image/upload/t_720p/ar1ys1.webp"
-        poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co5l7s.webp"
-        title="Silent Hill 2"
-        downloading={true}
-      />
+      {downloading?.length ? (
+        <DownloadCard
+          image="https://images.igdb.com/igdb/image/upload/t_720p/ar1ys1.webp"
+          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co5l7s.webp"
+          title="Silent Hill 2"
+          downloading={true}
+        />
+      ) : (
+        <div className="w-full flex justify-center items-center h-60 bg-primary/5">
+          <h1 className="text-xl font-bold text-foreground">
+            No downloads in progress
+          </h1>
+        </div>
+      )}
 
-      <div className="p-3.5 mt-2 flex flex-col gap-4">
-        <DownloadCard
-          image="https://images.igdb.com/igdb/image/upload/t_720p/ar2o80.webp"
-          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
-          title="Dragon Ball: Sparking Zero"
-        />
-        <DownloadCard
-          image="https://images.igdb.com/igdb/image/upload/t_720p/scsvwb.webp"
-          poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
-          title="Dragon Age: The Veilguard"
-        />
-      </div>
+      {!!queue.length && (
+        <div className="p-3.5 mt-2 flex flex-col gap-4">
+          <DownloadCard
+            image="https://images.igdb.com/igdb/image/upload/t_720p/ar2o80.webp"
+            poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
+            title="Dragon Ball: Sparking Zero"
+          />
+          <DownloadCard
+            image="https://images.igdb.com/igdb/image/upload/t_720p/scsvwb.webp"
+            poster="https://images.igdb.com/igdb/image/upload/t_cover_big/co8bhn.webp"
+            title="Dragon Age: The Veilguard"
+          />
+        </div>
+      )}
     </div>
   );
 }
