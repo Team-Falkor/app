@@ -1,4 +1,4 @@
-import { gamesDB } from "../../../../sql/";
+import { gamesDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
 const updateGame = async (

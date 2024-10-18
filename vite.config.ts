@@ -26,6 +26,14 @@ export default defineConfig(({ command }) => {
     plugins: [
       react(),
       TanStackRouterVite(),
+      nodePolyfills({
+        protocolImports: true,
+        globals: {
+          Buffer: true,
+          global: true,
+          process: true,
+        },
+      }),
       electron({
         main: {
           // Shortcut of `build.lib.entry`.
