@@ -1,7 +1,7 @@
 import { PluginId } from "@/@types";
-import { constants } from "backend/utils";
 import fs from "node:fs";
 import { join } from "node:path";
+import { constants } from "../../utils";
 
 export class PluginHandler {
   /**
@@ -64,6 +64,18 @@ export class PluginHandler {
     } catch (error) {
       console.error(error);
       return false;
+    }
+  }
+
+  public async get(pluginId: PluginId) {
+    try {
+      const file_path = join(this.path, `${pluginId}.json`);
+      if (!fs.existsSync(file_path)) return null;
+
+      const data = await fs.promises.readFile(file_path, "utf-8");
+      return JSON.parse(data);
+    } catch (error) {
+      console.error(error);
     }
   }
 }

@@ -9,7 +9,8 @@
     "rebuild": "electron-rebuild -f -w better-sqlite3 webtorrent",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "postinstall": "electron-builder install-app-deps"
+    "postinstall": "electron-builder install-app-deps",
+    "bun:trust:all": "bun pm trust --all"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

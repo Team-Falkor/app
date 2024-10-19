@@ -1,19 +1,9 @@
 import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { loadPlugins } from "./handlers/plugins/loadPlugins";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-// The built directory structure
-//
-// ├─┬─┬ dist
-// │ │ └── index.html
-// │ │
-// │ ├─┬ dist-electron
-// │ │ ├── main.js
-// │ │ └── preload.mjs
-// │
 process.env.APP_ROOT = path.join(__dirname, "..");
 
 // 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
@@ -95,7 +85,6 @@ app.whenReady().then(async () => {
   createWindow();
 
   await import("./handlers/events");
-  await loadPlugins(); // Load plugins before creating the window
 
   while (!win) {
     await new Promise((resolve) => setTimeout(resolve, 600));
