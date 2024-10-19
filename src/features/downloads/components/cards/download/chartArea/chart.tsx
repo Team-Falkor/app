@@ -1,20 +1,15 @@
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
+import { useEffect } from "react";
 import { CartesianGrid, Line, LineChart } from "recharts";
 
-const chartData = [
-  { speed: 0 },
-  { speed: 10 },
-  { speed: 20 },
-  { speed: 20 },
-  { speed: 30 },
-  { speed: 40 },
-  { speed: 50 },
-  { speed: 60 },
-  { speed: 70 },
-  { speed: 80 },
-  { speed: 50 },
-  { speed: 30 },
-];
+type ChartData = {
+  speed: number;
+};
+
+interface Props {
+  chartData: ChartData[];
+}
+
 const chartConfig = {
   desktop: {
     label: "speed",
@@ -22,11 +17,21 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const DownloadCardChart = () => {
+// TODO Figure out why the chart randomly disappears
+
+const DownloadCardChart = ({ chartData }: Props) => {
+  useEffect(() => {
+    console.log("Chart Data:", chartData); // Log the chart data for debugging
+  }, [chartData]);
+
+  // Ensure the chart only renders if there's data
+  if (!chartData || chartData.length === 0) {
+    return <div>No data available for chart.</div>; // Display a message when no data
+  }
+
   return (
     <ChartContainer config={chartConfig} className="w-full h-full">
       <LineChart
-        accessibilityLayer
         data={chartData}
         margin={{
           top: 5,
@@ -46,9 +51,9 @@ const DownloadCardChart = () => {
 
         <Line
           dataKey="speed"
-          type="step"
+          type="monotone"
           stroke="url(#lineGradient)"
-          strokeWidth={2}
+          strokeWidth={4}
           dot={false}
           fillOpacity={0.3}
         />

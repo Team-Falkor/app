@@ -4,3 +4,4 @@ import "./launcher";
 import "./logger";
 import "./plugins";
 import "./themes";
+import "./torrent";

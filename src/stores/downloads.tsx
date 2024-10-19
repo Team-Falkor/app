@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-interface Torrent {
+export interface Torrent {
   infoHash: string;
   name: string;
   progress: number;
@@ -10,6 +10,7 @@ interface Torrent {
   path: string;
   paused: boolean;
   igdb_id: string;
+  totalSize: number;
 }
 
 interface DownloadState {

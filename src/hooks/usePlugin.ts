@@ -9,7 +9,8 @@ const UsePlugin = (pluginId: string) => {
     try {
       if (!pluginId) return null;
 
-      return await invoke<string, string>("plugin:get-url", pluginId);
+      // TODO: Fix types
+      return await invoke<string, any>("plugin:get-plugin", pluginId);
     } catch (error) {
       console.error(error);
       return null;

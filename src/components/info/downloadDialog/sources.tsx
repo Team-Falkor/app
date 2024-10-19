@@ -1,4 +1,5 @@
 import { ItemDownload, NonDefaultSource } from "@/@types";
+import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { ITADPrice } from "@/lib/api/itad/types";
 import DefaultDownloadCard from "./cards/default";
 import ITADDownloadCard from "./cards/itad";
@@ -8,6 +9,7 @@ interface DownloadDialogPopoverProps {
 }
 
 const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
+  const { addDownload } = UseDownloads();
   const { sources } = props;
 
   if (!sources?.length) return null;

@@ -1,13 +1,18 @@
 import DownloadCard from "@/features/downloads/components/cards/download";
-import { useDownloadStore } from "@/stores/downloads";
+import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/downloads")({
   component: Downloads,
 });
 
 function Downloads() {
-  const { downloading, queue } = useDownloadStore();
+  const { downloading, queue, fetchDownloads, addDownload } = UseDownloads();
+
+  useEffect(() => {
+    fetchDownloads();
+  }, [fetchDownloads]);
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -15,7 +20,7 @@ function Downloads() {
         downloading.map((torrent, i) => (
           <DownloadCard
             key={i}
-            downloading={!!torrent?.paused}
+            downloading={!torrent?.paused}
             igdb_id={torrent.igdb_id}
             hash={torrent.infoHash}
           />

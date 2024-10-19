@@ -9,23 +9,33 @@ const { downloadsPath } = constants;
 const TORRENT_PROGRESS_EVENT = "torrent:progress";
 const TORRENT_DONE_EVENT = "torrent:done";
 
-// Function to handle torrent progress updates
+const THROTTLE_INTERVAL = 1000; // Send progress updates every second
+let lastUpdateTime: number | null = null;
+
 const handleTorrentProgress = (
   event: IpcMainInvokeEvent,
   igdb_id: string,
   torrent: Torrent
 ) => {
-  torrents.set(igdb_id, torrent);
+  const now = Date.now();
 
-  event.sender.send(TORRENT_PROGRESS_EVENT, {
-    igdb_id,
-    infoHash: torrent.infoHash,
-    name: torrent.name,
-    progress: torrent.progress,
-    numPeers: torrent.numPeers,
-    downloadSpeed: torrent.downloadSpeed,
-    uploadSpeed: torrent.uploadSpeed,
-  });
+  // Only send updates if enough time has passed
+  if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
+    torrents.set(igdb_id, torrent);
+
+    event.sender.send(TORRENT_PROGRESS_EVENT, {
+      igdb_id,
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+      progress: torrent.progress,
+      numPeers: torrent.numPeers,
+      downloadSpeed: torrent.downloadSpeed,
+      uploadSpeed: torrent.uploadSpeed,
+      totalSize: torrent.length,
+    });
+
+    lastUpdateTime = now; // Update the last time we sent progress
+  }
 };
 
 // Function to handle torrent completion
@@ -52,21 +62,35 @@ const addTorrent = async (
   igdb_id: string
 ) => {
   try {
-    client.add(torrentId, { path: downloadsPath }, (torrent) => {
-      console.log(`Added torrent: ${torrent.name}`);
+    const torrent = client.add(
+      torrentId,
+      { path: downloadsPath },
+      (torrent) => {
+        console.log(`Added torrent: ${torrent.name}`);
 
-      torrents.set(igdb_id, torrent);
+        torrents.set(igdb_id, torrent);
 
-      // Listen for torrent progress updates
-      torrent.on("download", () =>
-        handleTorrentProgress(event, igdb_id, torrent)
-      );
+        // Listen for torrent progress updates
+        torrent.on("download", () =>
+          handleTorrentProgress(event, igdb_id, torrent)
+        );
 
-      // Listen for torrent completion
-      torrent.on("done", () =>
-        handleTorrentCompletion(event, igdb_id, torrent)
-      );
-    });
+        // Listen for torrent completion
+        torrent.on("done", () =>
+          handleTorrentCompletion(event, igdb_id, torrent)
+        );
+      }
+    );
+
+    return {
+      igdb_id,
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+      progress: torrent.progress,
+      numPeers: torrent.numPeers,
+      downloadSpeed: torrent.downloadSpeed,
+      uploadSpeed: torrent.uploadSpeed,
+    };
   } catch (error) {
     console.error(`Failed to add torrent: ${torrentId}`, error);
     event.sender.send("torrent:error", {

@@ -1,8 +1,9 @@
 import IGDBImage from "@/components/IGDBImage";
-import UseDownloads from "@/features/downloads/hooks/useDownloads";
-import { cn, igdb } from "@/lib";
+import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadSpeedHistory";
+import { bytesToHumanReadable, cn, igdb } from "@/lib";
+import { Torrent } from "@/stores/downloads";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
 import DownloadCardStat from "./stat";
@@ -16,9 +17,9 @@ interface Props {
 
 const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
   const [progress, setProgress] = useState<number>(0);
-  const { getTorrent } = UseDownloads();
-
-  const torrent = useMemo(() => getTorrent(igdb_id), [igdb_id, getTorrent]);
+  const [stats, setStats] = useState<Torrent | null>(null);
+  const { speedHistory, updateSpeedHistory, peakSpeed } =
+    useDownloadSpeedHistory();
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
@@ -31,15 +32,15 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
   });
 
   useEffect(() => {
-    if (!downloading) return;
-
     window.ipcRenderer.on("torrent:progress", (_event, data) => {
       if (data.igdb_id !== igdb_id) return;
       setProgress(parseInt(data?.progress) ?? 0);
+      setStats(data);
+      updateSpeedHistory(data.downloadSpeed); // Update the speed history using the hook
     });
-  }, [igdb_id, downloading]);
+  }, [igdb_id, downloading, updateSpeedHistory]);
 
-  if (!torrent || isPending || error) return null;
+  if (!stats || isPending || error) return null;
 
   return (
     <div
@@ -91,21 +92,36 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
           {!!downloading && (
             <>
               <div className="size-full overflow-hidden">
-                <DownloadCardChartArea progress={progress} />
+                <DownloadCardChartArea
+                  progress={stats.progress}
+                  chartData={speedHistory}
+                />
               </div>
 
               <div className="flex gap-4 justify-between w-full">
                 <DownloadCardStat
                   title="Current"
-                  text="10 mb/s"
+                  text={
+                    bytesToHumanReadable(
+                      stats?.downloadSpeed ? stats.downloadSpeed : 0
+                    ) + "/s"
+                  }
                   key="current"
                 />
 
-                <DownloadCardStat title="Peak" text="25 mb/s" key="peak" />
+                <DownloadCardStat
+                  title="Peak"
+                  text={bytesToHumanReadable(peakSpeed ?? 0) + "/s"}
+                  key="peak"
+                />
 
-                <DownloadCardStat title="Total" text="25 GB" key="total" />
-
-                <DownloadCardStat title="Disk usage" text="5 mb/s" key="disk" />
+                <DownloadCardStat
+                  title="Total"
+                  text={bytesToHumanReadable(stats.totalSize)}
+                  key="total"
+                />
+                {/* 
+                <DownloadCardStat title="Disk usage" text="5 mb/s" key="disk" /> */}
               </div>
             </>
           )}
