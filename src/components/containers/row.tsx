@@ -22,7 +22,7 @@ const RowContainer = ({
 
   return (
     <div className={cn("mx-auto", className)} id={id} {...props}>
-      <div className="flex items-center justify-between pt-20 pb-1">
+      <div className="flex items-center justify-between pb-1">
         <h3 className="pb-2 font-mono text-lg font-medium leading-6">
           {title}
         </h3>

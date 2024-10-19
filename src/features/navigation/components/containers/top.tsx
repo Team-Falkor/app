@@ -9,7 +9,7 @@ import { useLanguageContext } from "@/contexts/I18N";
 import Search from "@/features/search/components/search";
 import { cn } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { HomeIcon, LibraryIcon, SearchIcon, Settings2 } from "lucide-react";
+import { HomeIcon, LibraryIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import NavItem from "../item";
 
@@ -64,8 +64,6 @@ const NavBarTop = () => {
         <NavItem href="/" title={t("home")} icon={<HomeIcon />} />
 
         <NavItem href="/library" title={t("my_games")} icon={<LibraryIcon />} />
-
-        <NavItem href="/settings" title={t("settings")} icon={<Settings2 />} />
       </div>
     </>
   );

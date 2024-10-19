@@ -1,4 +1,4 @@
-import { listsDB } from "../../../../sql/";
+import { listsDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
 const getGamesInList = async (

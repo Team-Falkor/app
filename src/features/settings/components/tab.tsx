@@ -11,10 +11,10 @@ const SettingTab = ({ icon, title, isActive, onClick }: SettingTabProps) => {
   return (
     <button
       className={cn([
-        "flex items-center w-full gap-3 px-3 py-2 text-sm font-medium transition-all group text-foreground hover:text-blue-400",
+        "flex items-center w-full gap-3 p-3.5 text-sm font-medium transition-all group text-foreground hover:text-primary",
         {
-          "border-l-4": isActive,
-          "border-l-4 border-transparent": !isActive,
+          "border-r-4 bg-purple-600/25 border-purple-600": isActive,
+          "text-primary/50": !isActive,
         },
       ])}
       aria-current="page"

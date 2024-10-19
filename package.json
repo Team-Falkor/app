@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
-    "rebuild": "electron-rebuild -f -w better-sqlite3",
+    "rebuild": "electron-rebuild -f -w better-sqlite3 webtorrent",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "postinstall": "electron-builder install-app-deps"
@@ -54,6 +54,7 @@
     "sqlite3": "^5.1.7",
     "tailwind-merge": "^2.5.2",
     "tailwindcss-animate": "^1.0.7",
+    "webtorrent": "^2.5.1",
     "zod": "^3.23.8",
     "zustand": "^5.0.0-rc.2"
   },
@@ -79,7 +80,20 @@
     "typescript": "^5.2.2",
     "vite": "^5.1.6",
     "vite-plugin-electron": "^0.28.6",
-    "vite-plugin-electron-renderer": "^0.14.5"
+    "vite-plugin-electron-renderer": "^0.14.5",
+    "vite-plugin-node-polyfills": "^0.22.0",
+    "webrtc-polyfill": "^1.1.8"
   },
-  "main": "dist-electron/main.js"
+  "main": "dist-electron/main.js",
+  "trustedDependencies": [
+    "better-sqlite3",
+    "bufferutil",
+    "electron",
+    "esbuild",
+    "lzma-native",
+    "node-datachannel",
+    "sqlite3",
+    "utf-8-validate",
+    "utp-native"
+  ]
 }

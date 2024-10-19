@@ -20,6 +20,8 @@ const Banner = ({ className, ...props }: Props) => {
     refetchOnWindowFocus: false,
   });
 
+  console.log(data);
+
   if (isPending) return <BannerSkeleton />;
 
   if (error) return <div>Error</div>;
@@ -27,11 +29,12 @@ const Banner = ({ className, ...props }: Props) => {
   return (
     <div className={cn("w-full", className)} {...props}>
       <CarouselContent>
-        {data?.map((game) => (
-          <CarouselItem key={game.id}>
-            <BannerCard {...game} />
-          </CarouselItem>
-        ))}
+        {!!data?.length &&
+          data?.map((game) => (
+            <CarouselItem key={game.id}>
+              <BannerCard {...game} />
+            </CarouselItem>
+          ))}
       </CarouselContent>
     </div>
   );
