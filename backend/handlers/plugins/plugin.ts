@@ -4,78 +4,171 @@ import { join } from "node:path";
 import { constants } from "../../utils";
 
 export class PluginHandler {
+  private hasInitialized = false;
+
   /**
    * Path to the plugins folder
    */
   private path = constants.pluginsPath;
 
   /**
-   * Installs a plugin from a given url
+   * Ensures that the plugin folder exists
+   */
+  private async init() {
+    if (this.hasInitialized) return;
+
+    try {
+      // Check and create plugins folder if it doesn't exist
+      const doesFolderExist = fs.existsSync(this.path);
+      if (!doesFolderExist)
+        await fs.promises.mkdir(this.path, { recursive: true });
+
+      this.hasInitialized = true;
+    } catch (error) {
+      console.error(`Error initializing plugin directory: ${error}`);
+      throw new Error("Initialization failed");
+    }
+  }
+
+  /**
+   * Installs a plugin from a given URL
    *
-   * @param url The url to the manifest.json
+   * @param url The URL to the setup.json
    * @returns true if the install was successful, false otherwise
    */
-  public async install(url: string) {
+  public async install(url: string): Promise<boolean> {
     try {
-      const data = await fetch(url);
+      await this.init();
 
-      const json = await data.json();
+      const response = await fetch(url);
+      const json = await response.json();
 
-      // Write file to path + <name>.json
-      const file_path = join(this.path, `${json.id}.json`);
+      // Validate plugin structure (ensure json has 'id' field)
+      if (!json.id) {
+        throw new Error("Invalid plugin format: 'id' field is missing");
+      }
 
-      await fs.promises.writeFile(file_path, JSON.stringify(data, null, 2));
+      const filePath = join(this.path, `${json.id}.json`);
+
+      // Write the JSON data to the file
+      await fs.promises.writeFile(
+        filePath,
+        JSON.stringify(json, null, 2),
+        "utf-8"
+      );
 
       return true;
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to install plugin from URL (${url}): ${error}`);
       return false;
     }
   }
 
   /**
-   * Deletes a plugin based on its id
+   * Deletes a plugin by its ID
    *
-   * @param pluginId The id of the plugin to delete
+   * @param pluginId The ID of the plugin to delete
    * @returns true if the delete was successful, false otherwise
    */
-  public async delete(pluginId: PluginId) {
+  public async delete(pluginId: PluginId): Promise<boolean> {
     try {
-      await fs.promises.unlink(join(this.path, `${pluginId}.json`));
+      await this.init();
+
+      const filePath = join(this.path, `${pluginId}.json`);
+      await fs.promises.unlink(filePath);
 
       return true;
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to delete plugin with ID (${pluginId}): ${error}`);
       return false;
     }
   }
 
-  public async disable(pluginId: PluginId) {
+  /**
+   * Disables a plugin by renaming its file to .disabled
+   *
+   * @param pluginId The ID of the plugin to disable
+   * @returns true if the disable was successful, false otherwise
+   */
+  public async disable(pluginId: PluginId): Promise<boolean> {
     try {
-      const file_path = join(this.path, `${pluginId}.json`);
-      if (!fs.existsSync(file_path)) return false;
+      await this.init();
 
-      // add .disabled to the file name
+      const filePath = join(this.path, `${pluginId}.json`);
+      if (!fs.existsSync(filePath)) return false;
+
       await fs.promises.rename(
-        file_path,
+        filePath,
         join(this.path, `${pluginId}.disabled`)
       );
       return true;
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to disable plugin with ID (${pluginId}): ${error}`);
       return false;
     }
   }
 
-  public async get(pluginId: PluginId) {
+  /**
+   * Enables a plugin by renaming its file back to .json
+   *
+   * @param pluginId The ID of the plugin to enable
+   * @returns true if the enable was successful, false otherwise
+   */
+  public async enable(pluginId: PluginId): Promise<boolean> {
     try {
-      const file_path = join(this.path, `${pluginId}.json`);
-      if (!fs.existsSync(file_path)) return null;
+      await this.init();
 
-      const data = await fs.promises.readFile(file_path, "utf-8");
+      const filePath = join(this.path, `${pluginId}.disabled`);
+      if (!fs.existsSync(filePath)) return false;
+
+      await fs.promises.rename(filePath, join(this.path, `${pluginId}.json`));
+      return true;
+    } catch (error) {
+      console.error(`Failed to enable plugin with ID (${pluginId}): ${error}`);
+      return false;
+    }
+  }
+
+  /**
+   * Fetches the JSON content of a plugin by its ID
+   *
+   * @param pluginId The ID of the plugin
+   * @returns The JSON data of the plugin, or null if not found
+   */
+  public async get(pluginId: PluginId): Promise<any | null> {
+    try {
+      await this.init();
+
+      const filePath = join(this.path, `${pluginId}.json`);
+      if (!fs.existsSync(filePath)) return null;
+
+      const data = await fs.promises.readFile(filePath, "utf-8");
       return JSON.parse(data);
     } catch (error) {
-      console.error(error);
+      console.error(`Failed to fetch plugin with ID (${pluginId}): ${error}`);
+      return null;
+    }
+  }
+
+  public async list() {
+    try {
+      await this.init();
+
+      const plugins = [];
+
+      const files = await fs.promises.readdir(this.path);
+      for await (const file of files) {
+        if (file.endsWith(".json")) {
+          const filePath = join(this.path, file);
+          const data = await fs.promises.readFile(filePath, "utf-8");
+          plugins.push(JSON.parse(data));
+        }
+      }
+
+      return plugins;
+    } catch (error) {
+      console.error(`Failed to list plugins: ${error}`);
+      return null;
     }
   }
 }
