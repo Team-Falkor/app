@@ -1,4 +1,4 @@
-import { PluginId } from "@/@types";
+import { PluginId, PluginSetupJSON } from "@/@types";
 import fs from "node:fs";
 import { join } from "node:path";
 import { constants } from "../../utils";
@@ -135,7 +135,7 @@ export class PluginHandler {
    * @param pluginId The ID of the plugin
    * @returns The JSON data of the plugin, or null if not found
    */
-  public async get(pluginId: PluginId): Promise<any | null> {
+  public async get(pluginId: PluginId): Promise<PluginSetupJSON | null> {
     try {
       await this.init();
 
@@ -154,7 +154,7 @@ export class PluginHandler {
     try {
       await this.init();
 
-      const plugins = [];
+      const plugins: Array<PluginSetupJSON> = [];
 
       const files = await fs.promises.readdir(this.path);
       for await (const file of files) {

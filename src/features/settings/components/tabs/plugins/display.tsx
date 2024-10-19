@@ -1,6 +1,7 @@
 import PluginCard from "@/components/cards/pluginCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn, invoke } from "@/lib";
+import UsePlugins from "@/hooks/usePlugins";
+import { cn } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
 import { SortBy } from ".";
 
@@ -12,12 +13,14 @@ interface Props {
 }
 
 const PluginDisplay = ({ setShowRows, showRows, sortBy }: Props) => {
+  const { getPlugins } = UsePlugins();
+
   const { data, isPending, error } = useQuery({
     queryKey: ["plugins", "all"],
     queryFn: async () => {
-      const response = await invoke<any, any>("plugins:list");
+      const plugins = await getPlugins();
 
-      return response;
+      return plugins?.data;
     },
   });
 
@@ -36,7 +39,7 @@ const PluginDisplay = ({ setShowRows, showRows, sortBy }: Props) => {
           },
         ])}
       >
-        {data?.data?.map((plugin: any) => (
+        {data?.map((plugin: any) => (
           <PluginCard
             key={plugin.id}
             id={plugin.id}
@@ -45,6 +48,7 @@ const PluginDisplay = ({ setShowRows, showRows, sortBy }: Props) => {
             version={plugin.version}
             image={plugin.logo}
             banner={plugin.banner}
+            installed={true}
           />
         ))}
       </div>

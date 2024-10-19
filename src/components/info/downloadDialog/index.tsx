@@ -12,6 +12,8 @@ import { Website } from "@/lib/api/igdb/types";
 
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import UsePlugins from "@/hooks/usePlugins";
+import { formatName } from "@/lib";
 import { Separator } from "@radix-ui/react-separator";
 import { Download, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState } from "react";
@@ -31,24 +33,42 @@ const DownloadDialog = ({
   isReleased,
   itadData,
   itadPending,
+  title,
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
   const [sources, setSources] = useState<ItemDownload[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { searchAllPlugins, plugins } = UsePlugins();
 
-  // Only update sources if itadData is available
-  const initializeSources = useCallback(() => {
-    if (!itadData || itadPending) return;
+  const initializeSources = useCallback(async () => {
+    setLoading(true); // Start loading
+    try {
+      if (!itadData || itadPending) return;
 
-    const newSources: ItemDownload[] = [
-      {
-        name: "itad",
-        sources: itadData,
-      },
-    ];
+      const newSources: ItemDownload[] = [
+        {
+          name: "itad",
+          sources: itadData,
+        },
+      ];
 
-    setSources(newSources);
-  }, [itadData, itadPending]);
+      const pluginResults = await searchAllPlugins(formatName(title));
+      const pluginSources = Object.entries(pluginResults).map(
+        ([pluginId, response]) => ({
+          name: pluginId,
+          sources: response,
+        })
+      );
+
+      // Combine sources
+      setSources([...newSources, ...pluginSources]);
+    } catch (error) {
+      console.error("Error initializing sources:", error);
+    } finally {
+      setLoading(false); // Stop loading after sources are set or error occurs
+    }
+  }, [itadData, itadPending, searchAllPlugins, title]);
 
   // Effect for initializing sources when itadData is ready
   useEffect(() => {
@@ -89,7 +109,13 @@ const DownloadDialog = ({
           <DialogTitle className="text-center">Select your source</DialogTitle>
           <DialogDescription className="w-full mx-auto">
             <DownloadDialogPopover
-              providers={baseProviders}
+              providers={[
+                ...baseProviders,
+                ...plugins.map((plugin) => ({
+                  value: plugin.id,
+                  label: plugin.name,
+                })),
+              ]}
               selectedProvider={selectedProvider}
               setSelectedProvider={setSelectedProvider}
               isOpen={isOpen}

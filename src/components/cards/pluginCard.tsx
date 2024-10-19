@@ -8,6 +8,8 @@ interface Props {
   name: string;
   id: string;
   version: string;
+
+  installed?: boolean;
 }
 
 const PluginCard = ({
@@ -17,6 +19,8 @@ const PluginCard = ({
   id,
   version,
   description,
+
+  installed = false,
 }: Props) => {
   const { t } = useLanguageContext();
 
@@ -41,7 +45,11 @@ const PluginCard = ({
         <p className="text-xs font-medium text-left">{description}</p>
       </div>
       <div className="flex items-center justify-end gap-2">
-        <Button variant="destructive">{t("uninstall")}</Button>
+        {installed ? (
+          <Button variant="destructive">{t("uninstall")}</Button>
+        ) : (
+          <Button variant="secondary">{t("install")}</Button>
+        )}
       </div>
     </div>
   );

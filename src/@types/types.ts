@@ -1,4 +1,5 @@
 import { ITADPrice } from "@/lib/api/itad/types";
+import { PluginSearchResponse } from "./plugins";
 
 export type IGDBImageSize =
   | "original"
@@ -47,7 +48,7 @@ export type ItemDownload =
       name: "itad";
     }
   | {
-      sources: NonDefaultSource[];
+      sources: PluginSearchResponse[];
       name: Exclude<string, "itad">;
     };
 
