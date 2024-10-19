@@ -3,7 +3,6 @@ import { useDownloadStore } from "@/stores/downloads";
 const UseDownloads = () => {
   const {
     addDownload,
-    clearQueue,
     downloading,
     error,
     fetchDownloads,
@@ -11,13 +10,12 @@ const UseDownloads = () => {
     getTorrents,
     pauseDownload,
     loading,
-    queue,
     removeDownload,
+    getQueue,
   } = useDownloadStore();
 
   return {
     addDownload,
-    clearQueue,
     downloading,
     error,
     fetchDownloads,
@@ -25,8 +23,8 @@ const UseDownloads = () => {
     getTorrents,
     pauseDownload,
     loading,
-    queue,
     removeDownload,
+    getQueue,
   };
 };
 

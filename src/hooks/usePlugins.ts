@@ -1,7 +1,7 @@
 import { PluginSearchResponse, PluginSetupJSON } from "@/@types";
 import { invoke } from "@/lib";
 import { usePluginsStore } from "@/stores/plugins";
-import { useCallback, useEffect } from "react";
+import { useCallback } from "react";
 
 const UsePlugins = () => {
   const { plugins, setPlugins } = usePluginsStore();
@@ -15,10 +15,11 @@ const UsePlugins = () => {
       },
       never
     >("plugins:list");
-    if (!list) return;
-
-    setPlugins(list.data);
-
+    if (list?.success) {
+      setPlugins(list.data);
+    } else {
+      console.error(`Failed to load plugins: ${list?.message}`);
+    }
     return list;
   }, [setPlugins]);
 
@@ -26,24 +27,31 @@ const UsePlugins = () => {
     query: string,
     os: "windows" | "linux" = "windows"
   ) => {
-    const responses: Record<string, PluginSearchResponse[]> = {};
+    const searchResults = plugins.map(async (plugin) => {
+      try {
+        const response = await invoke<PluginSearchResponse[], string>(
+          "request",
+          `${plugin.api_url}/search/${os}/${query}`
+        );
+        return { id: plugin.id, data: response || [] }; // Handle null responses
+      } catch (error) {
+        // This log could be replaced with more sophisticated error handling
+        console.error(`Error fetching data from plugin ${plugin.id}: ${error}`);
+        return { id: plugin.id, data: [] };
+      }
+    });
 
-    for await (const plugin of plugins) {
-      const response = await invoke<PluginSearchResponse[], string>(
-        "request",
-        `${plugin.api_url}/search/${os}/${query}`
-      );
-      if (!response) continue;
-
-      responses[plugin.id] = response;
-    }
+    const results = await Promise.all(searchResults);
+    const responses = results.reduce<Record<string, PluginSearchResponse[]>>(
+      (acc, { id, data }) => {
+        acc[id] = data;
+        return acc;
+      },
+      {}
+    );
 
     return responses;
   };
-
-  useEffect(() => {
-    getPlugins();
-  }, [getPlugins]);
 
   return {
     plugins,

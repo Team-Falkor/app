@@ -1,3 +1,5 @@
+// TODO: REFACTOR COMPONENT COMPLETLY
+
 import { InfoItadProps, ItemDownload } from "@/@types";
 import Spinner from "@/components/spinner";
 import {

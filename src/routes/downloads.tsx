@@ -1,14 +1,16 @@
 import DownloadCard from "@/features/downloads/components/cards/download";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export const Route = createFileRoute("/downloads")({
   component: Downloads,
 });
 
 function Downloads() {
-  const { downloading, queue, fetchDownloads, addDownload } = UseDownloads();
+  const { downloading, getQueue, fetchDownloads, addDownload } = UseDownloads();
+
+  const queue = useMemo(() => getQueue() || [], [getQueue]);
 
   useEffect(() => {
     fetchDownloads();
