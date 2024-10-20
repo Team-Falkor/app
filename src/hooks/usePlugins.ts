@@ -1,7 +1,7 @@
 import { PluginSetupJSON, SearchPluginResponse } from "@/@types";
 import { invoke } from "@/lib";
 import { usePluginsStore } from "@/stores/plugins";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 
 const UsePlugins = () => {
   const { plugins, setPlugins } = usePluginsStore();
@@ -33,6 +33,11 @@ const UsePlugins = () => {
 
     return searchResults.data;
   };
+
+  useEffect(() => {
+    if (!getPlugins || plugins.length) return;
+    getPlugins();
+  }, [getPlugins, plugins]);
 
   return {
     plugins,
