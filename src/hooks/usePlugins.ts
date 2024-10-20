@@ -1,4 +1,4 @@
-import { PluginSearchResponse, PluginSetupJSON } from "@/@types";
+import { PluginSetupJSON, SearchPluginResponse } from "@/@types";
 import { invoke } from "@/lib";
 import { usePluginsStore } from "@/stores/plugins";
 import { useCallback } from "react";
@@ -23,34 +23,15 @@ const UsePlugins = () => {
     return list;
   }, [setPlugins]);
 
-  const searchAllPlugins = async (
-    query: string,
-    os: "windows" | "linux" = "windows"
-  ) => {
-    const searchResults = plugins.map(async (plugin) => {
-      try {
-        const response = await invoke<PluginSearchResponse[], string>(
-          "request",
-          `${plugin.api_url}/search/${os}/${query}`
-        );
-        return { id: plugin.id, data: response || [] }; // Handle null responses
-      } catch (error) {
-        // This log could be replaced with more sophisticated error handling
-        console.error(`Error fetching data from plugin ${plugin.id}: ${error}`);
-        return { id: plugin.id, data: [] };
-      }
-    });
-
-    const results = await Promise.all(searchResults);
-    const responses = results.reduce<Record<string, PluginSearchResponse[]>>(
-      (acc, { id, data }) => {
-        acc[id] = data;
-        return acc;
-      },
-      {}
+  const searchAllPlugins = async (query: string) => {
+    const searchResults = await invoke<SearchPluginResponse, string>(
+      "plugins:use:search",
+      query
     );
 
-    return responses;
+    if (!searchResults?.success) return [];
+
+    return searchResults.data;
   };
 
   return {

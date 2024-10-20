@@ -1,7 +1,5 @@
-import { PluginHandler } from "../../../handlers/plugins/plugin";
+import pluginHandler from "../../../handlers/plugins/plugin";
 import { registerEvent } from "../utils/registerEvent";
-
-const pluginHandler = new PluginHandler();
 
 type getPluginResponse =
   | {

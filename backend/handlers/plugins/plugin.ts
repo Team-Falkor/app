@@ -172,3 +172,7 @@ export class PluginHandler {
     }
   }
 }
+
+const pluginHandler = new PluginHandler();
+
+export default pluginHandler;

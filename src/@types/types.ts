@@ -42,15 +42,11 @@ export type NonDefaultSource = {
   name: string;
 };
 
-export type ItemDownload =
-  | {
-      sources: ITADPrice[];
-      name: "itad";
-    }
-  | {
-      sources: PluginSearchResponse[];
-      name: Exclude<string, "itad">;
-    };
+export type ItemDownload = {
+  sources: Array<PluginSearchResponse | ITADPrice>;
+  name: string;
+  id?: string;
+};
 
 export interface ListGame {
   game_id: number;
@@ -94,3 +90,19 @@ export interface ProtonDBSummary {
   total: number;
   trendingTier: ProtonDBTier;
 }
+
+export type SearchPluginResponse =
+  | {
+      message: string;
+      success: false;
+    }
+  | {
+      data: Array<SearchPlugiData>;
+      success: true;
+    };
+
+export type SearchPlugiData = {
+  id: string;
+  name: string;
+  sources: PluginSearchResponse[];
+};

@@ -17,8 +17,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
 import { formatName } from "@/lib";
 import { Separator } from "@radix-ui/react-separator";
+import { useQuery } from "@tanstack/react-query";
 import { Download, XCircle } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import DownloadDialogPopover from "./popover";
 import DownloadDialogSources from "./sources";
 
@@ -39,48 +40,34 @@ const DownloadDialog = ({
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const [sources, setSources] = useState<ItemDownload[]>([]);
-  const [loading, setLoading] = useState(false);
   const { searchAllPlugins, plugins } = UsePlugins();
 
-  const initializeSources = useCallback(async () => {
-    setLoading(true); // Start loading
-    try {
-      if (!itadData || itadPending) return;
+  const itadSources: ItemDownload[] = useMemo(
+    () => [
+      {
+        name: "itad",
+        sources: itadData ?? [],
+      },
+    ],
+    [itadData]
+  );
 
-      const newSources: ItemDownload[] = [
-        {
-          name: "itad",
-          sources: itadData,
-        },
-      ];
+  const {
+    data: sources,
+    isPending,
+    error,
+  } = useQuery<ItemDownload[]>({
+    queryKey: ["sources", formatName(title)],
+    queryFn: async () => {
+      const plugins = await searchAllPlugins(formatName(title));
+      const pluginSources: ItemDownload[] = plugins.filter((plugin) => {
+        return plugin.sources.length > 0;
+      });
 
-      const pluginResults = await searchAllPlugins(formatName(title));
-      const pluginSources = Object.entries(pluginResults).map(
-        ([pluginId, response]) => ({
-          name: pluginId,
-          sources: response,
-        })
-      );
-
-      // Combine sources
-      setSources([...newSources, ...pluginSources]);
-    } catch (error) {
-      console.error("Error initializing sources:", error);
-    } finally {
-      setLoading(false); // Stop loading after sources are set or error occurs
-    }
-  }, [itadData, itadPending, searchAllPlugins, title]);
-
-  // Effect for initializing sources when itadData is ready
-  useEffect(() => {
-    if (itadPending || !isReleased) return;
-    initializeSources();
-  }, [itadData, isReleased, itadPending, initializeSources]);
-
-  const sourcesIsEmpty = useMemo(() => {
-    return sources.length === 0;
-  }, [sources]);
+      return pluginSources;
+    },
+    enabled: isReleased,
+  });
 
   const isLoading = itadPending;
 
@@ -136,8 +123,8 @@ const DownloadDialog = ({
             </div>
 
             <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
-              {!sourcesIsEmpty ? (
-                <DownloadDialogSources sources={sources} />
+              {!isLoading && sources?.length ? (
+                <DownloadDialogSources sources={[...itadSources, ...sources]} />
               ) : isLoading && !itadPending ? (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
                   <Spinner /> {/* Loading indicator */}
