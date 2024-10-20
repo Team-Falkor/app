@@ -19,6 +19,25 @@ class IGDB extends BaseApi {
       return this.clientAccessToken;
 
     this.gettingAccessToken = true;
+
+    // Check for an access token in local storage and check if it's still valid
+    const accessToken = localStorage.getItem("igdb_access_token");
+    const tokenExpiration = localStorage.getItem("igdb_token_expiration");
+
+    if (accessToken && tokenExpiration) {
+      if (Date.now() > Number(tokenExpiration)) {
+        localStorage.removeItem("igdb_access_token");
+        localStorage.removeItem("igdb_token_expiration");
+      } else {
+        console.log("Using cached access token");
+
+        this.clientAccessToken = accessToken;
+        this.tokenExpiration = Number(tokenExpiration);
+        this.gettingAccessToken = false;
+        return this.clientAccessToken;
+      }
+    }
+
     const response = await (
       await fetch(
         `https://id.twitch.tv/oauth2/token?client_id=${this.clientId}&client_secret=${this.clientSecret}&grant_type=client_credentials`,
@@ -28,9 +47,16 @@ class IGDB extends BaseApi {
 
     console.log(`Getting a new access token`);
 
+    const access_token = response.access_token;
+    const token_expiration = Date.now() + response.expires_in * 1000;
+
     this.gettingAccessToken = false;
-    this.clientAccessToken = response.access_token;
-    this.tokenExpiration = Date.now() + response.expires_in * 1000; // Convert to milliseconds
+    this.clientAccessToken = access_token;
+    this.tokenExpiration = token_expiration; // Convert to milliseconds
+
+    // SAVE TO LOCAL STORAGE
+    localStorage.setItem("igdb_access_token", access_token);
+    localStorage.setItem("igdb_token_expiration", token_expiration.toString());
 
     return this.clientAccessToken;
   }
