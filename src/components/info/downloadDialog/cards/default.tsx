@@ -1,15 +1,54 @@
 import { PluginSearchResponse } from "@/@types";
+import UseDownloads from "@/features/downloads/hooks/useDownloads";
+import { invoke } from "@/lib";
 import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
 
-const DefaultDownloadCard = (props: PluginSearchResponse) => {
+type Props = PluginSearchResponse & {
+  "multiple-choice"?: boolean;
+  pluginId?: string;
+  igdb_id: number;
+};
+
+const DefaultDownloadCard = (props: Props) => {
+  const { addDownload } = UseDownloads();
+
+  const handleDownload = async () => {
+    // TODO: handle download for ddl
+    if (props.type === "ddl") return;
+    if (!props.pluginId) return;
+
+    const {
+      return: returned_url,
+      "multiple-choice": multipleChoice,
+      pluginId,
+    } = props;
+
+    let url = returned_url;
+
+    if (multipleChoice) {
+      const data = await invoke<string[], string>(
+        "plugins:use:get-multiple-choice-download",
+        pluginId,
+        returned_url
+      );
+
+      if (!data?.length) return;
+
+      url = data[0];
+    }
+
+    addDownload(url, props.igdb_id.toString());
+  };
+
   if (props.type === "ddl") return null;
 
-  if (!props.return) return null;
+  if (!props["return"]) return null;
 
   return (
     <button
       key={props.return}
       className="flex flex-col items-start justify-center w-full gap-2 text-sm cursor-pointer group text-start hover:opacity-60"
+      onClick={handleDownload}
     >
       {props.name}
 

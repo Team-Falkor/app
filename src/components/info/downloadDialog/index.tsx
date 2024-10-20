@@ -25,6 +25,7 @@ interface DownloadDialogProps extends InfoItadProps {
   title: string;
   isReleased: boolean;
   websites: Website[];
+  igdb_id: number;
 }
 
 // Centralized provider management
@@ -35,6 +36,7 @@ const DownloadDialog = ({
   itadData,
   itadPending,
   title,
+  igdb_id,
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
@@ -118,7 +120,10 @@ const DownloadDialog = ({
 
             <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
               {!isLoading && sources?.length ? (
-                <DownloadDialogSources sources={[...itadSources, ...sources]} />
+                <DownloadDialogSources
+                  sources={[...itadSources, ...sources]}
+                  igdb_id={igdb_id}
+                />
               ) : isLoading && !itadPending ? (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
                   <Spinner /> {/* Loading indicator */}

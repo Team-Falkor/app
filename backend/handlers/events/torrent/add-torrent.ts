@@ -70,6 +70,37 @@ const addTorrent = async (
 
         torrents.set(igdb_id, torrent);
 
+        torrent.on("metadata", () => {
+          event.sender.send("torrent:metadata", {
+            igdb_id,
+            infoHash: torrent.infoHash,
+            name: torrent.name,
+            totalSize: torrent.length,
+          });
+        });
+
+        torrent.on("warning", (message) =>
+          event.sender.send("torrent:warning", {
+            message,
+            infoHash: torrent.infoHash,
+          })
+        );
+
+        torrent.on("error", (error) =>
+          event.sender.send("torrent:error", {
+            message: error,
+            infoHash: torrent.infoHash,
+          })
+        );
+
+        torrent.on("ready", () => {
+          event.sender.send("torrent:ready", {
+            igdb_id,
+            infoHash: torrent.infoHash,
+            name: torrent.name,
+          });
+        });
+
         // Listen for torrent progress updates
         torrent.on("download", () =>
           handleTorrentProgress(event, igdb_id, torrent)

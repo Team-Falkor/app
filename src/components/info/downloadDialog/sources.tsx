@@ -5,6 +5,7 @@ import ITADDownloadCard from "./cards/itad";
 
 interface DownloadDialogPopoverProps {
   sources: ItemDownload[];
+  igdb_id: number;
 }
 
 const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
@@ -23,9 +24,17 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
     } else {
       if (!item?.sources?.length) return null;
 
+      console.log(item);
+
       // Narrowing item.sources to NonDefaultSource[]
       return (item?.sources as PluginSearchResponse[])?.map((source) => (
-        <DefaultDownloadCard {...source} key={source.name} />
+        <DefaultDownloadCard
+          {...source}
+          multiple-choice={item["multiple-choice"]}
+          pluginId={item.id}
+          key={source.name}
+          igdb_id={props.igdb_id}
+        />
       ));
     }
   });

@@ -46,6 +46,7 @@ export type ItemDownload = {
   sources: Array<PluginSearchResponse | ITADPrice>;
   name: string;
   id?: string;
+  "multiple-choice"?: boolean;
 };
 
 export interface ListGame {
@@ -105,4 +106,5 @@ export type SearchPlugiData = {
   id: string;
   name: string;
   sources: PluginSearchResponse[];
+  "multiple-choice"?: boolean;
 };

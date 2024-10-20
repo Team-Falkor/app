@@ -41,6 +41,7 @@ const searchPlugins = async (
             id: plugin.id,
             name: plugin.name,
             sources: json,
+            "multiple-choice": Boolean(plugin["multiple-choice"]) ?? false,
           };
         } catch (error) {
           console.error(

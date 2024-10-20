@@ -2,7 +2,7 @@ import IGDBImage from "@/components/IGDBImage";
 import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadSpeedHistory";
 import { bytesToHumanReadable, cn, igdb } from "@/lib";
 import { Torrent } from "@/stores/downloads";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
@@ -16,31 +16,62 @@ interface Props {
 }
 
 const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
-  const [progress, setProgress] = useState<number>(0);
   const [stats, setStats] = useState<Torrent | null>(null);
+  const [ready, setReady] = useState(false);
   const { speedHistory, updateSpeedHistory, peakSpeed } =
     useDownloadSpeedHistory();
+  const queryclient = useQueryClient();
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
     queryFn: async () => await igdb.info(igdb_id),
-    enabled: !!igdb_id,
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-    refetchInterval: false,
+    enabled: !!ready && !!igdb_id,
   });
 
   useEffect(() => {
     window.ipcRenderer.on("torrent:progress", (_event, data) => {
       if (data.igdb_id !== igdb_id) return;
-      setProgress(parseInt(data?.progress) ?? 0);
+      setReady(true);
       setStats(data);
       updateSpeedHistory(data.downloadSpeed); // Update the speed history using the hook
     });
-  }, [igdb_id, downloading, updateSpeedHistory]);
 
-  if (!stats || isPending || error) return null;
+    window.ipcRenderer.once("torrent:ready", (_event, data) => {
+      if (data.igdb_id !== igdb_id) return;
+      setReady(true);
+    });
+
+    return () => {
+      window.ipcRenderer.off("torrent:progress", (_event, data) => {
+        if (data.igdb_id !== igdb_id) return;
+        setStats(data);
+        updateSpeedHistory(data.downloadSpeed); // Update the speed history using the hook
+      });
+
+      window.ipcRenderer.off("torrent:ready", (_event, data) => {
+        if (data.igdb_id !== igdb_id) return;
+        setReady(true);
+      });
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [igdb_id, data]);
+
+  useEffect(() => {
+    console.log({
+      isPending,
+      data,
+    });
+  }, [data, isPending]);
+
+  if (error) return null;
+  if (isPending)
+    return (
+      <div className="w-full h-60 flex justify-center items-center bg-primary/5">
+        <h1 className="text-xl font-bold text-foreground">
+          Torrent is loading, please wait...
+        </h1>
+      </div>
+    );
 
   return (
     <div
@@ -93,20 +124,26 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
             <>
               <div className="size-full overflow-hidden">
                 <DownloadCardChartArea
-                  progress={stats.progress}
+                  progress={stats?.progress ?? 0}
                   chartData={speedHistory}
                 />
               </div>
 
               <div className="flex gap-4 justify-between w-full">
                 <DownloadCardStat
-                  title="Current"
+                  title="Download"
                   text={
                     bytesToHumanReadable(
                       stats?.downloadSpeed ? stats.downloadSpeed : 0
                     ) + "/s"
                   }
-                  key="current"
+                  key="Download"
+                />
+
+                <DownloadCardStat
+                  title="Upload"
+                  text={bytesToHumanReadable(stats?.uploadSpeed ?? 0) + "/s"}
+                  key="Upload"
                 />
 
                 <DownloadCardStat
@@ -117,7 +154,7 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
 
                 <DownloadCardStat
                   title="Total"
-                  text={bytesToHumanReadable(stats.totalSize)}
+                  text={bytesToHumanReadable(stats?.totalSize ?? 0)}
                   key="total"
                 />
                 {/* 

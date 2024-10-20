@@ -4,7 +4,7 @@ export interface PluginSetupJSON {
   id: string;
   version: string;
   config: boolean;
-  multiple_choice: boolean;
+  "multiple-choice": boolean;
   name: string;
   description: string;
   logo: string;

@@ -1,3 +1,4 @@
+import { toast } from "sonner";
 import { create } from "zustand";
 
 export interface Torrent {
@@ -43,9 +44,20 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
         downloading: [...state.downloading, { ...torrent, igdb_id }],
         loading: false,
       }));
+
+      if (!torrent) {
+        toast.error("Failed to add torrent");
+        return;
+      }
+
+      toast.success("Torrent added successfully");
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to add torrent:", error);
+
+      toast.error("Failed to add torrent", {
+        description: (error as Error).message,
+      });
     }
   },
 
@@ -57,9 +69,17 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
         downloading: state.downloading.filter((t) => t.infoHash !== infoHash),
         loading: false,
       }));
+
+      toast.success("Torrent deleted successfully", {
+        description: `Deleted ${infoHash}`,
+      });
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to delete torrent:", error);
+
+      toast.error("Failed to delete torrent", {
+        description: (error as Error).message,
+      });
     }
   },
 
@@ -89,9 +109,17 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
         ),
         loading: false,
       }));
+
+      toast.success("Torrent paused successfully", {
+        description: `Paused ${infoHash}`,
+      });
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to pause torrent:", error);
+
+      toast.error("Failed to pause torrent", {
+        description: (error as Error).message,
+      });
     }
   },
 

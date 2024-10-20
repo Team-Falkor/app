@@ -74,6 +74,7 @@ const InfoTop = (props: Props) => {
                   itadData={itadData}
                   itadError={itadError}
                   itadPending={itadPending}
+                  igdb_id={data.id}
                 />
               </>
             ) : (
