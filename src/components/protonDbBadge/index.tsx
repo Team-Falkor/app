@@ -15,7 +15,7 @@ const ProtonDbBadge = ({ appId }: Props) => {
 
   const { tier } = data;
 
-  if (tier === "pending") return null;
+  if (tier === "pending" || !tier) return null;
 
   const color = ProtonDBTierColor[tier as keyof typeof ProtonDBTierColor];
 
