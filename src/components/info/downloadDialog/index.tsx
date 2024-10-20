@@ -1,5 +1,3 @@
-// TODO: REFACTOR COMPONENT COMPLETLY
-
 import { InfoItadProps, ItemDownload } from "@/@types";
 import Spinner from "@/components/spinner";
 import {
@@ -52,11 +50,7 @@ const DownloadDialog = ({
     [itadData]
   );
 
-  const {
-    data: sources,
-    isPending,
-    error,
-  } = useQuery<ItemDownload[]>({
+  const { data: sources, isPending } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
       const plugins = await searchAllPlugins(formatName(title));
@@ -69,7 +63,7 @@ const DownloadDialog = ({
     enabled: isReleased,
   });
 
-  const isLoading = itadPending;
+  const isLoading = itadPending || isPending;
 
   // Early return if not released
   if (!isReleased) {
