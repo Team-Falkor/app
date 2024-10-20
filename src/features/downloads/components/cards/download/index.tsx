@@ -2,7 +2,7 @@ import IGDBImage from "@/components/IGDBImage";
 import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadSpeedHistory";
 import { bytesToHumanReadable, cn, igdb } from "@/lib";
 import { Torrent } from "@/stores/downloads";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
@@ -20,7 +20,6 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
   const [ready, setReady] = useState(false);
   const { speedHistory, updateSpeedHistory, peakSpeed } =
     useDownloadSpeedHistory();
-  const queryclient = useQueryClient();
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
@@ -108,12 +107,7 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
             <DownloadCardTitle title={data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
               {/* Start hidden */}
-              <DownloadCardActions
-                downloading={downloading}
-                startDownload={() => {}}
-                stopDownload={() => {}}
-                pauseDownload={() => {}}
-              />
+              <DownloadCardActions stats={stats} />
             </div>
           </div>
         </div>

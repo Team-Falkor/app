@@ -3,10 +3,10 @@ import { client, torrents } from "../../../utils";
 import { registerEvent } from "../utils";
 
 // Event handler for pausing a torrent
-const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
+const startTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
   const torrent = await client.get(infoHash);
   if (torrent) {
-    torrent.pause();
+    torrent.resume();
     console.log(`Paused torrent: ${torrent.name}`);
 
     // Find the corresponding igdb_id from the torrents map
@@ -15,7 +15,7 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     )?.[0]; // .[0] to get the igdb_id from the key-value pair
 
     return {
-      message: `Paused torrent: ${torrent.name}`,
+      message: `resumed torrent: ${torrent.name}`,
       error: false,
       data: {
         igdb_id,
@@ -35,4 +35,4 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
   }
 };
 
-registerEvent("torrent:pause-torrent", pauseTorrent);
+registerEvent("torrent:start-torrent", startTorrent);

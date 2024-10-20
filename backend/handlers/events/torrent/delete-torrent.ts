@@ -3,8 +3,8 @@ import { client, torrents } from "../../../utils";
 import { registerEvent } from "../utils";
 
 // Event handler for deleting a torrent
-const deleteTorrent = (event: IpcMainInvokeEvent, infoHash: string) => {
-  const torrent = client.get(infoHash);
+const deleteTorrent = async (event: IpcMainInvokeEvent, infoHash: string) => {
+  const torrent = await client.get(infoHash);
   if (!torrent) {
     console.error(`Torrent with infoHash ${infoHash} not found`);
     event.sender.send("torrent:delete-error", {

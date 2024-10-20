@@ -1,23 +1,23 @@
 import { Button } from "@/components/ui/button";
+import { UseDownloadAction } from "@/features/downloads/hooks/useDownloadAction";
+import { Torrent } from "@/stores/downloads";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
 type Props = {
-  downloading: boolean;
-  stopDownload: () => void;
-  pauseDownload: () => void;
-  startDownload: () => void;
+  stats: Torrent | null;
 };
 
-const DownloadCardActions = ({
-  downloading,
-  pauseDownload,
-  startDownload,
-  stopDownload,
-}: Props) => {
+const DownloadCardActions = ({ stats }: Props) => {
+  const { pauseDownload, startDownload, stopDownload, status } =
+    UseDownloadAction(stats?.infoHash);
+
+  if (status === "deleted") return null;
+  if (!stats) return;
+
   return (
     <div className="flex flex-row gap-4">
-      {!downloading ? (
+      {status === "paused" || stats.paused ? (
         <Button
           size={"default"}
           variant={"secondary"}
