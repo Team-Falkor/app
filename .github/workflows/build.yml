@@ -38,8 +38,8 @@ jobs:
 
       - name: build linux
         if: matrix.os == 'ubuntu-latest'
-        run: bun run build:linux
+        run: bun run prebuild && bun run build:linux
 
       - name: build windows
         if: matrix.os == 'windows-latest'
-        run: bun run build:win
+        run: bun run prebuild && bun run build:win
