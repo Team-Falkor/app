@@ -28,7 +28,9 @@ jobs:
         run: bun install
 
       - name: Install dependencies for packaging
-        run: sudo apt-get update && sudo apt-get install -y bsdtar
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
 
       - name: Check Environment Variables
         run: |
