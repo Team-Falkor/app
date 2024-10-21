@@ -23,7 +23,7 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
     queryFn: async () => await igdb.info(igdb_id),
-    enabled: !!igdb_id,
+    enabled: !igdb_id,
     staleTime: Infinity,
     retry: false,
   });
@@ -35,18 +35,21 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
   }, [stats?.downloadSpeed, updateSpeedHistory]);
 
   const downloadSpeedText = useMemo(
-    () => bytesToHumanReadable(stats?.downloadSpeed || 0) + "/s",
-    [stats?.downloadSpeed]
+    () =>
+      bytesToHumanReadable(!stats?.paused ? stats?.downloadSpeed || 0 : 0) +
+      "/s",
+    [stats?.downloadSpeed, stats?.paused]
   );
 
   const uploadSpeedText = useMemo(
-    () => bytesToHumanReadable(stats?.uploadSpeed || 0) + "/s",
-    [stats?.uploadSpeed]
+    () =>
+      bytesToHumanReadable(!stats?.paused ? stats?.uploadSpeed || 0 : 0) + "/s",
+    [stats?.paused, stats?.uploadSpeed]
   );
 
   const peakSpeedText = useMemo(
-    () => bytesToHumanReadable(peakSpeed || 0) + "/s",
-    [peakSpeed]
+    () => bytesToHumanReadable(!stats?.paused ? peakSpeed || 0 : 0) + "/s",
+    [peakSpeed, stats?.paused]
   );
 
   const totalSizeText = useMemo(

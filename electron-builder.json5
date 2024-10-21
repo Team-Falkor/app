@@ -26,10 +26,16 @@
     oneClick: false,
     perMachine: false,
     allowToChangeInstallationDirectory: true,
-    deleteAppDataOnUninstall: false,
+    deleteAppDataOnUninstall: true,
+    shortcutName: "${productName}",
+    createDesktopShortcut: true,
+    uninstallDisplayName: "${productName} ${version}",
+    installerIcon: "./build/icon.ico",
+    uninstallerIcon: "./build/icon.ico",
   },
   linux: {
-    target: ["AppImage"],
+    target: ["AppImage", "deb", "rpm", "snap", "pacman"],
     artifactName: "${productName}-Linux-${version}.${ext}",
+    category: "Game",
   },
 }
