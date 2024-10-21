@@ -27,6 +27,9 @@ jobs:
       - name: install dependencies
         run: bun install
 
+      - name: Install dependencies for packaging
+        run: sudo apt-get update && sudo apt-get install -y bsdtar
+
       - name: Check Environment Variables
         run: |
           [ -z "$VITE_TWITCH_CLIENT_ID" ] && echo "VITE_TWITCH_CLIENT_ID not set" && exit 1

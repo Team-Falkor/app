@@ -34,7 +34,7 @@
     uninstallerIcon: "./build/icon.ico",
   },
   linux: {
-    target: ["AppImage", "deb", "rpm", "snap", "pacman"],
+    target: ["AppImage", "deb", "snap", "pacman"],
     artifactName: "${productName}-Linux-${version}.${ext}",
     category: "Game",
     maintainer: "team-falkor",
