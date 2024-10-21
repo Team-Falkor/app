@@ -3,7 +3,7 @@ import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadS
 import { bytesToHumanReadable, cn, igdb } from "@/lib";
 import { Torrent } from "@/stores/downloads";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
 import DownloadCardStat from "./stat";
@@ -13,56 +13,49 @@ interface Props {
   downloading?: boolean;
   igdb_id: string;
   hash: string;
+  stats: Torrent | null;
 }
 
-const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
-  const [stats, setStats] = useState<Torrent | null>(null);
-  const [ready, setReady] = useState(false);
+const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
   const { speedHistory, updateSpeedHistory, peakSpeed } =
     useDownloadSpeedHistory();
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
     queryFn: async () => await igdb.info(igdb_id),
-    enabled: !!ready && !!igdb_id,
+    enabled: !!igdb_id,
+    staleTime: Infinity,
+    retry: false,
   });
 
+  // Effect to update download speed history, memoized to avoid unnecessary updates
   useEffect(() => {
-    window.ipcRenderer.on("torrent:progress", (_event, data) => {
-      if (data.igdb_id !== igdb_id) return;
-      setReady(true);
-      setStats(data);
-      updateSpeedHistory(data.downloadSpeed); // Update the speed history using the hook
-    });
+    if (!stats?.downloadSpeed) return;
+    updateSpeedHistory(stats.downloadSpeed);
+  }, [stats?.downloadSpeed, updateSpeedHistory]);
 
-    window.ipcRenderer.once("torrent:ready", (_event, data) => {
-      if (data.igdb_id !== igdb_id) return;
-      setReady(true);
-    });
+  const downloadSpeedText = useMemo(
+    () => bytesToHumanReadable(stats?.downloadSpeed || 0) + "/s",
+    [stats?.downloadSpeed]
+  );
 
-    return () => {
-      window.ipcRenderer.off("torrent:progress", (_event, data) => {
-        if (data.igdb_id !== igdb_id) return;
-        setStats(data);
-        updateSpeedHistory(data.downloadSpeed); // Update the speed history using the hook
-      });
+  const uploadSpeedText = useMemo(
+    () => bytesToHumanReadable(stats?.uploadSpeed || 0) + "/s",
+    [stats?.uploadSpeed]
+  );
 
-      window.ipcRenderer.off("torrent:ready", (_event, data) => {
-        if (data.igdb_id !== igdb_id) return;
-        setReady(true);
-      });
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [igdb_id, data]);
+  const peakSpeedText = useMemo(
+    () => bytesToHumanReadable(peakSpeed || 0) + "/s",
+    [peakSpeed]
+  );
 
-  useEffect(() => {
-    console.log({
-      isPending,
-      data,
-    });
-  }, [data, isPending]);
+  const totalSizeText = useMemo(
+    () => bytesToHumanReadable(stats?.totalSize || 0),
+    [stats?.totalSize]
+  );
 
   if (error) return null;
+
   if (isPending)
     return (
       <div className="w-full h-60 flex justify-center items-center bg-primary/5">
@@ -98,12 +91,9 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
 
       {/* Content */}
       <div className="flex flex-row items-start justify-between size-full relative z-10 p-5 px-10">
-        {/* NAME OF DOWNLOADG GAME */}
-        {/* {!!downloading && <DownloadCardTitle title={title} />} */}
+        {/* NAME OF DOWNLOAD GAME */}
         <div className="flex justify-start items-end h-full w-[65%]">
           <div className="flex flex-col justify-start items-start gap-1.5">
-            <div></div>
-
             <DownloadCardTitle title={data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
               {/* Start hidden */}
@@ -126,33 +116,24 @@ const DownloadCard = ({ downloading = false, igdb_id }: Props) => {
               <div className="flex gap-4 justify-between w-full">
                 <DownloadCardStat
                   title="Download"
-                  text={
-                    bytesToHumanReadable(
-                      stats?.downloadSpeed ? stats.downloadSpeed : 0
-                    ) + "/s"
-                  }
+                  text={downloadSpeedText}
                   key="Download"
                 />
-
                 <DownloadCardStat
                   title="Upload"
-                  text={bytesToHumanReadable(stats?.uploadSpeed ?? 0) + "/s"}
+                  text={uploadSpeedText}
                   key="Upload"
                 />
-
                 <DownloadCardStat
                   title="Peak"
-                  text={bytesToHumanReadable(peakSpeed ?? 0) + "/s"}
-                  key="peak"
+                  text={peakSpeedText}
+                  key="Peak"
                 />
-
                 <DownloadCardStat
                   title="Total"
-                  text={bytesToHumanReadable(stats?.totalSize ?? 0)}
-                  key="total"
+                  text={totalSizeText}
+                  key="Total"
                 />
-                {/* 
-                <DownloadCardStat title="Disk usage" text="5 mb/s" key="disk" /> */}
               </div>
             </>
           )}

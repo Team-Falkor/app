@@ -1,5 +1,5 @@
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
-import { useEffect } from "react";
+import { useMemo } from "react";
 import { CartesianGrid, Line, LineChart } from "recharts";
 
 type ChartData = {
@@ -17,16 +17,22 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-// TODO Figure out why the chart randomly disappears
-
 const DownloadCardChart = ({ chartData }: Props) => {
-  useEffect(() => {
-    console.log("Chart Data:", chartData); // Log the chart data for debugging
-  }, [chartData]);
+  const gradientDefs = useMemo(
+    () => (
+      <defs>
+        <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={"#c084fc"} />
+          <stop offset="100%" stopColor={"#60a5fa"} />
+        </linearGradient>
+      </defs>
+    ),
+    []
+  );
 
   // Ensure the chart only renders if there's data
   if (!chartData || chartData.length === 0) {
-    return <div>No data available for chart.</div>; // Display a message when no data
+    return <div>No data available for chart.</div>;
   }
 
   return (
@@ -40,15 +46,8 @@ const DownloadCardChart = ({ chartData }: Props) => {
           left: 2,
         }}
       >
-        <defs>
-          <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor={"#c084fc"} />
-            <stop offset="100%" stopColor={"#60a5fa"} />
-          </linearGradient>
-        </defs>
-
+        {gradientDefs}
         <CartesianGrid vertical={false} />
-
         <Line
           dataKey="speed"
           type="monotone"
