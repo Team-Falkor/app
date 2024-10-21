@@ -1,0 +1,45 @@
+name: build
+
+on: push
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+
+    env:
+      VITE_TWITCH_CLIENT_ID: ${{ secrets.VITE_TWITCH_CLIENT_ID }}
+      VITE_TWITCH_CLIENT_SECRET: ${{ secrets.VITE_TWITCH_CLIENT_SECRET }}
+      VITE_ITAD_API_KEY: ${{ secrets.VITE_ITAD_API_KEY }}
+      VITE_STEAMGRIDDB_API_KEY: ${{ secrets.VITE_STEAMGRIDDB_API_KEY }}
+      VITE_RD_CLIENT_ID: ${{ secrets.VITE_RD_CLIENT_ID }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+
+      - name: install bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: install dependencies
+        run: bun install
+
+      - name: Check Environment Variables
+        run: |
+          [ -z "$VITE_TWITCH_CLIENT_ID" ] && echo "VITE_TWITCH_CLIENT_ID not set" && exit 1
+          [ -z "$VITE_TWITCH_CLIENT_SECRET" ] && echo "VITE_TWITCH_CLIENT_SECRET not set" && exit 1
+          [ -z "$VITE_ITAD_API_KEY" ] && echo "VITE_ITAD_API_KEY not set" && exit 1
+          [ -z "$VITE_STEAMGRIDDB_API_KEY" ] && echo "VITE_STEAMGRIDDB_API_KEY not set" && exit 1
+          [ -z "$VITE_RD_CLIENT_ID" ] && echo "VITE_RD_CLIENT_ID not set" && exit 1
+          echo "All necessary environment variables are set."
+
+      - name: build linux
+        if: matrix.os == 'ubuntu-latest'
+        run: bun run build:linux
+
+      - name: build windows
+        if: matrix.os == 'windows-latest'
+        run: bun run build:win

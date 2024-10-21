@@ -14,7 +14,6 @@ interface Props {
 
 const PluginCard = ({
   image,
-  banner,
   name,
   id,
   version,

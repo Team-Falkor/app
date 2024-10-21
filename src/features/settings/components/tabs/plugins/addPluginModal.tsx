@@ -17,9 +17,9 @@ interface Props {
   setOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const AddPluginModal = ({ open, setOpen }: Props) => {
+const AddPluginModal = ({ setOpen }: Props) => {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [_error, setError] = useState<string | null>(null);
 
   const handleAddPlugin = async () => {
     if (!inputRef.current) return;

@@ -12,7 +12,7 @@ interface LoggerState {
   getLog: (id: number) => Promise<Log | null>;
 }
 
-export const useLoggerStore = create<LoggerState>((set, get) => ({
+export const useLoggerStore = create<LoggerState>((set) => ({
   logs: [],
   loading: false,
   error: null,

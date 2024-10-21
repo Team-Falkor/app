@@ -12,7 +12,7 @@ interface Props {
   sortBy: SortBy;
 }
 
-const PluginDisplay = ({ setShowRows, showRows, sortBy }: Props) => {
+const PluginDisplay = ({ showRows }: Props) => {
   const { getPlugins } = UsePlugins();
 
   const { data, isPending, error } = useQuery({

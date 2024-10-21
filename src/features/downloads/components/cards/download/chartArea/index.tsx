@@ -10,9 +10,9 @@ interface Props {
   chartData: ChartData[];
 }
 
-const DownloadCardChartArea = ({ progress, chartData }: Props) => {
+const DownloadCardChartArea = ({ progress }: Props) => {
   const memoizedProgress = useMemo(() => progress ?? 0, [progress]);
-  const memoizedChartData = useMemo(() => chartData, [chartData]);
+  // const memoizedChartData = useMemo(() => chartData, [chartData]);
 
   return (
     <div className="size-full p-3.5 py-4 bg-card border rounded-xl overflow-hidden">
