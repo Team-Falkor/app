@@ -24,6 +24,16 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
 
+      - name: Cache Bun dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun
+            ~/.cache/bun
+            ~/.bun/cache
+          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
+          restore-keys: ${{ runner.os }}-bun-
+
       - name: install bun
         uses: oven-sh/setup-bun@v2
 
@@ -33,7 +43,7 @@ jobs:
       - name: Install dependencies for building packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak rpm
+          sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak flatpak-builder rpm
           sudo ln -s /snap/bin/snapcraft /usr/local/bin/snapcraft
           sudo snap install snapcraft --classic
 
