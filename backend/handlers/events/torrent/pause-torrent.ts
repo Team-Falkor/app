@@ -4,15 +4,27 @@ import { registerEvent } from "../utils";
 
 // Event handler for pausing a torrent
 const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
-  const torrent = await client.get(infoHash);
-  if (torrent) {
+  try {
+    // Get the torrent by infoHash
+    const torrent = client.get(infoHash);
+
+    if (!torrent) {
+      console.error(`Torrent with infoHash ${infoHash} not found`);
+      return {
+        message: `Torrent not found: ${infoHash}`,
+        error: true,
+        data: { infoHash },
+      };
+    }
+
+    // Pause the torrent (synchronous in WebTorrent)
     torrent.pause();
     console.log(`Paused torrent: ${torrent.name}`);
 
-    // Find the corresponding igdb_id from the torrents map
+    // Find corresponding igdb_id
     const igdb_id = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-    )?.[0]; // .[0] to get the igdb_id from the key-value pair
+    )?.[0];
 
     return {
       message: `Paused torrent: ${torrent.name}`,
@@ -23,14 +35,12 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
         name: torrent.name,
       },
     };
-  } else {
-    console.error(`Torrent with infoHash ${infoHash} not found`);
+  } catch (error) {
+    console.error(`Error pausing torrent: ${(error as Error).message}`);
     return {
-      message: `Torrent with infoHash ${infoHash} not found`,
+      message: `Error pausing torrent: ${(error as Error).message}`,
       error: true,
-      data: {
-        infoHash,
-      },
+      data: { infoHash },
     };
   }
 };
