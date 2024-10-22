@@ -4,21 +4,21 @@ const gamesDB = (name: string, ...args: any[]) =>
   window?.ipcRenderer.invoke(`games:${name}`, ...args);
 
 interface GamesState {
-  games: Record<string, any>; // Storing games by their id (now string)
+  games: Record<string, any>;
   loading: boolean;
   error: string | null;
-  fetchGames: () => Promise<void>; // Add fetchGames
+  fetchGames: () => Promise<void>;
   addGame: (game: {
     name: string;
     path: string;
-    id: string; // Ensure id is a string
+    id: string;
     icon?: string;
     args?: string;
     command?: string;
   }) => Promise<void>;
-  getGameById: (gameId: string) => Promise<any>; // gameId is now a string
+  getGameById: (gameId: string) => Promise<any>;
   updateGame: (
-    gameId: string, // Change gameId to string
+    gameId: string,
     updates: {
       name?: string;
       path?: string;
@@ -30,7 +30,6 @@ interface GamesState {
   deleteGame: (gameId: string) => Promise<void>;
 }
 
-// Zustand store for managing games globally
 export const useGamesStore = create<GamesState>((set, _get) => ({
   games: {},
   loading: false,
@@ -39,7 +38,7 @@ export const useGamesStore = create<GamesState>((set, _get) => ({
   fetchGames: async () => {
     set({ loading: true, error: null });
     try {
-      const games = await gamesDB("get-all-games"); // Assuming getAllGames is a method in gamesDB to fetch all games
+      const games = await gamesDB("get-all-games");
       const gamesMap = games.reduce(
         (acc: Record<string, any>, game: { id: string }) => {
           acc[game.id] = game;
@@ -60,7 +59,6 @@ export const useGamesStore = create<GamesState>((set, _get) => ({
     set({ loading: true, error: null });
     try {
       await gamesDB("add-game", game);
-      // Add the game to the state after inserting it into the database
       set((state) => ({
         games: { ...state.games, [game.id]: game },
       }));
@@ -95,7 +93,6 @@ export const useGamesStore = create<GamesState>((set, _get) => ({
     set({ loading: true, error: null });
     try {
       await gamesDB("update-game", gameId, updates);
-      // Update the game in the state after successful update
       set((state) => ({
         games: {
           ...state.games,
@@ -114,7 +111,6 @@ export const useGamesStore = create<GamesState>((set, _get) => ({
     set({ loading: true, error: null });
     try {
       await gamesDB("delete-game", gameId);
-      // Remove the game from the state after successful deletion
       set((state) => {
         const updatedGames = { ...state.games };
         delete updatedGames[gameId];

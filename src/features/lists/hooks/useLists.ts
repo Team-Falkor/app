@@ -2,38 +2,25 @@ import { useListsStore } from "@/stores/lists";
 import { useEffect } from "react";
 
 export const useLists = () => {
-  const {
-    lists,
-    gamesInList,
-    loading,
-    error,
-    fetchLists,
-    createList,
-    addGameToList,
-    removeGameFromList,
-    fetchGamesInList,
-    deleteList,
-    hasDoneFirstFetch,
-    setHasDoneFirstFetch,
-  } = useListsStore();
+  const store = useListsStore();
 
   useEffect(() => {
-    if (hasDoneFirstFetch) return;
+    if (store.hasDoneFirstFetch) return;
 
-    fetchLists();
-    setHasDoneFirstFetch();
-  }, [fetchLists, hasDoneFirstFetch, setHasDoneFirstFetch]);
+    store.fetchLists();
+    store.setHasDoneFirstFetch();
+  }, [store]);
 
   return {
-    removeGameFromList,
-    lists,
-    gamesInList,
-    loading,
-    error,
-    fetchLists,
-    createList,
-    addGameToList,
-    fetchGamesInList,
-    deleteList,
+    lists: store.lists,
+    gamesInList: store.gamesInList,
+    loading: store.loading,
+    error: store.error,
+    removeGameFromList: store.removeGameFromList,
+    fetchLists: store.fetchLists,
+    createList: store.createList,
+    addGameToList: store.addGameToList,
+    fetchGamesInList: store.fetchGamesInList,
+    deleteList: store.deleteList,
   };
 };

@@ -16,9 +16,8 @@ interface SimilarGamesProps {
 
 const SimilarGames = ({ data }: SimilarGamesProps) => {
   const { t } = useLanguageContext();
-  const items = useMemo(() => {
-    return FilterOutNonePcGames(data);
-  }, [data]);
+
+  const items = useMemo(() => FilterOutNonePcGames(data), [data]);
 
   if (!items?.length) return null;
 

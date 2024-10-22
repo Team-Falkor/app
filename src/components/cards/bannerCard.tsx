@@ -1,10 +1,7 @@
 import { useLanguageContext } from "@/contexts/I18N";
-import {
-  IGDBReturnDataType,
-  IGDBReturnDataTypeCover,
-} from "@/lib/api/igdb/types";
+import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import IGDBImage from "../IGDBImage";
 import { buttonVariants } from "../ui/button";
 
@@ -18,26 +15,22 @@ const BannerCard = ({
 }: IGDBReturnDataType) => {
   const { t } = useLanguageContext();
 
-  const [screenshots, setScreenshots] = useState<IGDBReturnDataTypeCover[]>();
-
   const start = 1;
   const howMany = 3;
 
-  useEffect(() => {
-    if (screenshots) return;
-
-    const extractedArr = ss?.filter((_item, index) => {
-      return index >= start && index < howMany + start;
-    });
-
-    setScreenshots(extractedArr);
-  }, [howMany, screenshots, ss, start]);
+  // Memoize the screenshots to extract only a certain range
+  const screenshots = useMemo(() => {
+    return ss?.filter(
+      (_item, index) => index >= start && index < howMany + start
+    );
+  }, [ss, start, howMany]);
 
   return (
     <div className="relative w-full overflow-hidden rounded-lg h-80">
-      <div className="absolute inset-0 z-0 w-full h-full overflow-hidde">
+      <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <span className="absolute w-full h-full z-[1] from-background to-transparent bg-gradient-to-tr" />
         <IGDBImage
+          imageSize="720p"
           imageId={cover.image_id}
           className="object-cover w-full h-full"
           alt={name}
@@ -54,7 +47,7 @@ const BannerCard = ({
             <div className="flex flex-row justify-start gap-3 mt-3">
               {screenshots?.map((screenshot) => (
                 <IGDBImage
-                  imageSize="720p"
+                  imageSize="screenshot_med"
                   key={screenshot.id}
                   imageId={screenshot.image_id}
                   className="object-cover rounded-md w-52 aspect-video"

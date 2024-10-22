@@ -1,6 +1,7 @@
 import { IGDBReturnDataType, SimilarGame } from "@/lib/api/igdb/types";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
+import { useMemo } from "react";
 import IGDBImage from "../IGDBImage";
 import { Card, CardContent } from "../ui/card";
 
@@ -15,13 +16,16 @@ const DefaultCard = ({
   genres,
   release_dates,
 }: DefaultCardProps) => {
-  const findReleaseDate = release_dates?.find((item) => item.platform === 6);
+  // Memoize the release date for a specific platform (e.g., platform ID 6 for PC)
+  const findReleaseDate = useMemo(() => {
+    return release_dates?.find((item) => item.platform === 6);
+  }, [release_dates]);
 
   return (
     <Card className="group relative m-0 mt-3 w-[200px] rounded-t-lg p-0 overflow-hidden">
       <CardContent className="p-0 m-0">
         <Link to={`/info/$id`} params={{ id: id.toString() }}>
-          <div className="relative overflow-hidden rounded-t-lg 2 group focus:outline-none dark:ring-offset-gray-900">
+          <div className="relative overflow-hidden rounded-t-lg group focus:outline-none dark:ring-offset-gray-900">
             <IGDBImage
               imageId={cover?.image_id ?? ""}
               alt={name}
@@ -29,11 +33,7 @@ const DefaultCard = ({
             />
           </div>
 
-          {/* <div className="absolute inset-0 z-10 flex items-center justify-center w-full h-full">
-          {wantCountdown && !!findReleaseDate?.date && <Countdown date={new Date(findReleaseDate?.date * 1000)} />}
-        </div> */}
-
-          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center transition duration-300 ease-out translate-y-full rounded opacity-0 cursor-pointer bg-slate-700 bg-opacity-80 group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100 group-focus:translate-y-0 group-focus:opacity-100">
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center transition duration-300 ease-out translate-y-full rounded opacity-0 cursor-pointer bg-slate-700 bg-opacity-80 group-focus-within:translate-y-0 group-focus-within:opacity-100 group-hover:translate-y-0 group-hover:opacity-100">
             <div className="flex flex-col items-center justify-center w-full gap-4 p-2">
               <div className="flex flex-col w-full gap-1">
                 <h4 className="font-medium text-center text-white whitespace-pre-line break-before-avoid text-balance">

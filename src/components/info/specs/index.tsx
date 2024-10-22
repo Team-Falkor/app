@@ -1,6 +1,7 @@
 import RequirementsRow from "@/components/info/specs/row";
 import { useLanguageContext } from "@/contexts/I18N";
 import { PcRequirements } from "@/lib/api/igdb/types";
+import { useMemo } from "react";
 
 type PcSpecsProps = PcRequirements;
 
@@ -12,14 +13,14 @@ export type Data = {
 const PcSpecs = ({ minimum, recommended }: PcSpecsProps) => {
   const { t } = useLanguageContext();
 
-  //combine minimum and recommended
-  const data: Data[] | null = [
-    { type: "minimum", data: minimum },
-    { type: "recommended", data: recommended },
-  ];
+  const items = useMemo(() => {
+    const data: Data[] | null = [
+      { type: "minimum", data: minimum },
+      { type: "recommended", data: recommended },
+    ];
 
-  // remove null values
-  const items = data.filter((item) => item?.data);
+    return data.filter((item) => item?.data);
+  }, [minimum, recommended]);
 
   if (!items?.length) return null;
 

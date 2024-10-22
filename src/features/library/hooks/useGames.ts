@@ -13,10 +13,6 @@ export const useGames = () => {
     fetchGames,
   } = useGamesStore();
 
-  // useEffect(() => {
-  //   if (!hasInitialized) initializeDatabase();
-  // }, [hasInitialized, initializeDatabase]);
-
   useEffect(() => {
     fetchGames();
   }, [fetchGames]);

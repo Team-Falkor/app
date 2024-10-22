@@ -1,15 +1,15 @@
 import { Data } from "@/components/info/specs";
 import { cn, scrapeOptions } from "@/lib";
+import { useMemo } from "react";
 
 type RequirementsRowProps = Data;
 
 const RequirementsRow = ({ type, data }: RequirementsRowProps) => {
+  const specs = useMemo(() => !!data && scrapeOptions(data), [data]);
+
+  const isSpecsEm = useMemo(() => Object.values(specs).length, [specs]);
+
   if (!data) return null;
-
-  const specs = scrapeOptions(data);
-
-  const isSpecsEm = Object.values(specs).length;
-
   if (!isSpecsEm) return null;
 
   return (

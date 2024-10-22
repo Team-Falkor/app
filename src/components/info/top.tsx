@@ -2,6 +2,7 @@ import { InfoItadProps, InfoProps } from "@/@types";
 import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { getSteamIdFromWebsites } from "@/lib/helpers";
+import { useMemo } from "react";
 import IGDBImage from "../IGDBImage";
 import ProtonDbBadge from "../protonDbBadge";
 import { Skeleton } from "../ui/skeleton";
@@ -26,9 +27,12 @@ const InfoTop = (props: Props) => {
     itadPending,
   } = props;
 
-  if (error) return null;
+  const steam_id = useMemo(
+    () => getSteamIdFromWebsites(data?.websites ?? []),
+    [data?.websites]
+  );
 
-  const steam_id = getSteamIdFromWebsites(data?.websites ?? []);
+  if (error) return null;
 
   return (
     <div className="sm:-mt-28 sm:flex sm:items-start sm:space-x-5">

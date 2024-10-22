@@ -25,26 +25,31 @@ const IndexLazyImport = createFileRoute('/')()
 // Create/Update Routes
 
 const SettingsRoute = SettingsImport.update({
+  id: '/settings',
   path: '/settings',
   getParentRoute: () => rootRoute,
 } as any)
 
 const LibraryRoute = LibraryImport.update({
+  id: '/library',
   path: '/library',
   getParentRoute: () => rootRoute,
 } as any)
 
 const DownloadsRoute = DownloadsImport.update({
+  id: '/downloads',
   path: '/downloads',
   getParentRoute: () => rootRoute,
 } as any)
 
 const IndexLazyRoute = IndexLazyImport.update({
+  id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
 const InfoIdRoute = InfoIdImport.update({
+  id: '/info/$id',
   path: '/info/$id',
   getParentRoute: () => rootRoute,
 } as any)

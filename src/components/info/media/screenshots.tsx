@@ -8,9 +8,7 @@ interface MediaScreenshotsProps {
 }
 
 const MediaScreenshots = ({ screenshots: ss, name }: MediaScreenshotsProps) => {
-  const screenshots = useMemo(() => {
-    return ss?.slice(0, 4);
-  }, [ss]);
+  const screenshots = useMemo(() => ss?.slice(0, 4), [ss]);
 
   if (!screenshots?.length) return null;
 
@@ -18,6 +16,7 @@ const MediaScreenshots = ({ screenshots: ss, name }: MediaScreenshotsProps) => {
     <div className="flex gap-2 mt-5 overflow-hidden">
       <div className="w-1/2 h-full">
         <IGDBImage
+          imageSize="screenshot_med"
           imageId={screenshots && screenshots[0] ? screenshots[0].image_id : ""}
           alt={name}
           className="object-cover w-full h-full rounded-lg"
@@ -31,6 +30,7 @@ const MediaScreenshots = ({ screenshots: ss, name }: MediaScreenshotsProps) => {
               return (
                 <li key={screenshot.image_id}>
                   <IGDBImage
+                    imageSize="screenshot_med"
                     key={screenshot.image_id}
                     imageId={screenshot.image_id}
                     alt={name}

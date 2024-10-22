@@ -28,6 +28,7 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
   });
 
   if (isLoading) return <div>Loading...</div>;
+  if (isError) return <div className="text-red-500">Failed to load games.</div>;
 
   return (
     <div className="group/list">
@@ -62,10 +63,11 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
         </div>
       </div>
 
-      {!!data?.length && !isLoading && !isError ? (
+      {/* Carousel or No Games Fallback */}
+      {data?.length ? (
         <Carousel>
           <CarouselContent>
-            {data?.map((game) => (
+            {data.map((game) => (
               <CarouselItem
                 className="md:basis-[12%] basis-1/6 2xl:basis-[13.3%] xl:basis-[18%]"
                 key={game.game_id}

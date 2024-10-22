@@ -1,5 +1,6 @@
 import { igdb } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 import DefaultCard from "./cards/defaultCard";
 import GenericRowSkeleton from "./skeletons/genericRow";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
@@ -17,23 +18,29 @@ const GenericRow = ({
   className,
   id,
 }: GenericRowProps) => {
-  const fetcher = async () => {
+  // Memoize the fetcher function to prevent unnecessary re-creations
+  const fetcher = useCallback(async () => {
     const data = await igdb[dataToFetch]();
     return data;
-  };
+  }, [dataToFetch]);
 
   const { data, isPending, error } = useQuery({
     queryKey: fetchKey,
     queryFn: fetcher,
   });
 
+  const wantCountdown = useMemo(
+    () => dataToFetch === "mostAnticipated",
+    [dataToFetch]
+  );
+
   if (isPending) return <GenericRowSkeleton />;
   if (error) return null;
 
   return (
     <Carousel
-      className={className} // Apply custom className to the Carousel
-      id={id} // Apply custom id to the Carousel
+      className={className}
+      id={id}
       opts={{
         skipSnaps: true,
       }}
@@ -51,11 +58,11 @@ const GenericRow = ({
               2xl:basis-[13.5%]
               px-2
             "
-            id={`carousel-item-${game.id}`} // Add unique id for each carousel item
+            id={`carousel-item`}
           >
             <DefaultCard
               key={game.id}
-              wantCountdown={dataToFetch === "mostAnticipated"}
+              wantCountdown={wantCountdown}
               {...game}
             />
           </CarouselItem>
