@@ -1,6 +1,9 @@
 name: build
 
-on: push
+on:
+  push:
+    branches:
+      - release
 
 jobs:
   build:
@@ -27,10 +30,12 @@ jobs:
       - name: install dependencies
         run: bun install
 
-      - name: Install dependencies for packaging
+      - name: Install dependencies for building packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y libarchive-tools
+          sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak rpm
+          sudo ln -s /snap/bin/snapcraft /usr/local/bin/snapcraft
+          sudo snap install snapcraft --classic
 
       - name: Check Environment Variables
         run: |
