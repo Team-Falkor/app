@@ -12,7 +12,7 @@ interface ListsState {
   loading: boolean;
   error: string | null;
   hasDoneFirstFetch: boolean;
-  fetchLists: () => Promise<void>;
+  fetchLists: () => Promise<Array<List>>;
   createList: (name: string, description?: string) => Promise<void>;
   addGameToList: (listId: ListId, game: ListGame) => Promise<void>;
   removeGameFromList: (listId: ListId, gameId: number) => Promise<void>;
@@ -38,8 +38,12 @@ export const useListsStore = create<ListsState>((set) => ({
     try {
       const fetchedLists = await listsDB("get-all-lists");
       set({ lists: fetchedLists });
+
+      return fetchedLists;
     } catch {
       set({ error: "Failed to load lists" });
+
+      return [];
     } finally {
       set({ loading: false });
     }

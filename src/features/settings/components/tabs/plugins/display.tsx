@@ -18,7 +18,7 @@ const PluginDisplay = ({ showRows }: Props) => {
   const { data, isPending, error } = useQuery({
     queryKey: ["plugins", "all"],
     queryFn: async () => {
-      const plugins = await getPlugins();
+      const plugins = await getPlugins(true);
 
       return plugins?.data;
     },
@@ -49,6 +49,7 @@ const PluginDisplay = ({ showRows }: Props) => {
             image={plugin.logo}
             banner={plugin.banner}
             installed={true}
+            disabled={plugin.disabled}
           />
         ))}
       </div>

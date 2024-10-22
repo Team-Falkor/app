@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { useLanguageContext } from "@/contexts/I18N";
+import { usePluginActions } from "@/hooks";
 
 interface Props {
   image: string;
@@ -10,6 +11,7 @@ interface Props {
   version: string;
 
   installed?: boolean;
+  disabled: boolean;
 }
 
 const PluginCard = ({
@@ -20,7 +22,9 @@ const PluginCard = ({
   description,
 
   installed = false,
+  disabled,
 }: Props) => {
+  const { disablePlugin, enablePlugin, uninstallPlugin } = usePluginActions(id);
   const { t } = useLanguageContext();
 
   return (
@@ -44,8 +48,20 @@ const PluginCard = ({
         <p className="text-xs font-medium text-left">{description}</p>
       </div>
       <div className="flex items-center justify-end gap-2">
+        {disabled ? (
+          <Button variant={"secondary"} onClick={enablePlugin}>
+            Enable
+          </Button>
+        ) : (
+          <Button variant={"destructive"} onClick={disablePlugin}>
+            Disable
+          </Button>
+        )}
+
         {installed ? (
-          <Button variant="destructive">{t("uninstall")}</Button>
+          <Button variant="destructive" onClick={uninstallPlugin}>
+            {t("uninstall")}
+          </Button>
         ) : (
           <Button variant="secondary">{t("install")}</Button>
         )}

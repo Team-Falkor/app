@@ -119,9 +119,9 @@ const DownloadDialog = ({
             </div>
 
             <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
-              {!isLoading && sources?.length ? (
+              {!isLoading ? (
                 <DownloadDialogSources
-                  sources={[...itadSources, ...sources]}
+                  sources={[...itadSources, ...(sources ?? [])]}
                   igdb_id={igdb_id}
                 />
               ) : isLoading && !itadPending ? (

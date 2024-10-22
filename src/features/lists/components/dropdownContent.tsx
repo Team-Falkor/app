@@ -6,17 +6,21 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
+import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
-import { useEffect } from "react";
 import { useLists } from "../hooks/useLists";
 import ListsDropdownItem from "./dropdownItem";
 
 const ListsDropdownContent = (props: IGDBReturnDataType) => {
   const { fetchLists, lists } = useLists();
 
-  useEffect(() => {
-    fetchLists();
-  }, []);
+  const { isLoading, error } = useQuery({
+    queryKey: ["lists", "all"],
+    queryFn: fetchLists,
+  });
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return null;
 
   return (
     <DropdownMenuContent className="max-w-sm">

@@ -24,8 +24,6 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
     } else {
       if (!item?.sources?.length) return null;
 
-      console.log(item);
-
       // Narrowing item.sources to NonDefaultSource[]
       return (item?.sources as PluginSearchResponse[])?.map((source) => (
         <DefaultDownloadCard

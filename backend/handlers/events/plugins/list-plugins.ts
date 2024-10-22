@@ -11,9 +11,12 @@ import { registerEvent } from "../utils/registerEvent";
 //       success: true;
 //     };
 
-const getPlugin = async (_event: Electron.IpcMainInvokeEvent) => {
+const getPlugin = async (
+  _event: Electron.IpcMainInvokeEvent,
+  wantDisabled: boolean = false
+) => {
   try {
-    const plugins = await pluginHandler.list();
+    const plugins = await pluginHandler.list(wantDisabled);
 
     if (!plugins) {
       return {

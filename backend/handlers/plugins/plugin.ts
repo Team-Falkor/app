@@ -1,4 +1,4 @@
-import { PluginId, PluginSetupJSON } from "@/@types";
+import { PluginId, PluginSetupJSON, PluginSetupJSONDisabled } from "@/@types";
 import fs from "node:fs";
 import { join } from "node:path";
 import { constants } from "../../utils";
@@ -150,25 +150,39 @@ export class PluginHandler {
     }
   }
 
-  public async list() {
+  public async list(
+    wantDisabled: boolean
+  ): Promise<Array<PluginSetupJSONDisabled>> {
     try {
       await this.init();
 
-      const plugins: Array<PluginSetupJSON> = [];
+      const plugins: Array<PluginSetupJSONDisabled> = [];
 
       const files = await fs.promises.readdir(this.path);
       for await (const file of files) {
+        const filePath = join(this.path, file);
         if (file.endsWith(".json")) {
-          const filePath = join(this.path, file);
           const data = await fs.promises.readFile(filePath, "utf-8");
-          plugins.push(JSON.parse(data));
+
+          plugins.push({
+            disabled: false,
+            ...JSON.parse(data),
+          });
+        }
+        if (file.endsWith(".disabled") && wantDisabled) {
+          const data = await fs.promises.readFile(filePath, "utf-8");
+
+          plugins.push({
+            disabled: true,
+            ...JSON.parse(data),
+          });
         }
       }
 
       return plugins;
     } catch (error) {
       console.error(`Failed to list plugins: ${error}`);
-      return null;
+      return [];
     }
   }
 }

@@ -15,3 +15,7 @@ export interface PluginSetupJSON {
     url?: string;
   };
 }
+
+export type PluginSetupJSONDisabled = PluginSetupJSON & {
+  disabled: boolean;
+};
