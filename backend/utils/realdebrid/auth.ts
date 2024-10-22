@@ -10,7 +10,7 @@ export class RealDebridAuth {
   refreshToken: string | undefined;
 
   constructor() {
-    this.clientId = import.meta.env.VITE_RD_CLIENT_ID;
+    this.clientId = "X245A4XAIBGVM";
   }
 
   // Step 1: Obtain device and user codes
@@ -117,3 +117,12 @@ export class RealDebridAuth {
     return data;
   }
 }
+
+let instance: RealDebridAuth | null = null;
+
+export const getRealDebridAuthInstance = (): RealDebridAuth => {
+  if (!instance) {
+    instance = new RealDebridAuth();
+  }
+  return instance;
+};

@@ -1,5 +1,5 @@
+import { RealDebridTorrentInfo } from "@/@types/accounts";
 import { RealDebridAPI } from "./models/api";
-import { RealDebridTorrentInfo } from "./types";
 
 export class Torrents extends RealDebridAPI {
   constructor(accessToken: string) {

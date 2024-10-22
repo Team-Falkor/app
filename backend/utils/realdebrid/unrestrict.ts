@@ -1,8 +1,8 @@
-import { RealDebridAPI } from "./models/api";
 import {
   RealDebridUnrestrictCheck,
   RealDebridUnrestrictFileFolder,
-} from "./types";
+} from "@/@types/accounts";
+import { RealDebridAPI } from "./models/api";
 
 export class Unrestrict extends RealDebridAPI {
   constructor(accessToken: string) {
