@@ -1,8 +1,25 @@
 import { db } from "../knex";
 
+/**
+ * Handles operations on the `library_games` table in the database.
+ * The `library_games` table contains all games in the library.
+ *
+ * @class
+ */
 class GamesDatabase {
-  private initialized = false;
+  /**
+   * Whether the database has been initialized.
+   *
+   * @private
+   * @type {boolean}
+   */
+  private initialized: boolean = false;
 
+  /**
+   * Initializes the database.
+   *
+   * @returns {Promise<void>}
+   */
   async init(): Promise<void> {
     if (this.initialized) return;
 
@@ -28,7 +45,19 @@ class GamesDatabase {
     }
   }
 
-  // Add a new game
+  /**
+   * Adds a new game to the library.
+   *
+   * @param {Object} game - The game to add.
+   * @param {string} game.name - The name of the game.
+   * @param {string} game.path - The path to the game.
+   * @param {string} game.id - The ID of the game.
+   * @param {string} [game.icon] - The icon of the game.
+   * @param {string} [game.args] - The arguments to pass to the game when launching it.
+   * @param {string} [game.command] - The command to use when launching the game.
+   *
+   * @returns {Promise<void>}
+   */
   async addGame(game: {
     name: string;
     path: string;
@@ -50,7 +79,13 @@ class GamesDatabase {
     });
   }
 
-  // Get a game by ID
+  /**
+   * Gets a game from the library by ID.
+   *
+   * @param {string} gameId - The ID of the game to retrieve.
+   *
+   * @returns {Promise<Object>} - The retrieved game.
+   */
   async getGameById(gameId: string): Promise<any> {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
@@ -59,7 +94,11 @@ class GamesDatabase {
     return game;
   }
 
-  // Get all games
+  /**
+   * Gets all games from the library.
+   *
+   * @returns {Promise<Object[]>} - The retrieved games.
+   */
   async getAllGames(): Promise<any[]> {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
@@ -68,7 +107,19 @@ class GamesDatabase {
     return games;
   }
 
-  // Update a game
+  /**
+   * Updates a game in the library.
+   *
+   * @param {string} gameId - The ID of the game to update.
+   * @param {Object} updates - The updates to make to the game.
+   * @param {string} [updates.name] - The new name of the game.
+   * @param {string} [updates.path] - The new path of the game.
+   * @param {string} [updates.icon] - The new icon of the game.
+   * @param {string} [updates.args] - The new arguments to pass to the game when launching it.
+   * @param {string} [updates.command] - The new command to use when launching the game.
+   *
+   * @returns {Promise<void>}
+   */
   async updateGame(
     gameId: string,
     updates: {
@@ -96,7 +147,13 @@ class GamesDatabase {
       });
   }
 
-  // Delete a game
+  /**
+   * Deletes a game from the library.
+   *
+   * @param {string} gameId - The ID of the game to delete.
+   *
+   * @returns {Promise<void>}
+   */
   async deleteGame(gameId: string): Promise<void> {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");

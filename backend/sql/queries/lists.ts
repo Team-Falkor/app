@@ -1,14 +1,24 @@
 import { List, ListGame } from "@/@types";
 import { db } from "../knex";
 
+/**
+ * Handles CRUD operations for lists and games in the database
+ */
 class ListsDatabase {
-  private initialized = false;
+  /**
+   * Indicates if the database has been initialized
+   */
+  private initialized: boolean = false;
 
+  /**
+   * Initializes the database tables if they don't exist
+   */
   async init(): Promise<void> {
     if (this.initialized) return;
 
     // Ensure tables are created only once
     try {
+      // Create the "lists" table
       await db.schema.hasTable("lists").then(async (exists) => {
         if (exists) return;
         await db.schema.createTable("lists", (table) => {
@@ -18,6 +28,7 @@ class ListsDatabase {
         });
       });
 
+      // Create the "games" table
       await db.schema.hasTable("games").then(async (exists) => {
         if (exists) return;
 
@@ -32,6 +43,7 @@ class ListsDatabase {
         });
       });
 
+      // Create the "list_games" table
       await db.schema.hasTable("list_games").then(async (exists) => {
         if (exists) return;
         await db.schema.createTable("list_games", (table) => {
@@ -58,7 +70,11 @@ class ListsDatabase {
     this.initialized = true;
   }
 
-  // Create a new list
+  /**
+   * Creates a new list
+   * @param {string} name The name of the list
+   * @param {string} [description] The description of the list
+   */
   async createList(name: string, description?: string): Promise<void> {
     await this.init();
     try {
@@ -69,7 +85,11 @@ class ListsDatabase {
     }
   }
 
-  // Add a game to the games table and link it to a specific list
+  /**
+   * Adds a game to the games table and links it to a specific list
+   * @param {number} listId The ID of the list to add the game to
+   * @param {ListGame} game The game to add to the list
+   */
   async addGameToList(list_id: number, game: ListGame): Promise<void> {
     await this.init();
 
@@ -95,7 +115,11 @@ class ListsDatabase {
     }
   }
 
-  // Get all games in a specific list
+  /**
+   * Gets all games in a specific list
+   * @param {number} listId The ID of the list to get the games from
+   * @returns {Promise<ListGame[]>} The list of games in the list
+   */
   async getGamesInList(listId: number): Promise<ListGame[]> {
     await this.init();
 
@@ -110,7 +134,10 @@ class ListsDatabase {
     }
   }
 
-  // Get all lists
+  /**
+   * Gets all lists
+   * @returns {Promise<List[]>} The list of lists
+   */
   async getAllLists(): Promise<List[]> {
     await this.init();
 
@@ -122,7 +149,11 @@ class ListsDatabase {
     }
   }
 
-  // Remove a game from a specific list
+  /**
+   * Removes a game from a specific list
+   * @param {number} listId The ID of the list to remove the game from
+   * @param {number} gameId The ID of the game to remove
+   */
   async removeGameFromList(list_id: number, game_id: number): Promise<void> {
     await this.init();
 
@@ -134,7 +165,10 @@ class ListsDatabase {
     }
   }
 
-  // Delete a list and all its games (removes the links, not the games themselves)
+  /**
+   * Deletes a list and all its games (removes the links, not the games themselves)
+   * @param {number} listId The ID of the list to delete
+   */
   async deleteList(list_id: number): Promise<void> {
     await this.init();
 
@@ -150,7 +184,10 @@ class ListsDatabase {
     }
   }
 
-  // Optionally, you could add a method to delete a game entirely
+  /**
+   * Deletes a game entirely
+   * @param {number} gameId The ID of the game to delete
+   */
   async deleteGame(game_id: number): Promise<void> {
     await this.init();
 
