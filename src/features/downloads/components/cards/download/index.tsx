@@ -23,12 +23,11 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
     queryFn: async () => await igdb.info(igdb_id),
-    enabled: !igdb_id,
+    enabled: !!igdb_id,
     staleTime: Infinity,
     retry: false,
   });
 
-  // Effect to update download speed history, memoized to avoid unnecessary updates
   useEffect(() => {
     if (!stats?.downloadSpeed) return;
     updateSpeedHistory(stats.downloadSpeed);
@@ -113,6 +112,8 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
                 <DownloadCardChartArea
                   progress={stats?.progress ?? 0}
                   chartData={speedHistory}
+                  downloadSpeed={stats?.downloadSpeed ?? 0}
+                  totalSize={stats?.totalSize ?? 0}
                 />
               </div>
 

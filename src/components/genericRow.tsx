@@ -46,10 +46,11 @@ const GenericRow = ({
       }}
     >
       <CarouselContent className="px-3">
-        {data?.map((game) => (
-          <CarouselItem
-            key={game.id}
-            className="
+        {!!data?.length &&
+          data?.map((game) => (
+            <CarouselItem
+              key={game.id}
+              className="
               basis-1/2
               sm:basis-1/3
               md:basis-1/4
@@ -58,15 +59,15 @@ const GenericRow = ({
               2xl:basis-[13.5%]
               px-2
             "
-            id={`carousel-item`}
-          >
-            <DefaultCard
-              key={game.id}
-              wantCountdown={wantCountdown}
-              {...game}
-            />
-          </CarouselItem>
-        ))}
+              id={`carousel-item`}
+            >
+              <DefaultCard
+                key={game.id}
+                wantCountdown={wantCountdown}
+                {...game}
+              />
+            </CarouselItem>
+          ))}
       </CarouselContent>
     </Carousel>
   );

@@ -6,7 +6,7 @@ import { registerEvent } from "../utils";
 const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
   try {
     // Get the torrent by infoHash
-    const torrent = client.get(infoHash);
+    const torrent = await client.get(infoHash);
 
     if (!torrent) {
       console.error(`Torrent with infoHash ${infoHash} not found`);
@@ -18,7 +18,7 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     }
 
     // Pause the torrent (synchronous in WebTorrent)
-    torrent.pause();
+    await torrent.pause();
     console.log(`Paused torrent: ${torrent.name}`);
 
     // Find corresponding igdb_id
