@@ -151,7 +151,7 @@ export class PluginHandler {
   }
 
   public async list(
-    wantDisabled: boolean
+    wantDisabled: boolean = false
   ): Promise<Array<PluginSetupJSONDisabled>> {
     try {
       await this.init();
