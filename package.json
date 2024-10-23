@@ -3,6 +3,14 @@
   "private": true,
   "version": "0.0.4",
   "type": "module",
+  "author": {
+    "name": "team-falkor",
+    "url": "https://github.com/team-falkor"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/team-falkor/app.git"
+  },
   "scripts": {
     "dev": "vite",
     "prebuild": "tsc && vite build",

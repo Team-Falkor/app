@@ -41,13 +41,6 @@ jobs:
       - name: install dependencies
         run: bun install
 
-      - name: Install dependencies for building packages
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak flatpak-builder rpm
-          sudo ln -s /snap/bin/snapcraft /usr/local/bin/snapcraft
-          sudo snap install snapcraft --classic
-
       - name: Check Environment Variables
         run: |
           [ -z "$VITE_TWITCH_CLIENT_ID" ] && echo "VITE_TWITCH_CLIENT_ID not set" && exit 1
@@ -59,7 +52,12 @@ jobs:
 
       - name: build linux
         if: matrix.os == 'ubuntu-latest'
-        run: bun run prebuild && bun run build:linux
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak flatpak-builder rpm
+          sudo ln -s /snap/bin/snapcraft /usr/local/bin/snapcraft
+          sudo snap install snapcraft --classic
+          bun run prebuild && bun run build:linux
 
       - name: build windows
         if: matrix.os == 'windows-latest'
