@@ -41,15 +41,6 @@ jobs:
       - name: install dependencies
         run: bun install
 
-      - name: Check Environment Variables
-        run: |
-          [ -z "$VITE_TWITCH_CLIENT_ID" ] && echo "VITE_TWITCH_CLIENT_ID not set" && exit 1
-          [ -z "$VITE_TWITCH_CLIENT_SECRET" ] && echo "VITE_TWITCH_CLIENT_SECRET not set" && exit 1
-          [ -z "$VITE_ITAD_API_KEY" ] && echo "VITE_ITAD_API_KEY not set" && exit 1
-          [ -z "$VITE_STEAMGRIDDB_API_KEY" ] && echo "VITE_STEAMGRIDDB_API_KEY not set" && exit 1
-          [ -z "$VITE_RD_CLIENT_ID" ] && echo "VITE_RD_CLIENT_ID not set" && exit 1
-          echo "All necessary environment variables are set."
-
       - name: build linux
         if: matrix.os == 'ubuntu-latest'
         run: |
