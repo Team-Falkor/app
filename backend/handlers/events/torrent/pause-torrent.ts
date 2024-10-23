@@ -18,7 +18,7 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     }
 
     // Pause the torrent (synchronous in WebTorrent)
-    await torrent.pause();
+    torrent.pause();
     console.log(`Paused torrent: ${torrent.name}`);
 
     // Find corresponding igdb_id

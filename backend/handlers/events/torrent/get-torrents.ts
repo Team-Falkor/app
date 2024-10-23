@@ -20,6 +20,7 @@ const getTorrents = (_event: IpcMainInvokeEvent) => {
       numPeers: torrent.numPeers,
       path: torrent.path,
       paused: torrent.paused,
+      timeRemaining: torrent.timeRemaining,
     };
   });
 

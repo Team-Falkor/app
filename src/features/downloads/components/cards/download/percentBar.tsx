@@ -5,29 +5,17 @@ interface Props {
   percent: number;
   downlaodSpeed: number;
   totalSize: number;
+  timeRemaning: number;
 }
 
-function formatElapsedTime(totalSeconds: number): string {
-  const days = Math.floor(totalSeconds / (3600 * 24));
-  const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-  const seconds = totalSeconds % 60;
-
-  const parts: string[] = [];
-
-  if (days > 0) parts.push(String(days).padStart(2, "0"));
-  if (hours > 0 || days > 0) parts.push(String(hours).padStart(2, "0")); // Show hours if there are days
-  if (minutes > 0 || hours > 0 || days > 0)
-    parts.push(String(minutes).padStart(2, "0")); // Show minutes if there are hours
-  parts.push(String(seconds).padStart(2, "0")); // Always show seconds
-
-  return parts.join(":");
-}
-
-const PercentBar = ({ percent, downlaodSpeed, totalSize }: Props) => {
+const PercentBar = ({
+  percent,
+  downlaodSpeed,
+  totalSize,
+  timeRemaning,
+}: Props) => {
   const estimatedTime = useDownloadTime({
-    downloadSpeedBytesPerSec: downlaodSpeed,
-    totalSizeBytes: totalSize,
+    timeRemaining: timeRemaning,
   });
 
   const barStyle = useMemo(() => {

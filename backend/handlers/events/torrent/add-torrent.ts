@@ -32,6 +32,7 @@ const handleTorrentProgress = (
       downloadSpeed: torrent.downloadSpeed,
       uploadSpeed: torrent.uploadSpeed,
       totalSize: torrent.length,
+      timeRemaining: torrent.timeRemaining,
     });
 
     lastUpdateTime = now; // Update the last time we sent progress
@@ -121,6 +122,7 @@ const addTorrent = async (
       numPeers: torrent.numPeers,
       downloadSpeed: torrent.downloadSpeed,
       uploadSpeed: torrent.uploadSpeed,
+      timeRemaining: torrent.timeRemaining,
     };
   } catch (error) {
     console.error(`Failed to add torrent: ${torrentId}`, error);

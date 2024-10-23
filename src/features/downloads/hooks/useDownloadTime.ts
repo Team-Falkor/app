@@ -1,26 +1,22 @@
 import { useEffect, useState } from "react";
 
 interface UseDownloadTimeProps {
-  downloadSpeedBytesPerSec: number; // Download speed in bytes per second
-  totalSizeBytes: number; // Total size in bytes
+  timeRemaining: number; // Time remaining in milliseconds
 }
 
-const useDownloadTime = ({
-  downloadSpeedBytesPerSec,
-  totalSizeBytes,
-}: UseDownloadTimeProps) => {
+const useDownloadTime = ({ timeRemaining }: UseDownloadTimeProps) => {
   const [formattedTime, setFormattedTime] = useState<string | null>(null); // Formatted time
 
   useEffect(() => {
-    if (downloadSpeedBytesPerSec > 0 && totalSizeBytes > 0) {
-      // Calculate estimated time in seconds
-      const timeInSeconds = totalSizeBytes / downloadSpeedBytesPerSec;
+    const timeInSeconds = timeRemaining / 1000; // Convert milliseconds to seconds
+
+    if (timeInSeconds > 0) {
       const formatted = formatElapsedTime(timeInSeconds);
       setFormattedTime(formatted);
     } else {
-      setFormattedTime(null); // Invalid data case
+      setFormattedTime("Completed"); // Optional: message for completed downloads
     }
-  }, [downloadSpeedBytesPerSec, totalSizeBytes]);
+  }, [timeRemaining]);
 
   return formattedTime; // Return the formatted time
 };
@@ -39,7 +35,7 @@ const formatElapsedTime = (timeInSeconds: number): string => {
     `${seconds}s`, // Always show seconds
   ];
 
-  // Filter out null values and join with a colon separator
+  // Filter out null values and join with a space separator
   return parts.filter(Boolean).join(" ");
 };
 

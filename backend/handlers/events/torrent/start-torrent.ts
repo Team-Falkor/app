@@ -6,7 +6,7 @@ import { registerEvent } from "../utils";
 const startTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
   const torrent = await client.get(infoHash);
   if (torrent) {
-    await torrent.resume();
+    torrent.resume();
     console.log(`Paused torrent: ${torrent.name}`);
 
     // Find the corresponding igdb_id from the torrents map

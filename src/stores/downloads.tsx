@@ -12,6 +12,7 @@ export interface Torrent {
   paused: boolean;
   igdb_id: string;
   totalSize: number;
+  timeRemaining: number;
 }
 
 interface DownloadState {

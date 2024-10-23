@@ -1,3 +1,4 @@
+// ... other imports
 import IGDBImage from "@/components/IGDBImage";
 import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadSpeedHistory";
 import { bytesToHumanReadable, cn, igdb } from "@/lib";
@@ -22,10 +23,10 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", igdb_id],
-    queryFn: async () => await igdb.info(igdb_id),
-    enabled: !!igdb_id,
-    staleTime: Infinity,
-    retry: false,
+    queryFn: async () => {
+      console.log("testing");
+      return await igdb.info(igdb_id);
+    },
   });
 
   useEffect(() => {
@@ -110,7 +111,8 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
             <>
               <div className="size-full overflow-hidden">
                 <DownloadCardChartArea
-                  progress={stats?.progress ?? 0}
+                  progress={stats?.progress ? stats.progress * 100 : 0}
+                  timeRemaining={stats?.timeRemaining ?? 0}
                   chartData={speedHistory}
                   downloadSpeed={stats?.downloadSpeed ?? 0}
                   totalSize={stats?.totalSize ?? 0}
