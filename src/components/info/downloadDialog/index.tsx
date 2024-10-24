@@ -41,7 +41,7 @@ const DownloadDialog = ({
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const { searchAllPlugins, plugins } = UsePlugins();
+  const { searchAllPlugins, plugins, getPlugins } = UsePlugins();
 
   const itadSources: ItemDownload[] = useMemo(
     () => [
@@ -53,9 +53,14 @@ const DownloadDialog = ({
     [itadData]
   );
 
-  const { data: sources, isPending } = useQuery<ItemDownload[]>({
+  const {
+    data: sources,
+    isPending,
+    refetch,
+  } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
+      console.log("getting sources");
       const plugins = await searchAllPlugins(formatName(title));
       const pluginSources: ItemDownload[] = plugins.filter((plugin) => {
         return plugin.sources.length > 0;
@@ -109,7 +114,6 @@ const DownloadDialog = ({
             />
           </DialogDescription>
         </DialogHeader>
-
         <ScrollArea className="w-full border rounded-md h-72 mt-1">
           <div className="pb-5">
             <div className="sticky top-0 left-0 right-0 mb-3 bg-muted z-10">
@@ -140,6 +144,17 @@ const DownloadDialog = ({
             </ul>
           </div>
         </ScrollArea>
+        <div className="w-full flex justify-end items-center">
+          <Button
+            variant={"secondary"}
+            onClick={() => {
+              refetch();
+              getPlugins();
+            }}
+          >
+            Refresh Sources
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
