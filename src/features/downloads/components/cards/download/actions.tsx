@@ -1,14 +1,10 @@
+import { ITorrent } from "@/@types/torrent";
 import { Button } from "@/components/ui/button";
 import { UseDownloadAction } from "@/features/downloads/hooks/useDownloadAction";
-import { Torrent } from "@/stores/downloads";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
-type Props = {
-  stats: Torrent | null;
-};
-
-const DownloadCardActions = ({ stats }: Props) => {
+const DownloadCardActions = (stats: ITorrent) => {
   const { pauseDownload, startDownload, stopDownload, status } =
     UseDownloadAction(stats?.infoHash);
 

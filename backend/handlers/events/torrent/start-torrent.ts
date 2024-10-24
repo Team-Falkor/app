@@ -12,15 +12,15 @@ const startTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     // Find the corresponding igdb_id from the torrents map
     const igdb_id = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-    )?.[0]; // .[0] to get the igdb_id from the key-value pair
+    )?.[1]; // .[0] to get the igdb_id from the key-value pair
 
     return {
       message: `resumed torrent: ${torrent.name}`,
       error: false,
       data: {
-        igdb_id,
         infoHash: torrent.infoHash,
         name: torrent.name,
+        game_data: igdb_id?.game_data,
       },
     };
   } else {

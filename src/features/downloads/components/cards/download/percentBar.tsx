@@ -3,17 +3,10 @@ import { useMemo } from "react";
 
 interface Props {
   percent: number;
-  downlaodSpeed: number;
-  totalSize: number;
   timeRemaning: number;
 }
 
-const PercentBar = ({
-  percent,
-  downlaodSpeed,
-  totalSize,
-  timeRemaning,
-}: Props) => {
+const PercentBar = ({ percent, timeRemaning }: Props) => {
   const estimatedTime = useDownloadTime({
     timeRemaining: timeRemaning,
   });

@@ -1,31 +1,18 @@
+import { ITorrent, ITorrentGameData } from "@/@types/torrent";
 import { toast } from "sonner";
 import { create } from "zustand";
 
-export interface Torrent {
-  infoHash: string;
-  name: string;
-  progress: number;
-  downloadSpeed: number;
-  uploadSpeed: number;
-  numPeers: number;
-  path: string;
-  paused: boolean;
-  igdb_id: string;
-  totalSize: number;
-  timeRemaining: number;
-}
-
 interface DownloadState {
-  downloading: Torrent[];
+  downloading: ITorrent[];
   error: string | null;
   loading: boolean;
-  addDownload: (torrentId: string, igdb_id: string) => void;
+  addDownload: (torrentId: string, game_data: ITorrentGameData) => void;
   removeDownload: (infoHash: string) => void;
   fetchDownloads: () => void;
   pauseDownload: (infoHash: string) => void;
-  getTorrent: (torrentId: string) => Promise<Torrent | null>;
+  getTorrent: (torrentId: string) => Promise<ITorrent | null>;
   getTorrents: () => void;
-  getQueue: () => Torrent[];
+  getQueue: () => ITorrent[];
 }
 
 export const useDownloadStore = create<DownloadState>((set, get) => ({
@@ -33,16 +20,16 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   error: null,
   loading: false,
 
-  addDownload: async (torrentId: string, igdb_id: string) => {
+  addDownload: async (torrentId: string, game_data: ITorrentGameData) => {
     set({ loading: true });
     try {
       const torrent = await window.ipcRenderer.invoke(
         "torrent:add-torrent",
         torrentId,
-        igdb_id
+        game_data
       );
       set((state) => ({
-        downloading: [...state.downloading, { ...torrent, igdb_id }],
+        downloading: [...state.downloading, { ...torrent, game_data }],
         loading: false,
       }));
 

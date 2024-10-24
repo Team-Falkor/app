@@ -1,17 +1,17 @@
+import { ITorrent } from "@/@types/torrent";
 import type { IpcMainInvokeEvent } from "electron";
 import { client, torrents } from "../../../utils";
 import { registerEvent } from "../utils";
 
 // Event handler for getting the list of torrents
-const getTorrents = (_event: IpcMainInvokeEvent) => {
+const getTorrents = (_event: IpcMainInvokeEvent): Array<ITorrent> => {
   const activeTorrents = client.torrents.map((torrent) => {
     // Find the corresponding igdb_id from the torrents map
     const igdb_id = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-    )?.[0];
+    )?.[1];
 
-    return {
-      igdb_id,
+    const return_data: ITorrent = {
       infoHash: torrent.infoHash,
       name: torrent.name,
       progress: torrent.progress,
@@ -21,7 +21,11 @@ const getTorrents = (_event: IpcMainInvokeEvent) => {
       path: torrent.path,
       paused: torrent.paused,
       timeRemaining: torrent.timeRemaining,
+      totalSize: torrent.length,
+      game_data: igdb_id?.game_data,
     };
+
+    return return_data;
   });
 
   return activeTorrents;

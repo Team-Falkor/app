@@ -24,15 +24,15 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     // Find corresponding igdb_id
     const igdb_id = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-    )?.[0];
+    )?.[1];
 
     return {
       message: `Paused torrent: ${torrent.name}`,
       error: false,
       data: {
-        igdb_id,
         infoHash: torrent.infoHash,
         name: torrent.name,
+        game_data: igdb_id?.game_data,
       },
     };
   } catch (error) {

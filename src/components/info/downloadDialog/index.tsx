@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Website } from "@/lib/api/igdb/types";
 
+import { ITorrentGameData } from "@/@types/torrent";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
@@ -25,7 +26,7 @@ interface DownloadDialogProps extends InfoItadProps {
   title: string;
   isReleased: boolean;
   websites: Website[];
-  igdb_id: number;
+  game_data: ITorrentGameData;
 }
 
 // Centralized provider management
@@ -36,7 +37,7 @@ const DownloadDialog = ({
   itadData,
   itadPending,
   title,
-  igdb_id,
+  game_data,
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
@@ -122,7 +123,7 @@ const DownloadDialog = ({
               {!isLoading ? (
                 <DownloadDialogSources
                   sources={[...itadSources, ...(sources ?? [])]}
-                  igdb_id={igdb_id}
+                  game_data={game_data}
                 />
               ) : isLoading && !itadPending ? (
                 <div className="flex flex-row items-center justify-center w-full gap-2">

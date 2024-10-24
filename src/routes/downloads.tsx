@@ -1,7 +1,8 @@
+import { ITorrent } from "@/@types/torrent";
 import DownloadCard from "@/features/downloads/components/cards/download";
+import { DownloadCardLoading } from "@/features/downloads/components/cards/loading";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { useMapState } from "@/hooks";
-import { Torrent } from "@/stores/downloads";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/downloads")({
 
 function Downloads() {
   const { downloading, getQueue, fetchDownloads } = UseDownloads();
-  const { map: statsMap, set: setStats } = useMapState<string, Torrent>();
+  const { map: statsMap, set: setStats } = useMapState<string, ITorrent>();
 
   // Memoize queue based on `downloading`, as it’s the relevant state
   const queue = useMemo(() => getQueue() || [], [getQueue]);
@@ -21,7 +22,7 @@ function Downloads() {
   }, [fetchDownloads]);
 
   const handleProgress = useCallback(
-    (_event: any, data: Torrent) => {
+    (_event: any, data: ITorrent) => {
       setStats(data.infoHash, data);
     },
     [setStats]
@@ -42,15 +43,8 @@ function Downloads() {
           const hash = torrent.infoHash;
           const stats = statsMap.get(hash);
 
-          return (
-            <DownloadCard
-              key={hash}
-              downloading={!torrent?.paused}
-              igdb_id={torrent.igdb_id}
-              hash={torrent.infoHash}
-              stats={stats ?? null}
-            />
-          );
+          if (!stats) return <DownloadCardLoading />;
+          return <DownloadCard key={hash} {...stats} />;
         })
       ) : (
         <div className="w-full flex justify-center items-center h-60 bg-primary/5">
@@ -66,15 +60,8 @@ function Downloads() {
             const hash = torrent.infoHash;
             const stats = statsMap.get(hash);
 
-            return (
-              <DownloadCard
-                key={hash}
-                downloading={!!torrent?.paused}
-                igdb_id={torrent.igdb_id}
-                hash={torrent.infoHash}
-                stats={stats ?? null}
-              />
-            );
+            if (!stats) return <DownloadCardLoading />;
+            return <DownloadCard key={hash} {...stats} />;
           })}
         </div>
       )}
