@@ -9,10 +9,9 @@ const startTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
     torrent.resume();
     console.log(`Paused torrent: ${torrent.name}`);
 
-    // Find the corresponding igdb_id from the torrents map
-    const igdb_id = [...torrents.entries()].find(
+    const findTorrent = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-    )?.[1]; // .[0] to get the igdb_id from the key-value pair
+    )?.[1];
 
     return {
       message: `resumed torrent: ${torrent.name}`,
@@ -20,7 +19,7 @@ const startTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
       data: {
         infoHash: torrent.infoHash,
         name: torrent.name,
-        game_data: igdb_id?.game_data,
+        game_data: findTorrent?.game_data,
       },
     };
   } else {

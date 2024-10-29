@@ -11,30 +11,27 @@ const getTorrent = (
   try {
     const torrent = client.get(torrentId);
 
-    if (torrent) {
-      // Find the corresponding igdb_id from the torrents map
-      const igdb_id = [...torrents.entries()].find(
-        ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-      )?.[1]; // .[0] to get the igdb_id from the key-value pair
+    if (!torrent) return null;
 
-      const return_data: ITorrent = {
-        infoHash: torrent.infoHash,
-        name: torrent.name,
-        progress: torrent.progress,
-        downloadSpeed: torrent.downloadSpeed,
-        uploadSpeed: torrent.uploadSpeed,
-        numPeers: torrent.numPeers,
-        path: torrent.path,
-        paused: torrent.paused,
-        timeRemaining: torrent.timeRemaining,
-        totalSize: torrent.length,
-        game_data: igdb_id?.game_data,
-      };
+    const findTorrent = [...torrents.entries()].find(
+      ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
+    )?.[1];
 
-      return return_data;
-    }
+    const return_data: ITorrent = {
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+      progress: torrent.progress,
+      downloadSpeed: torrent.downloadSpeed,
+      uploadSpeed: torrent.uploadSpeed,
+      numPeers: torrent.numPeers,
+      path: torrent.path,
+      paused: torrent.paused,
+      timeRemaining: torrent.timeRemaining,
+      totalSize: torrent.length,
+      game_data: findTorrent?.game_data,
+    };
 
-    return null;
+    return return_data;
   } catch (error) {
     console.error("Error getting torrent:", error);
     return null;

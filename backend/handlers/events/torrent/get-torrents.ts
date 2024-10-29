@@ -7,7 +7,7 @@ import { registerEvent } from "../utils";
 const getTorrents = (_event: IpcMainInvokeEvent): Array<ITorrent> => {
   const activeTorrents = client.torrents.map((torrent) => {
     // Find the corresponding igdb_id from the torrents map
-    const igdb_id = [...torrents.entries()].find(
+    const findTorrent = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
     )?.[1];
 
@@ -22,7 +22,7 @@ const getTorrents = (_event: IpcMainInvokeEvent): Array<ITorrent> => {
       paused: torrent.paused,
       timeRemaining: torrent.timeRemaining,
       totalSize: torrent.length,
-      game_data: igdb_id?.game_data,
+      game_data: findTorrent?.game_data,
     };
 
     return return_data;

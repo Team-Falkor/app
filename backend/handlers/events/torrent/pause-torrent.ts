@@ -17,12 +17,11 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
       };
     }
 
-    // Pause the torrent (synchronous in WebTorrent)
     torrent.pause();
     console.log(`Paused torrent: ${torrent.name}`);
 
     // Find corresponding igdb_id
-    const igdb_id = [...torrents.entries()].find(
+    const findTorrent = [...torrents.entries()].find(
       ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
     )?.[1];
 
@@ -32,7 +31,7 @@ const pauseTorrent = async (_event: IpcMainInvokeEvent, infoHash: string) => {
       data: {
         infoHash: torrent.infoHash,
         name: torrent.name,
-        game_data: igdb_id?.game_data,
+        game_data: findTorrent?.game_data,
       },
     };
   } catch (error) {

@@ -26,24 +26,23 @@ const handleTorrentProgress = (
 ) => {
   const now = Date.now();
 
-  // Only send updates if enough time has passed
-  if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
-    torrents.set(game_data.id, combineTorrentData(torrent, game_data)); // Merge game data with torrent
+  if (!lastUpdateTime || now - lastUpdateTime < THROTTLE_INTERVAL) return;
 
-    event.sender.send(TORRENT_PROGRESS_EVENT, {
-      infoHash: torrent.infoHash,
-      name: torrent.name,
-      progress: torrent.progress,
-      numPeers: torrent.numPeers,
-      downloadSpeed: torrent.downloadSpeed,
-      uploadSpeed: torrent.uploadSpeed,
-      totalSize: torrent.length,
-      timeRemaining: torrent.timeRemaining,
-      game_data,
-    });
+  torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
-    lastUpdateTime = now; // Update the last time we sent progress
-  }
+  event.sender.send(TORRENT_PROGRESS_EVENT, {
+    infoHash: torrent.infoHash,
+    name: torrent.name,
+    progress: torrent.progress,
+    numPeers: torrent.numPeers,
+    downloadSpeed: torrent.downloadSpeed,
+    uploadSpeed: torrent.uploadSpeed,
+    totalSize: torrent.length,
+    timeRemaining: torrent.timeRemaining,
+    game_data,
+  });
+
+  lastUpdateTime = now;
 };
 
 // Handle torrent completion
@@ -80,10 +79,15 @@ const addTorrent = async (
 
         torrent.on("metadata", () => {
           event.sender.send("torrent:metadata", {
-            gameId: game_data.id, // Sending game_data id instead of igdb_id
             infoHash: torrent.infoHash,
             name: torrent.name,
+            progress: torrent.progress,
+            numPeers: torrent.numPeers,
+            downloadSpeed: torrent.downloadSpeed,
+            uploadSpeed: torrent.uploadSpeed,
             totalSize: torrent.length,
+            timeRemaining: torrent.timeRemaining,
+            game_data,
           });
         });
 
@@ -101,7 +105,7 @@ const addTorrent = async (
           })
         );
 
-        torrent.on("ready", () => {
+        torrent.once("ready", () => {
           event.sender.send("torrent:ready", {
             infoHash: torrent.infoHash,
             name: torrent.name,
@@ -109,28 +113,26 @@ const addTorrent = async (
           });
         });
 
-        // Listen for torrent progress updates
         torrent.on("download", () =>
           handleTorrentProgress(event, game_data, torrent)
         );
 
-        // Listen for torrent completion
-        torrent.on("done", () =>
+        torrent.once("done", () =>
           handleTorrentCompletion(event, game_data, torrent)
         );
       }
     );
 
-    // Return torrent info back to the caller
     return {
-      gameId: game_data.id, // Returning game id instead of igdb_id
       infoHash: torrent.infoHash,
       name: torrent.name,
       progress: torrent.progress,
       numPeers: torrent.numPeers,
       downloadSpeed: torrent.downloadSpeed,
       uploadSpeed: torrent.uploadSpeed,
+      totalSize: torrent.length,
       timeRemaining: torrent.timeRemaining,
+      game_data,
     };
   } catch (error) {
     console.error(`Failed to add torrent: ${torrentId}`, error);
