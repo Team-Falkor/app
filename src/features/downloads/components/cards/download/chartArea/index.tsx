@@ -7,10 +7,11 @@ type ChartData = {
 
 interface Props {
   progress: number;
+  timeRemaining: number;
   chartData: ChartData[];
 }
 
-const DownloadCardChartArea = ({ progress }: Props) => {
+const DownloadCardChartArea = ({ progress, timeRemaining }: Props) => {
   const memoizedProgress = useMemo(() => progress ?? 0, [progress]);
   // const memoizedChartData = useMemo(() => chartData, [chartData]);
 
@@ -21,7 +22,7 @@ const DownloadCardChartArea = ({ progress }: Props) => {
           {/* <DownloadCardChart chartData={memoizedChartData} /> */}
         </div>
         <div className="w-full">
-          <PercentBar percent={memoizedProgress} />
+          <PercentBar percent={memoizedProgress} timeRemaning={timeRemaining} />
         </div>
       </div>
     </div>

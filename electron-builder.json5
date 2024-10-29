@@ -4,6 +4,12 @@
   appId: "moe.falkor",
   asar: true,
   productName: "falkor",
+  protocols: [
+    {
+      name: "falkor",
+      schemes: ["falkor"],
+    },
+  ],
   directories: {
     output: "release/${version}",
   },

@@ -1,34 +1,22 @@
+// ... other imports
+import { ITorrent } from "@/@types/torrent";
 import IGDBImage from "@/components/IGDBImage";
 import { useDownloadSpeedHistory } from "@/features/downloads/hooks/useDownloadSpeedHistory";
-import { bytesToHumanReadable, cn, igdb } from "@/lib";
-import { Torrent } from "@/stores/downloads";
-import { useQuery } from "@tanstack/react-query";
+import { bytesToHumanReadable, cn } from "@/lib";
 import { useEffect, useMemo } from "react";
 import DownloadCardActions from "./actions";
 import DownloadCardChartArea from "./chartArea";
 import DownloadCardStat from "./stat";
 import DownloadCardTitle from "./title";
 
-interface Props {
-  downloading?: boolean;
-  igdb_id: string;
-  hash: string;
-  stats: Torrent | null;
-}
-
-const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
+const DownloadCard = (stats: ITorrent) => {
   const { speedHistory, updateSpeedHistory, peakSpeed } =
     useDownloadSpeedHistory();
 
-  const { isPending, error, data } = useQuery({
-    queryKey: ["igdb", "info", igdb_id],
-    queryFn: async () => await igdb.info(igdb_id),
-    enabled: !igdb_id,
-    staleTime: Infinity,
-    retry: false,
-  });
+  const { game_data } = stats;
 
-  // Effect to update download speed history, memoized to avoid unnecessary updates
+  const downloading = useMemo(() => !stats.paused, [stats?.paused]);
+
   useEffect(() => {
     if (!stats?.downloadSpeed) return;
     updateSpeedHistory(stats.downloadSpeed);
@@ -57,17 +45,6 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
     [stats?.totalSize]
   );
 
-  if (error) return null;
-
-  if (isPending)
-    return (
-      <div className="w-full h-60 flex justify-center items-center bg-primary/5">
-        <h1 className="text-xl font-bold text-foreground">
-          Torrent is loading, please wait...
-        </h1>
-      </div>
-    );
-
   return (
     <div
       className={cn("w-full h-60 flex relative group", {
@@ -77,8 +54,8 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
       {/* BG */}
       <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
         <IGDBImage
-          imageId={data?.cover?.image_id ?? ""}
-          alt={data?.name ?? ""}
+          imageId={game_data?.image_id ?? ""}
+          alt={game_data?.name ?? ""}
           className="object-cover w-full h-full relative z-[1]"
         />
 
@@ -97,10 +74,10 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
         {/* NAME OF DOWNLOAD GAME */}
         <div className="flex justify-start items-end h-full w-[65%]">
           <div className="flex flex-col justify-start items-start gap-1.5">
-            <DownloadCardTitle title={data?.name ?? ""} />
+            <DownloadCardTitle title={game_data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
               {/* Start hidden */}
-              <DownloadCardActions stats={stats} />
+              <DownloadCardActions {...stats} />
             </div>
           </div>
         </div>
@@ -111,7 +88,8 @@ const DownloadCard = ({ downloading = false, igdb_id, stats }: Props) => {
             <>
               <div className="size-full overflow-hidden">
                 <DownloadCardChartArea
-                  progress={stats?.progress ?? 0}
+                  progress={stats?.progress ? stats.progress * 100 : 0}
+                  timeRemaining={stats?.timeRemaining ?? 0}
                   chartData={speedHistory}
                 />
               </div>

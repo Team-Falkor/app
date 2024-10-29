@@ -1,4 +1,5 @@
 import { PluginSearchResponse } from "@/@types";
+import { ITorrentGameData } from "@/@types/torrent";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { invoke } from "@/lib";
 import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
@@ -6,7 +7,7 @@ import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
 type Props = PluginSearchResponse & {
   "multiple-choice"?: boolean;
   pluginId?: string;
-  igdb_id: number;
+  game_data: ITorrentGameData;
 };
 
 const DefaultDownloadCard = (props: Props) => {
@@ -37,7 +38,7 @@ const DefaultDownloadCard = (props: Props) => {
       url = data[0];
     }
 
-    addDownload(url, props.igdb_id.toString());
+    addDownload(url, props.game_data);
   };
 
   if (props.type === "ddl") return null;

@@ -1,6 +1,12 @@
+import { ITorrentGameData } from "@/@types/torrent";
 import type { IpcMainInvokeEvent } from "electron";
 import { Torrent } from "webtorrent";
-import { client, constants, torrents } from "../../../utils";
+import {
+  client,
+  combineTorrentData,
+  constants,
+  torrents,
+} from "../../../utils";
 import { registerEvent } from "../utils";
 
 const { downloadsPath } = constants;
@@ -12,44 +18,45 @@ const TORRENT_DONE_EVENT = "torrent:done";
 const THROTTLE_INTERVAL = 1000; // Send progress updates every second
 let lastUpdateTime: number | null = null;
 
+// Handle torrent progress updates
 const handleTorrentProgress = (
   event: IpcMainInvokeEvent,
-  igdb_id: string,
+  game_data: ITorrentGameData,
   torrent: Torrent
 ) => {
   const now = Date.now();
 
-  // Only send updates if enough time has passed
-  if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
-    torrents.set(igdb_id, torrent);
+  if (!lastUpdateTime || now - lastUpdateTime < THROTTLE_INTERVAL) return;
 
-    event.sender.send(TORRENT_PROGRESS_EVENT, {
-      igdb_id,
-      infoHash: torrent.infoHash,
-      name: torrent.name,
-      progress: torrent.progress,
-      numPeers: torrent.numPeers,
-      downloadSpeed: torrent.downloadSpeed,
-      uploadSpeed: torrent.uploadSpeed,
-      totalSize: torrent.length,
-    });
+  torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
-    lastUpdateTime = now; // Update the last time we sent progress
-  }
-};
-
-// Function to handle torrent completion
-const handleTorrentCompletion = (
-  event: Electron.IpcMainInvokeEvent,
-  igdb_id: string,
-  torrent: Torrent
-) => {
-  torrents.delete(igdb_id);
-
-  event.sender.send(TORRENT_DONE_EVENT, {
-    igdb_id,
+  event.sender.send(TORRENT_PROGRESS_EVENT, {
     infoHash: torrent.infoHash,
     name: torrent.name,
+    progress: torrent.progress,
+    numPeers: torrent.numPeers,
+    downloadSpeed: torrent.downloadSpeed,
+    uploadSpeed: torrent.uploadSpeed,
+    totalSize: torrent.length,
+    timeRemaining: torrent.timeRemaining,
+    game_data,
+  });
+
+  lastUpdateTime = now;
+};
+
+// Handle torrent completion
+const handleTorrentCompletion = (
+  event: Electron.IpcMainInvokeEvent,
+  game_data: ITorrentGameData,
+  torrent: Torrent
+) => {
+  torrents.delete(game_data.id);
+
+  event.sender.send(TORRENT_DONE_EVENT, {
+    infoHash: torrent.infoHash,
+    name: torrent.name,
+    game_data,
   });
 
   console.log(`Torrent download complete: ${torrent.name}`);
@@ -59,7 +66,7 @@ const handleTorrentCompletion = (
 const addTorrent = async (
   event: Electron.IpcMainInvokeEvent,
   torrentId: string,
-  igdb_id: string
+  game_data: ITorrentGameData
 ) => {
   try {
     const torrent = client.add(
@@ -68,14 +75,19 @@ const addTorrent = async (
       (torrent) => {
         console.log(`Added torrent: ${torrent.name}`);
 
-        torrents.set(igdb_id, torrent);
+        torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
         torrent.on("metadata", () => {
           event.sender.send("torrent:metadata", {
-            igdb_id,
             infoHash: torrent.infoHash,
             name: torrent.name,
+            progress: torrent.progress,
+            numPeers: torrent.numPeers,
+            downloadSpeed: torrent.downloadSpeed,
+            uploadSpeed: torrent.uploadSpeed,
             totalSize: torrent.length,
+            timeRemaining: torrent.timeRemaining,
+            game_data,
           });
         });
 
@@ -93,34 +105,34 @@ const addTorrent = async (
           })
         );
 
-        torrent.on("ready", () => {
+        torrent.once("ready", () => {
           event.sender.send("torrent:ready", {
-            igdb_id,
             infoHash: torrent.infoHash,
             name: torrent.name,
+            game_data,
           });
         });
 
-        // Listen for torrent progress updates
         torrent.on("download", () =>
-          handleTorrentProgress(event, igdb_id, torrent)
+          handleTorrentProgress(event, game_data, torrent)
         );
 
-        // Listen for torrent completion
-        torrent.on("done", () =>
-          handleTorrentCompletion(event, igdb_id, torrent)
+        torrent.once("done", () =>
+          handleTorrentCompletion(event, game_data, torrent)
         );
       }
     );
 
     return {
-      igdb_id,
       infoHash: torrent.infoHash,
       name: torrent.name,
       progress: torrent.progress,
       numPeers: torrent.numPeers,
       downloadSpeed: torrent.downloadSpeed,
       uploadSpeed: torrent.uploadSpeed,
+      totalSize: torrent.length,
+      timeRemaining: torrent.timeRemaining,
+      game_data,
     };
   } catch (error) {
     console.error(`Failed to add torrent: ${torrentId}`, error);
