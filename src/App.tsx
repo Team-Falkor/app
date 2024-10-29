@@ -43,7 +43,7 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-  const { hasLoaded } = useAppStartup();
+  useAppStartup();
 
   // Initialize theming logic
   useThemes();
