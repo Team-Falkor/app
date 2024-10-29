@@ -6,7 +6,7 @@ on:
       - release
 
 jobs:
-  build:
+  build_publish:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
