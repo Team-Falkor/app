@@ -1,4 +1,4 @@
-name: build
+name: build_publish
 
 on:
   push:
@@ -58,9 +58,15 @@ jobs:
         with:
           name: build-${{ matrix.os }}
           path: |
-            release/**
-            dist/**
-            dist-electron/**
+            release/win-unpacked/**
+            release/*.dmg
+            release/*.deb
+            release/*.rpm
+            release/*.tar.gz
+            release/*.yml
+            release/*.blockmap
+            release/*.pacman
+            release/*.zip
 
       - name: Publish
         uses: softprops/action-gh-release@v1
@@ -69,8 +75,14 @@ jobs:
           files: |
             release/*.exe
             release/*.AppImage
-            release/*.deb
-            release/*.rpm
-            release/*.snap
             release/*.pacman
+            release/*.snap
+            release/*.dmg
+            release/*.deb
+            release/*.tar.gz
+            release/*.rpm
+            release/*.zip
+            release/*.blockmap
             release/*.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
