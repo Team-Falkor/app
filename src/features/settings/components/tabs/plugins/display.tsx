@@ -39,19 +39,20 @@ const PluginDisplay = ({ showRows }: Props) => {
           },
         ])}
       >
-        {data?.map((plugin: any) => (
-          <PluginCard
-            key={plugin.id}
-            id={plugin.id}
-            name={plugin.name}
-            description={plugin.description}
-            version={plugin.version}
-            image={plugin.logo}
-            banner={plugin.banner}
-            installed={true}
-            disabled={plugin.disabled}
-          />
-        ))}
+        {!!data?.length &&
+          data?.map((plugin: any) => (
+            <PluginCard
+              key={plugin.id}
+              id={plugin.id}
+              name={plugin.name}
+              description={plugin.description}
+              version={plugin.version}
+              image={plugin.logo}
+              banner={plugin.banner}
+              installed={true}
+              disabled={plugin.disabled}
+            />
+          ))}
       </div>
     </ScrollArea>
   );

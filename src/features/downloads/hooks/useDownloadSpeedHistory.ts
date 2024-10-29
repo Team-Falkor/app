@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 // Define the ChartData type with a speed property
 export type ChartData = {
@@ -10,8 +10,7 @@ export const useDownloadSpeedHistory = () => {
   const [speedHistory, setSpeedHistory] = useState<ChartData[]>([]);
   const [peakSpeed, setPeakSpeed] = useState<number>(0); // State to store the peak speed
 
-  // Function to update the speed history array
-  const updateSpeedHistory = (newSpeed: number) => {
+  const updateSpeedHistory = useCallback((newSpeed: number) => {
     setSpeedHistory((prev) => {
       const updatedHistory = [...prev, { speed: newSpeed }];
       // Keep only the last 20 speeds
@@ -22,14 +21,8 @@ export const useDownloadSpeedHistory = () => {
       return updatedHistory;
     });
 
-    // Check if the new speed is greater than the current peakSpeed using the previous peak value
-    setPeakSpeed((prevPeak) => {
-      if (newSpeed > prevPeak) {
-        return newSpeed; // Update peakSpeed if the new speed is greater
-      }
-      return prevPeak; // Keep the current peakSpeed if it's higher
-    });
-  };
+    setPeakSpeed((prevPeak) => (newSpeed > prevPeak ? newSpeed : prevPeak));
+  }, []);
 
   return { speedHistory, updateSpeedHistory, peakSpeed };
 };

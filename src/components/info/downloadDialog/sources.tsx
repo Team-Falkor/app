@@ -1,11 +1,12 @@
 import { ItemDownload, PluginSearchResponse } from "@/@types";
+import { ITorrentGameData } from "@/@types/torrent";
 import { ITADPrice } from "@/lib/api/itad/types";
 import DefaultDownloadCard from "./cards/default";
 import ITADDownloadCard from "./cards/itad";
 
 interface DownloadDialogPopoverProps {
   sources: ItemDownload[];
-  igdb_id: number;
+  game_data: ITorrentGameData;
 }
 
 const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
@@ -31,7 +32,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
           multiple-choice={item["multiple-choice"]}
           pluginId={item.id}
           key={source.name}
-          igdb_id={props.igdb_id}
+          game_data={props.game_data}
         />
       ));
     }

@@ -12,6 +12,7 @@ import { openLink } from "@/lib";
 import { createFileRoute } from "@tanstack/react-router";
 import { ReactElement, Suspense, useMemo } from "react";
 import { FaDiscord, FaGithub } from "react-icons/fa6";
+import { SiKofi } from "react-icons/si";
 
 export const Route = createFileRoute("/settings")({
   component: RouteComponent,
@@ -33,6 +34,14 @@ const LINKS: Array<LinkItemType> = [
     icon: <FaGithub />,
     title: "star_us_on_github",
     url: "https://github.com/team-falkor/falkor",
+  },
+];
+
+const LINKS_RIGHT: Array<LinkItemType> = [
+  {
+    icon: <SiKofi />,
+    title: "Support me on Ko-fi",
+    url: "https://ko-fi.com/prostarz",
   },
 ];
 
@@ -66,9 +75,26 @@ function RouteComponent() {
 
         <nav className="flex-1 space-y-2 md:space-y-3">{settingsTabs}</nav>
 
-        <div className="flex justify-end p-3 px-4 mt-auto">
+        <div className="flex justify-between p-3 px-4 mt-auto">
           <div className="flex gap-2 md:gap-1">
             {LINKS.map(({ icon, title, url }) => (
+              <Tooltip key={title}>
+                <TooltipTrigger>
+                  <Button
+                    onClick={() => openLink(url)}
+                    variant="ghost"
+                    size="icon"
+                    className="*:size-5"
+                  >
+                    {icon}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>{t(title)}</TooltipContent>
+              </Tooltip>
+            ))}
+          </div>
+          <div className="flex gap-2 md:gap-1">
+            {LINKS_RIGHT.map(({ icon, title, url }) => (
               <Tooltip key={title}>
                 <TooltipTrigger>
                   <Button

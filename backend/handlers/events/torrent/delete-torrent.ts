@@ -21,14 +21,13 @@ const deleteTorrent = async (event: IpcMainInvokeEvent, infoHash: string) => {
     };
   }
 
-  // Find the corresponding igdb_id from the torrents map
-  const igdb_id = [...torrents.entries()].find(
+  const findTorrent = [...torrents.entries()].find(
     ([, storedTorrent]) => storedTorrent.infoHash === torrent.infoHash
-  )?.[0]; // .[0] to get the igdb_id from the key-value pair
+  )?.[1];
 
   // Remove torrent
   client.remove(torrent);
-  if (igdb_id) torrents.delete(igdb_id); // Remove from the torrents map as well
+  if (findTorrent) torrents.delete(findTorrent.game_data.id); // Remove from the torrents map as well
 
   console.log(`Deleted torrent: ${torrent.name}`);
 
@@ -36,9 +35,9 @@ const deleteTorrent = async (event: IpcMainInvokeEvent, infoHash: string) => {
     message: "Torrent deleted",
     error: false,
     data: {
-      igdb_id,
       infoHash: torrent.infoHash,
       name: torrent.name,
+      game_data: findTorrent?.game_data,
     },
   };
 };

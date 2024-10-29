@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog";
 import { Website } from "@/lib/api/igdb/types";
 
+import { ITorrentGameData } from "@/@types/torrent";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
@@ -25,7 +26,7 @@ interface DownloadDialogProps extends InfoItadProps {
   title: string;
   isReleased: boolean;
   websites: Website[];
-  igdb_id: number;
+  game_data: ITorrentGameData;
 }
 
 // Centralized provider management
@@ -36,11 +37,11 @@ const DownloadDialog = ({
   itadData,
   itadPending,
   title,
-  igdb_id,
+  game_data,
 }: DownloadDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const { searchAllPlugins, plugins } = UsePlugins();
+  const { searchAllPlugins, plugins, getPlugins } = UsePlugins();
 
   const itadSources: ItemDownload[] = useMemo(
     () => [
@@ -52,9 +53,14 @@ const DownloadDialog = ({
     [itadData]
   );
 
-  const { data: sources, isPending } = useQuery<ItemDownload[]>({
+  const {
+    data: sources,
+    isPending,
+    refetch,
+  } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
+      console.log("getting sources");
       const plugins = await searchAllPlugins(formatName(title));
       const pluginSources: ItemDownload[] = plugins.filter((plugin) => {
         return plugin.sources.length > 0;
@@ -108,7 +114,6 @@ const DownloadDialog = ({
             />
           </DialogDescription>
         </DialogHeader>
-
         <ScrollArea className="w-full border rounded-md h-72 mt-1">
           <div className="pb-5">
             <div className="sticky top-0 left-0 right-0 mb-3 bg-muted z-10">
@@ -122,7 +127,7 @@ const DownloadDialog = ({
               {!isLoading ? (
                 <DownloadDialogSources
                   sources={[...itadSources, ...(sources ?? [])]}
-                  igdb_id={igdb_id}
+                  game_data={game_data}
                 />
               ) : isLoading && !itadPending ? (
                 <div className="flex flex-row items-center justify-center w-full gap-2">
@@ -139,6 +144,17 @@ const DownloadDialog = ({
             </ul>
           </div>
         </ScrollArea>
+        <div className="w-full flex justify-end items-center">
+          <Button
+            variant={"secondary"}
+            onClick={() => {
+              refetch();
+              getPlugins();
+            }}
+          >
+            Refresh Sources
+          </Button>
+        </div>
       </DialogContent>
     </Dialog>
   );
