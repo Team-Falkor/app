@@ -48,7 +48,12 @@ export class PluginHandler {
         throw new Error("Invalid plugin format: 'id' field is missing");
       }
 
-      const filePath = join(this.path, `${json.id}.json`);
+      let filePath = join(this.path, `${json.id}.json`);
+      const disabledFilePath = join(this.path, `${json.id}.disabled`);
+
+      if (fs.existsSync(disabledFilePath)) {
+        filePath = disabledFilePath;
+      }
 
       // Write the JSON data to the file
       await fs.promises.writeFile(

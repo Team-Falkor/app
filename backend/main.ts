@@ -2,6 +2,52 @@ import { app, BrowserWindow, ipcMain, shell } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
+let win: BrowserWindow | null;
+
+// DEEP LINKING
+const deepLinkName = "falkor";
+if (process.defaultApp) {
+  if (process.argv.length <= 2) {
+    app.setAsDefaultProtocolClient(deepLinkName, process.execPath, [
+      path.resolve(process.argv[1]),
+    ]);
+  }
+} else {
+  app.setAsDefaultProtocolClient(deepLinkName);
+}
+
+const gotTheLock = app.requestSingleInstanceLock();
+
+if (!gotTheLock) {
+  app.quit();
+} else {
+  app.on("second-instance", (_event, commandLine, _workingDirectory) => {
+    // Someone tried to run a second instance, we should focus our window.
+    if (win) {
+      if (win.isMinimized()) win.restore();
+      win.focus();
+    }
+
+    win?.webContents.send("app:deep-link", commandLine?.pop()?.slice(0));
+  });
+
+  app.whenReady().then(async () => {
+    createWindow();
+
+    await import("./handlers/events");
+
+    while (!win) {
+      await new Promise((resolve) => setTimeout(resolve, 600));
+    }
+
+    win.webContents.once("did-finish-load", () => {
+      setTimeout(() => {
+        win?.webContents.send("app:backend-loaded");
+      }, 1000);
+    });
+  });
+}
+
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 process.env.APP_ROOT = path.join(__dirname, "..");
@@ -14,8 +60,6 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
-
-let win: BrowserWindow | null;
 
 /**
  * Updates an existing key-value pair in an object, or inserts a new pair
@@ -79,20 +123,4 @@ app.on("activate", () => {
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
-});
-
-app.whenReady().then(async () => {
-  createWindow();
-
-  await import("./handlers/events");
-
-  while (!win) {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-  }
-
-  win.webContents.once("did-finish-load", () => {
-    setTimeout(() => {
-      win?.webContents.send("app:backend-loaded");
-    }, 1000);
-  });
 });

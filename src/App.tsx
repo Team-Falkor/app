@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { useMemo } from "react";
 import { ThemeProvider } from "./components/theme-provider";
+import { useAppStartup } from "./hooks";
 import { useThemes } from "./hooks/useThemes";
 import { memoryHistory } from "./lib/history";
 import { routeTree } from "./routeTree.gen";
@@ -42,7 +43,7 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-  // const { hasLoaded } = useAppStartup();
+  const { hasLoaded } = useAppStartup();
 
   // Initialize theming logic
   useThemes();
