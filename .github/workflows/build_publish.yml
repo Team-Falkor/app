@@ -3,7 +3,7 @@ name: build
 on:
   push:
     branches:
-      - testing
+      - release
 
 jobs:
   build:
@@ -61,3 +61,16 @@ jobs:
             release/**
             dist/**
             dist-electron/**
+
+      - name: Publish
+        uses: softprops/action-gh-release@v1
+        with:
+          draft: true
+          files: |
+            release/*.exe
+            release/*.AppImage
+            release/*.deb
+            release/*.rpm
+            release/*.snap
+            release/*.pacman
+            release/*.yml
