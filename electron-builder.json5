@@ -11,13 +11,13 @@
     },
   ],
   directories: {
-    output: "release/${version}",
+    output: "release/",
   },
   appImage: {},
   files: ["dist", "dist-electron"],
   mac: {
     target: ["dmg"],
-    artifactName: "${productName}-Mac-${version}-Installer.${ext}",
+    artifactName: "${productName}.${ext}",
   },
   win: {
     target: [
@@ -26,7 +26,7 @@
         arch: ["x64"],
       },
     ],
-    artifactName: "${productName}-Windows-${version}-Setup.${ext}",
+    artifactName: "${productName}.${ext}",
   },
   nsis: {
     oneClick: false,
@@ -41,7 +41,7 @@
   },
   linux: {
     target: ["AppImage", "deb", "snap", "pacman", "rpm"],
-    artifactName: "${productName}-Linux-${version}.${ext}",
+    artifactName: "${productName}.${ext}",
     category: "Game",
     maintainer: "team-falkor",
     mimeTypes: ["x-scheme-handler/falkor"],
