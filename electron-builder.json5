@@ -46,4 +46,10 @@
     maintainer: "team-falkor",
     mimeTypes: ["x-scheme-handler/falkor"],
   },
+  publish: {
+    provider: "github",
+    repo: "app",
+    owner: "team-falkor",
+    private: false,
+  },
 }
