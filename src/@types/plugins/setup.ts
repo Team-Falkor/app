@@ -3,7 +3,7 @@ export type PluginId = `${string}.${string}.${string}` | `${string}.${string}`;
 export interface PluginSetupJSON {
   id: string;
   version: string;
-  config: boolean;
+  config: false | PluginConfig;
   "multiple-choice": boolean;
   name: string;
   description: string;
@@ -19,3 +19,7 @@ export interface PluginSetupJSON {
 export type PluginSetupJSONDisabled = PluginSetupJSON & {
   disabled: boolean;
 };
+
+export interface PluginConfig {
+  search?: string[];
+}
