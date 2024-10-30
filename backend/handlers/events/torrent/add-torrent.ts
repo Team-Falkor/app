@@ -26,23 +26,23 @@ const handleTorrentProgress = (
 ) => {
   const now = Date.now();
 
-  if (!lastUpdateTime || now - lastUpdateTime < THROTTLE_INTERVAL) return;
+  if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
+    torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
-  torrents.set(game_data.id, combineTorrentData(torrent, game_data));
+    event.sender.send(TORRENT_PROGRESS_EVENT, {
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+      progress: torrent.progress,
+      numPeers: torrent.numPeers,
+      downloadSpeed: torrent.downloadSpeed,
+      uploadSpeed: torrent.uploadSpeed,
+      totalSize: torrent.length,
+      timeRemaining: torrent.timeRemaining,
+      game_data,
+    });
 
-  event.sender.send(TORRENT_PROGRESS_EVENT, {
-    infoHash: torrent.infoHash,
-    name: torrent.name,
-    progress: torrent.progress,
-    numPeers: torrent.numPeers,
-    downloadSpeed: torrent.downloadSpeed,
-    uploadSpeed: torrent.uploadSpeed,
-    totalSize: torrent.length,
-    timeRemaining: torrent.timeRemaining,
-    game_data,
-  });
-
-  lastUpdateTime = now;
+    lastUpdateTime = now;
+  }
 };
 
 // Handle torrent completion

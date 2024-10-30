@@ -38,6 +38,10 @@ function Downloads() {
 
   return (
     <div className="w-full h-full flex flex-col">
+      {/* <div className="flex p-2 justify-end">
+        <AddDownloadButton />
+      </div> */}
+
       {downloading?.length ? (
         downloading.map((torrent) => {
           const hash = torrent.infoHash;
