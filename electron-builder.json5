@@ -40,11 +40,21 @@
     uninstallerIcon: "./build/icon.ico",
   },
   linux: {
-    target: ["AppImage", "deb", "snap", "pacman", "rpm"],
+    target: ["AppImage", "deb", "snap", "pacman", "rpm", "flatpak", "tar.gz"],
     artifactName: "${productName}.${ext}",
     category: "Game",
     maintainer: "team-falkor",
     mimeTypes: ["x-scheme-handler/falkor"],
+    publish: ["github"],
+  },
+  snap: {
+    publish: ["github"],
+  },
+  pacman: {
+    publish: ["github"],
+  },
+  flatpak: {
+    publish: ["github"],
   },
   publish: {
     provider: "github",
