@@ -52,5 +52,6 @@
     repo: "app",
     owner: "team-falkor",
     private: false,
+    releaseType: "prerelease",
   },
 }
