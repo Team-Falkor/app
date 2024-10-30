@@ -25,7 +25,13 @@ const searchPlugins = async (
     const searchResults = plugins.map(
       async (plugin): Promise<SearchPlugiData> => {
         try {
-          const url = `${plugin.api_url}/search/${os}/${query}`;
+          const config_url_params =
+            plugin.config !== false ? plugin.config.search?.join("/") : null;
+
+          const url = config_url_params
+            ? `${plugin.api_url}/search/${os}/${config_url_params}/${query}`
+            : `${plugin.api_url}/search/${os}/${query}`;
+
           const response = await fetch(url);
 
           if (!response.ok)
@@ -33,6 +39,7 @@ const searchPlugins = async (
               id: plugin.id,
               name: plugin.name,
               sources: [],
+              config: plugin.config,
             };
 
           const json: PluginSearchResponse[] = await response.json();
@@ -42,6 +49,7 @@ const searchPlugins = async (
             name: plugin.name,
             sources: json,
             "multiple-choice": Boolean(plugin["multiple-choice"]) ?? false,
+            config: plugin.config,
           };
         } catch (error) {
           console.error(
@@ -52,6 +60,7 @@ const searchPlugins = async (
             id: plugin.id,
             name: plugin.name,
             sources: [],
+            config: plugin.config,
           };
         }
       }

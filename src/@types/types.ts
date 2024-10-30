@@ -1,5 +1,5 @@
 import { ITADPrice } from "@/lib/api/itad/types";
-import { PluginSearchResponse } from "./plugins";
+import { PluginConfig, PluginSearchResponse } from "./plugins";
 
 export type IGDBImageSize =
   | "original"
@@ -107,4 +107,5 @@ export type SearchPlugiData = {
   name: string;
   sources: PluginSearchResponse[];
   "multiple-choice"?: boolean;
+  config: false | PluginConfig;
 };
