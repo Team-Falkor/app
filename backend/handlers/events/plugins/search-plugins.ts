@@ -25,12 +25,13 @@ const searchPlugins = async (
     const searchResults = plugins.map(
       async (plugin): Promise<SearchPlugiData> => {
         try {
-          const config_url_params =
-            plugin.config !== false ? plugin.config.search?.join("/") : null;
+          const config_url_params = plugin?.config
+            ? plugin.config?.search?.join("/")
+            : null;
 
           const url = config_url_params
-            ? `${plugin.api_url}/search/${os}/${config_url_params}/${query}`
-            : `${plugin.api_url}/search/${os}/${query}`;
+            ? `${plugin.api_url}/search/${os}/${config_url_params}/${encodeURIComponent(query)}`
+            : `${plugin.api_url}/search/${os}/${encodeURIComponent(query)}`;
 
           const response = await fetch(url);
 
