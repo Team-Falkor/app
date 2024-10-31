@@ -67,7 +67,7 @@
     "sqlite3": "^5.1.7",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "webtorrent": "^2.5.1",
+    "webtorrent": "https://github.com/prostarz/webtorrent",
     "zod": "^3.23.8",
     "zustand": "^5.0.0"
   },
@@ -94,9 +94,7 @@
     "typescript": "^5.6.3",
     "vite": "^5.4.9",
     "vite-plugin-electron": "^0.28.8",
-    "vite-plugin-electron-renderer": "^0.14.6",
-    "vite-plugin-node-polyfills": "^0.22.0",
-    "webrtc-polyfill": "^1.1.8"
+    "vite-plugin-electron-renderer": "^0.14.6"
   },
   "main": "dist-electron/main.js",
   "trustedDependencies": [
@@ -105,7 +103,6 @@
     "electron",
     "esbuild",
     "lzma-native",
-    "node-datachannel",
     "sqlite3",
     "utf-8-validate",
     "utp-native"
