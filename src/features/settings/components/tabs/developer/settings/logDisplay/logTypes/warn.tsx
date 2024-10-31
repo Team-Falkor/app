@@ -1,5 +1,3 @@
-import { FC } from "react";
-
 import { CircleAlert } from "lucide-react";
 import { BaseLog } from "./base";
 
@@ -10,11 +8,11 @@ interface ConsoleWarningDisplayProps {
   timestamp?: string;
 }
 
-const ConsoleWarningDisplay: FC<ConsoleWarningDisplayProps> = ({
+const ConsoleWarningDisplay = ({
   description,
   customIcon,
   timestamp,
-}) => {
+}: ConsoleWarningDisplayProps) => {
   return (
     <BaseLog timestamp={timestamp}>
       <div className="text-yellow-400">

@@ -121,7 +121,7 @@ export const openLink = (url: string) =>
  * @param args The arguments to pass to the invoked method.
  * @returns The result of the invocation as `T` or `null`.
  */
-export const invoke = async <T, A>(
+export const invoke = async <T, A = any>(
   channel: string,
   ...args: A[]
 ): Promise<T | null> => {

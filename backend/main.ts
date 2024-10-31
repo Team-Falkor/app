@@ -89,7 +89,7 @@ function createWindow() {
     try {
       const response = await fetch(url, options);
       const data = await response.json();
-      return data;
+      return { data, success: true };
     } catch (error) {
       return { success: false, error: (error as Error).message };
     }

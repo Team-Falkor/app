@@ -30,7 +30,7 @@ class AccountsDB {
           table.string("client_secret");
           table.string("access_token").notNullable();
           table.string("refresh_token").notNullable();
-          table.dateTime("expires_at").notNullable();
+          table.integer("expires_in").notNullable();
           table.string("type").unique().notNullable();
         });
       }
@@ -60,7 +60,7 @@ class AccountsDB {
         client_secret: input.client_secret,
         access_token: input.access_token,
         refresh_token: input.refresh_token,
-        expires_at: input.expires_at,
+        expires_in: input.expires_in,
         type: input.type,
       });
     } catch (error) {
@@ -120,7 +120,7 @@ class AccountsDB {
       await query.update({
         access_token: input.access_token,
         refresh_token: input.refresh_token,
-        expires_at: input.expires_at,
+        expires_in: input.expires_in,
       });
     } catch (error) {
       console.error("Error updating tokens:", error);
@@ -170,14 +170,14 @@ class AccountsDB {
     }
 
     const now = new Date();
-    const expiresAt = new Date(account.expires_at);
+    const expiresAt = new Date(account.expires_in);
 
     if (expiresAt <= now) {
       try {
         const {
           accessToken,
           refreshToken,
-          expiresAt: newExpiry,
+          expiresIn: newExpiry,
         } = await refreshTokenFunction(account.refresh_token);
 
         await this.updateTokens(
@@ -185,7 +185,7 @@ class AccountsDB {
           {
             access_token: accessToken,
             refresh_token: refreshToken,
-            expires_at: new Date(newExpiry),
+            expires_in: new Date(newExpiry),
           },
           type
         );

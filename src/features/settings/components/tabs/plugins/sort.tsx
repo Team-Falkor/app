@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useLanguageContext } from "@/contexts/I18N";
 import { ArrowDownAZ, ArrowUpAZ, Check, Columns2, Rows3 } from "lucide-react";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { SortBy } from ".";
 
 interface PluginsSortProps {
@@ -16,12 +16,12 @@ interface PluginsSortProps {
   setSortBy: Dispatch<SetStateAction<SortBy>>;
 }
 
-const PluginsSort: FC<PluginsSortProps> = ({
+const PluginsSort = ({
   setShowRows,
   showRows,
   setSortBy,
   sortBy,
-}) => {
+}: PluginsSortProps) => {
   const { t } = useLanguageContext();
 
   return (

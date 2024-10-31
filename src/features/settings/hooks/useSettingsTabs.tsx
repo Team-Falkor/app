@@ -3,8 +3,8 @@ import { ComponentType, lazy, ReactElement, useState } from "react";
 
 const GeneralSettings = lazy(() => import("../components/tabs/general"));
 const TorrentSettings = lazy(() => import("../components/tabs/torrent"));
-const AccountSettings = lazy(() => import("../components/tabs/accounts"));
 const PluginSettings = lazy(() => import("../components/tabs/plugins"));
+const AccountSettings = lazy(() => import("../components/tabs/accounts"));
 const MiscellaneousSettings = lazy(
   () => import("../components/tabs/miscellaneous")
 );
