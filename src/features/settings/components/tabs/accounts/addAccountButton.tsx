@@ -16,7 +16,7 @@ const AddAccountButton = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild disabled={true}>
         <Button variant="secondary">Add Account</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start">

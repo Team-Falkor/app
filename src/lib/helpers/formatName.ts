@@ -9,11 +9,11 @@ export const removeReleaseYearFromName: StringTransformer = (name) =>
   name.replace(/\(\d{4}\)/g, "");
 
 export const removeSymbolsFromName: StringTransformer = (name) =>
-  name.replace(/[^A-Za-z0-9 ]/g, "");
+  name.replace(/[^A-Za-z0-9À-ÖØ-öø-ÿ ]+/g, ""); // Allow letters with accents
 
 export const removeSpecialEditionFromName: StringTransformer = (name) =>
   name.replace(
-    /\b(The |Digital )?(GOTY|Deluxe|Standard|Ultimate|Definitive|Enhanced|Collector's|Premium|Digital|Limited|Game of the Year|Reloaded|\d{4}) Edition\b/g,
+    /\b(The |Digital )?(GOTY|Deluxe|Standard|Ultimate|Definitive|Enhanced|Collector's|Premium|Digital|Limited|Game of the Year|Reloaded) Edition\b/gi,
     ""
   );
 
@@ -24,7 +24,7 @@ export const replaceUnderscoreWithSpace: StringTransformer = (name) =>
   name.replace(/_/g, " ");
 
 export const removeDirectorsCut: StringTransformer = (name) =>
-  name.replace(/DIRECTOR'S CUT/g, "");
+  name.replace(/Director's Cut/gi, ""); // Case-insensitive match
 
 export const trimName: StringTransformer = (name) => name.trim();
 
