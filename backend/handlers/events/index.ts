@@ -1,4 +1,5 @@
 import "./db";
+import "./download";
 import "./generic";
 import "./launcher";
 import "./logger";
