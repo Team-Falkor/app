@@ -11,7 +11,6 @@ class IGDB extends BaseApi {
   private clientId: string = VITE_TWITCH_CLIENT_ID ?? "";
   private clientSecret: string = VITE_TWITCH_CLIENT_SECRET ?? "";
   private clientAccessToken?: string;
-  private tokenExpiration: number = 0;
   private gettingAccessToken = false;
 
   private getCachedToken(): TokenType {
@@ -41,7 +40,6 @@ class IGDB extends BaseApi {
       localStorage.setItem("igdb_token_expiration", expiration.toString());
 
       this.clientAccessToken = token;
-      this.tokenExpiration = expiration;
 
       return { accessToken: token, expiresIn: expiration };
     } catch (error) {
@@ -71,7 +69,6 @@ class IGDB extends BaseApi {
       if (cachedToken.accessToken && !hasExpired) {
         console.log("[IGDB] Using cached token");
         this.clientAccessToken = cachedToken.accessToken;
-        this.tokenExpiration = cachedToken.expiresIn;
         return cachedToken;
       }
 
