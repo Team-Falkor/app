@@ -18,6 +18,8 @@ const addDownload = (
     } else {
       const return_data = downloadItem.getReturnData();
 
+      console.log(JSON.stringify(return_data, null, 2));
+
       event.sender.send("download:progress", return_data);
     }
   };

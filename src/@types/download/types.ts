@@ -22,5 +22,6 @@ export interface AddDownloadData {
   url: string;
   game_data: ITorrentGameData;
   file_path?: string;
+  file_extension?: string;
   file_name: string;
 }

@@ -9,6 +9,7 @@ class DownloadItem {
   url: string;
   filename: string;
   filePath: string;
+  fileExtension: string;
   status: DownloadStatus;
   progress: number;
   error: string;
@@ -18,19 +19,21 @@ class DownloadItem {
   game_data: ITorrentGameData;
 
   constructor(data: AddDownloadData) {
-    const { file_path, game_data, url, file_name, id } = data;
+    const { file_path, game_data, url, file_name, id, file_extension } = data;
     this.id = id;
     this.url = url;
     this.filename = file_name;
     this.status = "pending";
     this.progress = 0;
     this.error = "";
+    this.fileExtension = file_extension ?? url.split(".").pop() ?? "rar";
     this.filePath = file_path ?? constants.downloadsPath;
     this.game_data = game_data;
   }
 
   public get fullPath(): string {
-    return path.join(this.filePath, this.filename);
+    const fileName_withExtension = `${this.filename}.${this.fileExtension}`;
+    return path.join(this.filePath, fileName_withExtension);
   }
 
   public setProgress(progress: number) {
