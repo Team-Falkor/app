@@ -18,7 +18,6 @@ export class RealDebridAPI {
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
-    console.log(`endpoints: ${url}`, body);
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       ...(authRequired ? { Authorization: `Bearer ${this.accessToken}` } : {}),
@@ -39,6 +38,7 @@ export class RealDebridAPI {
     if (!response?.success) {
       switch (response?.error) {
         case "Unauthorized":
+          console.log("unauthorized");
           throw new Error("Bad token (expired, invalid)");
         case "Forbidden":
           throw new Error("Permission denied (account locked, not premium)");

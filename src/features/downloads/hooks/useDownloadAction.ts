@@ -1,14 +1,18 @@
 import { invoke } from "@/lib";
 import { useState } from "react";
 
-export const UseDownloadAction = (infoHash?: string) => {
+export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
   const [status, setStatus] = useState<"paused" | "started" | "deleted" | null>(
     null
   );
 
   const pauseDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:pause-torrent", infoHash);
+    if (!id) return null;
+
+    // Determine the appropriate action based on whether it's a torrent or download
+    const data = isTorrent
+      ? await invoke<any, string>("torrent:pause-torrent", id)
+      : await invoke<any, string>("download:pause-download", id);
 
     if (data.error) return;
 
@@ -17,8 +21,11 @@ export const UseDownloadAction = (infoHash?: string) => {
   };
 
   const startDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:start-torrent", infoHash);
+    if (!id) return null;
+
+    const data = isTorrent
+      ? await invoke<any, string>("torrent:start-torrent", id)
+      : await invoke<any, string>("download:start-download", id);
 
     if (data.error) return;
 
@@ -27,8 +34,11 @@ export const UseDownloadAction = (infoHash?: string) => {
   };
 
   const stopDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:delete-torrent", infoHash);
+    if (!id) return null;
+
+    const data = isTorrent
+      ? await invoke<any, string>("torrent:delete-torrent", id)
+      : await invoke<any, string>("download:delete-download", id);
 
     if (data.error) return;
 

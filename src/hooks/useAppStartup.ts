@@ -29,7 +29,10 @@ export const useAppStartup = () => {
     const rd = data.find((account) => account.type === "real-debrid");
     if (!rd || !rd.access_token) return;
 
-    if (Date.now() + rd.expires_in < Date.now()) {
+    // Convert `expires_in` from seconds to milliseconds
+    const expiresInMs = rd.expires_in / 1000 - 1000;
+
+    if (Date.now() + expiresInMs < Date.now()) {
       console.log("Access token expired, refreshing...");
 
       const auth = getRealDebridAuthInstance();
@@ -41,10 +44,13 @@ export const useAppStartup = () => {
 
       const { access_token, refresh_token, expires_in } =
         await auth.refreshAccessToken();
+
+      if (!access_token || !refresh_token || !expires_in) return;
+
       const input: ExternalTokenUpdateInput = {
         access_token: access_token!,
         refresh_token: refresh_token!,
-        expires_in: new Date(rd.expires_in),
+        expires_in: new Date(Date.now() + expires_in * 1000), // Convert seconds to milliseconds here
       };
 
       await invoke<boolean>(
@@ -56,7 +62,7 @@ export const useAppStartup = () => {
 
       rd.access_token = access_token!;
       rd.refresh_token = refresh_token!;
-      rd.expires_in = expires_in!;
+      rd.expires_in = expires_in! * 1000; // Update `expires_in` to milliseconds
       setRealDebrid(rd.access_token);
 
       console.log("Access token refreshed successfully");
@@ -88,9 +94,7 @@ export const useAppStartup = () => {
 
   useEffect(() => {
     window.ipcRenderer.on("app:deep-link", async (_event, url: string) => {
-      // Extract everything after 'falkor://'
       const deepLinkContent = url?.split("falkor://")?.[1];
-
       const command = deepLinkContent?.split("/")?.[0];
       const args = deepLinkContent?.split("/")?.slice(1);
 

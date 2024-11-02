@@ -41,9 +41,9 @@ class RealDebridClient {
   private async getOrCreateTorrent(magnetLink: string): Promise<string> {
     const infoHash = getInfoHashFromMagnet(magnetLink);
     const existingTorrents = await this.user.torrents();
-    const foundTorrent = existingTorrents.find(
-      (torrent) => torrent.hash === infoHash
-    );
+    const foundTorrent = existingTorrents?.length
+      ? existingTorrents?.find((torrent) => torrent.hash === infoHash)
+      : null;
 
     if (foundTorrent) {
       return foundTorrent.id;
@@ -51,6 +51,7 @@ class RealDebridClient {
 
     // If torrent does not exist, add it and return the new ID
     const addedTorrent = await this.torrents.addMagnet(magnetLink);
+    console.log(addedTorrent);
     if (!addedTorrent?.id) {
       throw new Error("Failed to add torrent. No ID returned.");
     }

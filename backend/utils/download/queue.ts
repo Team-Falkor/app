@@ -107,6 +107,10 @@ class DownloadQueue {
       return null;
     }
   }
+
+  public async getDownloads() {
+    return this.activeDownloads.map((d) => d.item);
+  }
 }
 
 const downloadQueue = new DownloadQueue();

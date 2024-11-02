@@ -63,12 +63,12 @@ export class Torrents extends RealDebridAPI {
     torrentId: string,
     files: string | "all"
   ): Promise<boolean> {
-    const body = new URLSearchParams({ files });
+    const body = `files=${files}`;
     await this.makeRequest(
       `/rest/1.0/torrents/selectFiles/${torrentId}`,
       "POST",
       true,
-      body.toString()
+      body
     );
     return true;
   }

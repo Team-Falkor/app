@@ -26,7 +26,7 @@ class DownloadItem {
     this.status = "pending";
     this.progress = 0;
     this.error = "";
-    this.fileExtension = file_extension ?? url.split(".").pop() ?? "rar";
+    this.fileExtension = file_extension ?? url?.split(".")?.pop() ?? "rar";
     this.filePath = file_path ?? constants.downloadsPath;
     this.game_data = game_data;
   }

@@ -1,18 +1,8 @@
 import { AddDownloadData, DownloadData } from "@/@types";
 import { ITorrent, ITorrentGameData } from "@/@types/torrent";
+import { isDownload, isTorrent } from "@/lib";
 import { toast } from "sonner";
 import { create } from "zustand";
-
-// Type guards
-export const isTorrent = (item: ITorrent | DownloadData): item is ITorrent => {
-  return (item as ITorrent).infoHash !== undefined;
-};
-
-export const isDownload = (
-  item: ITorrent | DownloadData
-): item is DownloadData => {
-  return (item as DownloadData).url !== undefined;
-};
 
 interface DownloadState {
   downloading: Array<ITorrent | DownloadData>;
