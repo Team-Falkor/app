@@ -1,4 +1,5 @@
 import type { IpcMainInvokeEvent } from "electron";
+import { logger } from "../../../handlers/logging";
 import { client, torrents } from "../../../utils";
 import { registerEvent } from "../utils";
 
@@ -7,6 +8,14 @@ const deleteTorrent = async (event: IpcMainInvokeEvent, infoHash: string) => {
   const torrent = await client.get(infoHash);
   if (!torrent) {
     console.error(`Torrent with infoHash ${infoHash} not found`);
+
+    logger.log({
+      id: Math.floor(Date.now() / 1000),
+      message: `Failed to delete torrent with infoHash ${infoHash}`,
+      timestamp: new Date().toISOString(),
+      type: "error",
+    });
+
     event.sender.send("torrent:delete-error", {
       infoHash,
       error: `Torrent with infoHash ${infoHash} not found`,

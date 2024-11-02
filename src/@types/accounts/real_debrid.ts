@@ -1,3 +1,16 @@
+export type RealDebridStatus =
+  | "magnet_error"
+  | "magnet_conversion"
+  | "waiting_files_selection"
+  | "queued"
+  | "downloading"
+  | "downloaded"
+  | "error"
+  | "virus"
+  | "compressing"
+  | "uploading"
+  | "dead";
+
 export interface RealDebridTorrentInfo {
   id: string;
   filename: string;
@@ -8,7 +21,7 @@ export interface RealDebridTorrentInfo {
   host: string;
   split: number;
   progress: number;
-  status: string;
+  status: RealDebridStatus;
   added: string;
   files: Array<{
     id: number;
@@ -58,7 +71,7 @@ export interface RealDebridTorrent {
   host: string; // Host main domain
   split: number; // Split size of links
   progress: number; // Possible values: 0 to 100
-  status: string; // Current status of the torrent: magnet_error, magnet_conversion, waiting_files_selection, queued, downloading, downloaded, error, virus, compressing, uploading, dead
+  status: RealDebridStatus; // Current status of the torrent: magnet_error, magnet_conversion, waiting_files_selection, queued, downloading, downloaded, error, virus, compressing, uploading, dead
   added: string; // jsonDate
   links: string[]; // Host URL
   ended?: string; // Only present when finished, jsonDate

@@ -15,7 +15,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
   if (!sources?.length) return null;
 
   return sources?.map((item) => {
-    if (item.name === "itad") {
+    if (item.id === "itad") {
       // Narrowing item.sources to ITADPrice[]
       return (item.sources as ITADPrice[]).map((source) => {
         return source?.deals?.map((deal, i) => (

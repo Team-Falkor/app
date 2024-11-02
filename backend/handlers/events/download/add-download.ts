@@ -9,18 +9,19 @@ const addDownload = (event: IpcMainInvokeEvent, downloadData: DownloadData) => {
   const downloadItem = new DownloadItem(downloadData);
   downloadQueue.addToQueue(downloadItem);
 
-  downloadItem.progressIntervalId = setInterval(() => {
+  const sendProgress = () => {
     if (downloadItem.status !== "downloading") {
       clearInterval(downloadItem.progressIntervalId);
-      return;
+    } else {
+      event.sender.send("download:progress", {
+        url: downloadItem.url,
+        progress: downloadItem.progress,
+        game_data: downloadItem.game_data,
+      });
     }
+  };
 
-    event.sender.send("download:progress", {
-      url: downloadItem.url,
-      progress: downloadItem.progress,
-      game_data: downloadItem.game_data,
-    });
-  }, 1000);
+  downloadItem.progressIntervalId = setInterval(sendProgress, 1000);
 
   return {
     id: downloadItem.id,

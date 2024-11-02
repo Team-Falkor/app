@@ -8,6 +8,7 @@ export class RealDebridAuth {
   clientSecret?: string;
   accessToken: string | undefined;
   refreshToken: string | undefined;
+  expiresIn: number | undefined;
 
   constructor() {
     this.clientId = "X245A4XAIBGVM";
@@ -88,7 +89,7 @@ export class RealDebridAuth {
       success: boolean;
       data: {
         access_token?: string;
-        expires_in?: string;
+        expires_in?: number;
         token_type?: string;
         refresh_token?: string;
       };
@@ -109,6 +110,7 @@ export class RealDebridAuth {
 
     this.accessToken = response?.data?.access_token;
     this.refreshToken = response?.data?.refresh_token;
+    this.expiresIn = response?.data?.expires_in;
 
     return response?.data;
   }
@@ -116,13 +118,15 @@ export class RealDebridAuth {
   // Step 4: Refresh the access token
   public async refreshAccessToken() {
     const url = `${this.oauthUrl}/token`;
-    const body = `client_id=${this.clientId}&client_secret=${this.clientSecret}&refresh_token=${this.refreshToken}&grant_type=refresh_token`;
+
+    const body = `client_id=${this.clientId}&client_secret=${this.clientSecret}&code=${this.refreshToken}&grant_type=http://oauth.net/grant_type/device/1.0`;
 
     const response = await invoke<{
       success: boolean;
       data: {
         access_token?: string;
         refresh_token?: string;
+        expires_in?: number;
       };
       error?: string;
     }>("request", url, {
@@ -141,6 +145,7 @@ export class RealDebridAuth {
 
     this.accessToken = response?.data?.access_token;
     this.refreshToken = response?.data?.refresh_token;
+    this.expiresIn = response?.data?.expires_in;
 
     return response?.data;
   }

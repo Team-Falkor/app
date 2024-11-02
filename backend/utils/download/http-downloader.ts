@@ -1,5 +1,6 @@
 import fs from "fs";
 import https from "https";
+import { logger } from "../../handlers/logging";
 import item from "./item";
 
 class HttpDownloader {
@@ -44,9 +45,9 @@ class HttpDownloader {
           this.trackProgress(chunk.length, totalSize)
         );
         fileStream.on("finish", () => this.finishDownload(resolve));
-        fileStream.on("error", (error) =>
-          this.handleError(reject, error.message)
-        );
+        fileStream.on("error", (error) => {
+          return this.handleError(reject, error.message);
+        });
 
         this.request!.on("error", (error) =>
           this.handleError(reject, error.message)
@@ -71,6 +72,14 @@ class HttpDownloader {
     this.item.setError(message);
     this.item.setStatus("error");
     this.item.closeFileStream();
+
+    logger.log({
+      id: Math.floor(Date.now() / 1000),
+      message: `Failed to download ${this.item.url}: ${message}`,
+      timestamp: new Date().toISOString(),
+      type: "error",
+    });
+
     reject(new Error(message));
   }
 

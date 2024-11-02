@@ -2,6 +2,7 @@ import { PluginSearchResponse } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { invoke } from "@/lib";
+import { useAccountServices } from "@/stores/account-services";
 import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
 
 type Props = PluginSearchResponse & {
@@ -12,9 +13,11 @@ type Props = PluginSearchResponse & {
 
 const DefaultDownloadCard = (props: Props) => {
   const { addDownload } = UseDownloads();
+  const { realDebrid } = useAccountServices();
 
   const handleDownload = async () => {
     // TODO: handle download for ddl
+
     if (props.type === "ddl") return;
     if (!props.pluginId) return;
 
@@ -23,8 +26,6 @@ const DefaultDownloadCard = (props: Props) => {
       "multiple-choice": multipleChoice,
       pluginId,
     } = props;
-
-    let url = returned_url;
 
     if (multipleChoice) {
       const data = await invoke<string[], string>(
@@ -35,10 +36,18 @@ const DefaultDownloadCard = (props: Props) => {
 
       if (!data?.length) return;
 
-      url = data[0];
+      const url = returned_url;
+
+      if (!realDebrid) return;
+
+      console.log(await realDebrid.downloadTorrentFromMagnet(url));
+
+      return;
+
+      // url = data[0];
     }
 
-    addDownload(url, props.game_data);
+    // addDownload(url, props.game_data);
   };
 
   if (props.type === "ddl") return null;

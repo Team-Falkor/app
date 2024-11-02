@@ -6,15 +6,15 @@ import { registerEvent } from "../utils";
 const pauseDownload = async (_event: IpcMainInvokeEvent, id: string) => {
   try {
     const downloadItem = await downloadQueue.pause(id);
-    if (!downloadItem)
+    if (!downloadItem) {
       return {
         message: "Error pausing download",
         error: true,
         data: null,
       };
+    }
 
-    if (downloadItem.progressIntervalId)
-      clearInterval(downloadItem.progressIntervalId);
+    clearInterval(downloadItem.progressIntervalId);
 
     return {
       message: "Download paused",

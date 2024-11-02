@@ -14,14 +14,16 @@ export class User extends RealDebridAPI {
     offset?: number,
     page?: number,
     limit: number = 50,
-    filter: string = "active"
+    filter?: string
   ): Promise<RealDebridTorrent[]> {
-    const url = new URL("/rest/1.0/torrents");
-    if (offset) url.searchParams.append("offset", offset.toString());
-    if (page) url.searchParams.append("page", page.toString());
-    if (limit) url.searchParams.append("limit", limit.toString());
-    if (filter) url.searchParams.append("filter", filter);
+    const searchParams = new URLSearchParams();
+    if (offset) searchParams.append("offset", offset.toString());
+    if (page) searchParams.append("page", page.toString());
+    if (limit) searchParams.append("limit", limit.toString());
+    if (filter) searchParams.append("filter", filter);
 
-    return this.makeRequest<RealDebridTorrent[]>(url.href, "GET", true);
+    const url = `/rest/1.0/torrents?${searchParams}`;
+
+    return this.makeRequest<RealDebridTorrent[]>(url, "GET", true);
   }
 }

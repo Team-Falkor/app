@@ -1,3 +1,4 @@
+import { logger } from "../../handlers/logging";
 import HttpDownloader from "./http-downloader";
 import DownloadItem from "./item";
 
@@ -30,6 +31,12 @@ class DownloadQueue {
         await downloader.download();
       } catch (error) {
         console.error(`Failed to download ${downloadItem.url}: ${error}`);
+        logger.log({
+          id: Math.floor(Date.now() / 1000),
+          message: `Failed to download ${downloadItem.url}: ${error}`,
+          timestamp: new Date().toISOString(),
+          type: "error",
+        });
       }
 
       this.activeDownloads = this.activeDownloads.filter(
@@ -53,6 +60,12 @@ class DownloadQueue {
       return downloader.item;
     } catch (error) {
       console.error(error);
+      logger.log({
+        id: Math.floor(Date.now() / 1000),
+        message: `Failed to pause download with id ${id}`,
+        timestamp: new Date().toISOString(),
+        type: "error",
+      });
       return null;
     }
   }
@@ -66,6 +79,12 @@ class DownloadQueue {
       return downloader.item;
     } catch (error) {
       console.error(error);
+      logger.log({
+        id: Math.floor(Date.now() / 1000),
+        message: `Failed to resume download with id ${id}`,
+        timestamp: new Date().toISOString(),
+        type: "error",
+      });
       return null;
     }
   }
@@ -79,6 +98,12 @@ class DownloadQueue {
       return downloader.item;
     } catch (error) {
       console.error(error);
+      logger.log({
+        id: Math.floor(Date.now() / 1000),
+        message: `Failed to stop download with id ${id}`,
+        timestamp: new Date().toISOString(),
+        type: "error",
+      });
       return null;
     }
   }

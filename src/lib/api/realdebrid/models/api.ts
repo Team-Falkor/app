@@ -18,6 +18,7 @@ export class RealDebridAPI {
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
 
+    console.log(`endpoints: ${url}`, body);
     const headers: HeadersInit = {
       "Content-Type": "application/json",
       ...(authRequired ? { Authorization: `Bearer ${this.accessToken}` } : {}),
@@ -31,7 +32,7 @@ export class RealDebridAPI {
     }>("request", url, {
       method,
       headers,
-      body: body ? JSON.stringify(body) : undefined,
+      body: body ? body.toString() : undefined,
     });
 
     // Check response success
