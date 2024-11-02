@@ -1,11 +1,14 @@
 import { IpcMainInvokeEvent } from "electron";
 
-import { DownloadData } from "@/@types";
+import { AddDownloadData } from "@/@types";
 import DownloadItem from "../../../utils/download/item";
 import { downloadQueue } from "../../../utils/download/queue";
 import { registerEvent } from "../utils";
 
-const addDownload = (event: IpcMainInvokeEvent, downloadData: DownloadData) => {
+const addDownload = (
+  event: IpcMainInvokeEvent,
+  downloadData: AddDownloadData
+) => {
   const downloadItem = new DownloadItem(downloadData);
   downloadQueue.addToQueue(downloadItem);
 

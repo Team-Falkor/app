@@ -27,6 +27,8 @@ const DefaultDownloadCard = (props: Props) => {
       pluginId,
     } = props;
 
+    let url = returned_url;
+
     if (multipleChoice) {
       const data = await invoke<string[], string>(
         "plugins:use:get-multiple-choice-download",
@@ -36,18 +38,19 @@ const DefaultDownloadCard = (props: Props) => {
 
       if (!data?.length) return;
 
-      const url = returned_url;
-
-      if (!realDebrid) return;
-
-      console.log(await realDebrid.downloadTorrentFromMagnet(url));
-
-      return;
-
-      // url = data[0];
+      url = data[0];
     }
 
-    // addDownload(url, props.game_data);
+    if (!realDebrid) return;
+
+    url = await realDebrid.downloadTorrentFromMagnet(url);
+
+    addDownload({
+      id: "test",
+      url,
+      game_data: props.game_data,
+      file_name: props.game_data.name,
+    });
   };
 
   if (props.type === "ddl") return null;

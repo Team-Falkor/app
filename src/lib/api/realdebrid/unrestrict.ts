@@ -57,7 +57,7 @@ export class Unrestrict extends RealDebridAPI {
       "/rest/1.0/unrestrict/containerFile",
       "PUT",
       true,
-      body,
+      body.toString(),
       { "Content-Type": "application/x-www-form-urlencoded" }
     );
   }
@@ -70,7 +70,7 @@ export class Unrestrict extends RealDebridAPI {
       "/rest/1.0/unrestrict/containerLink",
       "POST",
       true,
-      body,
+      body.toString(),
       { "Content-Type": "application/x-www-form-urlencoded" }
     );
   }

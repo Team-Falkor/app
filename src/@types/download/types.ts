@@ -16,3 +16,11 @@ export type DownloadStatus =
   | "error"
   | "paused"
   | "stopped";
+
+export interface AddDownloadData {
+  id: string;
+  url: string;
+  game_data: ITorrentGameData;
+  file_path?: string;
+  file_name: string;
+}

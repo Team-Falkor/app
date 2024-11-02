@@ -1,4 +1,4 @@
-import { DownloadData, DownloadStatus } from "@/@types";
+import { AddDownloadData, DownloadData, DownloadStatus } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
 import { createWriteStream } from "node:fs";
 import path from "node:path";
@@ -17,15 +17,15 @@ class DownloadItem {
 
   game_data: ITorrentGameData;
 
-  constructor(data: DownloadData) {
-    const { filename, game_data, url, id } = data;
+  constructor(data: AddDownloadData) {
+    const { file_path, game_data, url, file_name, id } = data;
     this.id = id;
     this.url = url;
-    this.filename = filename;
+    this.filename = file_name;
     this.status = "pending";
     this.progress = 0;
     this.error = "";
-    this.filePath = data?.filePath ?? constants.downloadsPath;
+    this.filePath = file_path ?? constants.downloadsPath;
     this.game_data = game_data;
   }
 

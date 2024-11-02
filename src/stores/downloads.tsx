@@ -1,4 +1,4 @@
-import { DownloadData } from "@/@types";
+import { AddDownloadData, DownloadData } from "@/@types";
 import { ITorrent, ITorrentGameData } from "@/@types/torrent";
 import { toast } from "sonner";
 import { create } from "zustand";
@@ -30,7 +30,7 @@ interface DownloadState {
   getTorrents: () => void;
 
   // Direct download methods
-  addDownload: (downloadData: DownloadData) => void;
+  addDownload: (downloadData: AddDownloadData) => void;
   pauseDownload: (id: string) => void;
   resumeDownload: (id: string) => void;
   stopDownload: (id: string) => void;
@@ -170,7 +170,7 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
     }
   },
 
-  addDownload: async (downloadData: DownloadData) => {
+  addDownload: async (downloadData) => {
     set({ loading: true });
     try {
       const download = await window.ipcRenderer.invoke(

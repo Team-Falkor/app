@@ -40,7 +40,12 @@ export class Torrents extends RealDebridAPI {
 
   public async add(host: string): Promise<{ id: string; uri: string }> {
     const body = new URLSearchParams({ host });
-    return this.makeRequest("/rest/1.0/torrents/add", "PUT", true, body);
+    return this.makeRequest(
+      "/rest/1.0/torrents/add",
+      "PUT",
+      true,
+      body.toString()
+    );
   }
 
   public async addMagnet(magnet: string): Promise<{ id: string; uri: string }> {
@@ -50,7 +55,7 @@ export class Torrents extends RealDebridAPI {
       "/rest/1.0/torrents/addMagnet",
       "POST",
       true,
-      body
+      body.toString()
     );
   }
 
@@ -63,7 +68,7 @@ export class Torrents extends RealDebridAPI {
       `/rest/1.0/torrents/selectFiles/${torrentId}`,
       "POST",
       true,
-      body
+      body.toString()
     );
     return true;
   }
