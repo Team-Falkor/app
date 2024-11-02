@@ -6,6 +6,7 @@ export interface DownloadData {
   filename: string;
   game_data: ITorrentGameData;
   filePath?: string;
+  status: DownloadStatus;
 }
 
 export type DownloadStatus =

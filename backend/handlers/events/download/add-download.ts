@@ -13,11 +13,9 @@ const addDownload = (event: IpcMainInvokeEvent, downloadData: DownloadData) => {
     if (downloadItem.status !== "downloading") {
       clearInterval(downloadItem.progressIntervalId);
     } else {
-      event.sender.send("download:progress", {
-        url: downloadItem.url,
-        progress: downloadItem.progress,
-        game_data: downloadItem.game_data,
-      });
+      const return_data = downloadItem.getReturnData();
+
+      event.sender.send("download:progress", return_data);
     }
   };
 

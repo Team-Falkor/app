@@ -53,6 +53,15 @@ class DownloadItem {
   public closeFileStream() {
     this.fileStream?.close();
   }
+
+  public getReturnData = (): DownloadData => ({
+    filename: this.filename,
+    game_data: this.game_data,
+    filePath: this.filePath,
+    status: this.status,
+    url: this.url,
+    id: this.id,
+  });
 }
 
 export default DownloadItem;

@@ -21,15 +21,11 @@ const resumeDownload = async (event: IpcMainInvokeEvent, id: string) => {
     };
   }
 
-  downloadItem.progressIntervalId = setInterval(
-    () =>
-      event.sender.send("download:progress", {
-        url: downloadItem.url,
-        progress: downloadItem.progress,
-        game_data: downloadItem.game_data,
-      }),
-    1000
-  );
+  downloadItem.progressIntervalId = setInterval(() => {
+    const return_data = downloadItem.getReturnData();
+
+    event.sender.send("download:progress", return_data);
+  }, 1000);
 
   return {
     message: "Download resumed",

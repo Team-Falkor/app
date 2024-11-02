@@ -1,4 +1,4 @@
-import { ITorrentGameData } from "@/@types/torrent";
+import { ITorrent, ITorrentGameData } from "@/@types/torrent";
 import type { IpcMainInvokeEvent } from "electron";
 import { Torrent } from "webtorrent";
 import { logger } from "../../../handlers/logging";
@@ -30,7 +30,7 @@ const handleTorrentProgress = (
   if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
     torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
-    event.sender.send(TORRENT_PROGRESS_EVENT, {
+    const reutrn_data: ITorrent = {
       infoHash: torrent.infoHash,
       name: torrent.name,
       progress: torrent.progress,
@@ -39,8 +39,17 @@ const handleTorrentProgress = (
       uploadSpeed: torrent.uploadSpeed,
       totalSize: torrent.length,
       timeRemaining: torrent.timeRemaining,
+      paused: torrent.paused,
+      status: torrent.done
+        ? "completed"
+        : torrent.paused
+          ? "paused"
+          : "downloading",
+      path: torrent.path,
       game_data,
-    });
+    };
+
+    event.sender.send(TORRENT_PROGRESS_EVENT, reutrn_data);
 
     lastUpdateTime = now;
   }
@@ -78,18 +87,27 @@ const addTorrent = async (
 
         torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
+        const reutrn_data: ITorrent = {
+          infoHash: torrent.infoHash,
+          name: torrent.name,
+          progress: torrent.progress,
+          numPeers: torrent.numPeers,
+          downloadSpeed: torrent.downloadSpeed,
+          uploadSpeed: torrent.uploadSpeed,
+          totalSize: torrent.length,
+          timeRemaining: torrent.timeRemaining,
+          paused: torrent.paused,
+          status: torrent.done
+            ? "completed"
+            : torrent.paused
+              ? "paused"
+              : "downloading",
+          path: torrent.path,
+          game_data,
+        };
+
         torrent.on("metadata", () => {
-          event.sender.send("torrent:metadata", {
-            infoHash: torrent.infoHash,
-            name: torrent.name,
-            progress: torrent.progress,
-            numPeers: torrent.numPeers,
-            downloadSpeed: torrent.downloadSpeed,
-            uploadSpeed: torrent.uploadSpeed,
-            totalSize: torrent.length,
-            timeRemaining: torrent.timeRemaining,
-            game_data,
-          });
+          event.sender.send("torrent:metadata", reutrn_data);
         });
 
         torrent.on("warning", (message) =>
