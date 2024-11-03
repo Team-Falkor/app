@@ -4,19 +4,24 @@ import { homedir } from "os";
 
 const appDataPath = join(homedir(), "moe.falkor");
 const downloadsPath = join(homedir(), "Downloads");
+const settingsPath = join(appDataPath, "settings.json");
 
 if (!fs.existsSync(appDataPath)) {
   fs.mkdirSync(appDataPath);
 }
 
+if (!fs.existsSync(downloadsPath)) {
+  fs.mkdirSync(downloadsPath);
+}
+
 export const constants = {
-  appDataPath,
   databasePath: join(appDataPath, "database.sqlite"),
   pluginsPath: join(appDataPath, "plugins"),
-  settingsPath: join(appDataPath, "settings.json"),
   themesPath: join(appDataPath, "themes"),
   cachePath: join(appDataPath, "cache"),
   screenshotsPath: join(appDataPath, "screenshots"),
   logsPath: join(appDataPath, "logs.json"),
+  appDataPath,
+  settingsPath,
   downloadsPath,
 };

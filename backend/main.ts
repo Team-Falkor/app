@@ -4,6 +4,10 @@ import { fileURLToPath } from "node:url";
 
 let win: BrowserWindow | null;
 
+function isDev() {
+  return process.argv[2] == "--dev";
+}
+
 // DEEP LINKING
 const deepLinkName = "falkor";
 if (process.defaultApp) {
@@ -85,7 +89,9 @@ function createWindow() {
     width: 1280,
   });
 
-  win.removeMenu();
+  // if (!isDev()) {
+  //   win.removeMenu();
+  // }
 
   ipcMain.handle("request", async (_e, url: string, options?: RequestInit) => {
     try {

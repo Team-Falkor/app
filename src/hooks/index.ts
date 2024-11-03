@@ -5,4 +5,5 @@ export * from "./usePluginActions";
 export * from "./usePlugins";
 export * from "./useProtonDb";
 export * from "./useSetState";
+export * from "./useSettings";
 export * from "./useThemes";

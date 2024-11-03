@@ -1,7 +1,8 @@
 import { PluginSearchResponse } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
-import { invoke } from "@/lib";
+import { useSettings } from "@/hooks";
+import { createSlug, invoke } from "@/lib";
 import { useAccountServices } from "@/stores/account-services";
 import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
 
@@ -12,13 +13,13 @@ type Props = PluginSearchResponse & {
 };
 
 const DefaultDownloadCard = (props: Props) => {
-  const { addDownload } = UseDownloads();
+  const { addDownload, addTorrent } = UseDownloads();
   const { realDebrid } = useAccountServices();
+  const { settings } = useSettings();
 
   const handleDownload = async () => {
     // TODO: handle download for ddl
 
-    if (props.type === "ddl") return;
     if (!props.pluginId) return;
 
     const {
@@ -41,16 +42,29 @@ const DefaultDownloadCard = (props: Props) => {
       url = data[0];
     }
 
-    if (!realDebrid) return;
+    if (settings.useAccountsForDownloads && realDebrid) {
+      url = await realDebrid.downloadTorrentFromMagnet(url);
 
-    url = await realDebrid.downloadTorrentFromMagnet(url);
+      addDownload({
+        id: createSlug(props.name),
+        url,
+        game_data: props.game_data,
+        file_name: props.game_data.name,
+      });
+      return;
+    }
 
-    addDownload({
-      id: "test",
-      url,
-      game_data: props.game_data,
-      file_name: props.game_data.name,
-    });
+    if (props.type === "ddl") {
+      addDownload({
+        id: createSlug(props.name),
+        url,
+        game_data: props.game_data,
+        file_name: props.game_data.name,
+      });
+      return;
+    }
+
+    addTorrent(url, props.game_data);
   };
 
   if (props.type === "ddl") return null;
