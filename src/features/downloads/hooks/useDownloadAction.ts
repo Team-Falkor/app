@@ -1,7 +1,9 @@
 import { invoke } from "@/lib";
 import { useState } from "react";
+import UseDownloads from "./useDownloads";
 
 export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
+  const { fetchDownloads } = UseDownloads();
   const [status, setStatus] = useState<"paused" | "started" | "deleted" | null>(
     null
   );
@@ -39,6 +41,7 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
     const data = isTorrent
       ? await invoke<any, string>("torrent:delete-torrent", id)
       : await invoke<any, string>("download:stop", id);
+    fetchDownloads();
 
     if (data.error) return;
 

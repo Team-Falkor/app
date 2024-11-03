@@ -4,10 +4,6 @@ import url, { fileURLToPath } from "node:url";
 
 let win: BrowserWindow | null;
 
-function isDev() {
-  return process.argv[2] == "--dev";
-}
-
 // DEEP LINKING
 const deepLinkName = "falkor";
 if (process.defaultApp) {
@@ -96,16 +92,6 @@ function createWindow() {
   // if (!isDev()) {
   //   win.removeMenu();
   // }
-
-  ipcMain.handle("request", async (_e, url: string, options?: RequestInit) => {
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-      return { data, success: true };
-    } catch (error) {
-      return { success: false, error: (error as Error).message };
-    }
-  });
 
   ipcMain.handle("openExternal", async (_e, url: string) => {
     await shell.openExternal(url);

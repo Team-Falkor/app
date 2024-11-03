@@ -29,7 +29,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
       return (item?.sources as PluginSearchResponse[])?.map((source) => (
         <DefaultDownloadCard
           {...source}
-          multiple-choice={item["multiple-choice"]}
+          multiple_choice={item["multiple_choice"]}
           pluginId={item.id}
           key={source.name}
           game_data={props.game_data}

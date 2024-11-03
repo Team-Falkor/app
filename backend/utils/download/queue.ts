@@ -95,7 +95,10 @@ class DownloadQueue {
       const downloader = this.activeDownloads.get(id);
       if (!downloader) return null;
       downloader.stop();
-      await this.processQueue();
+
+      this.activeDownloads.delete(id);
+      this.queue.delete(id);
+
       return downloader.item;
     } catch (error) {
       console.error(error);

@@ -15,10 +15,11 @@ export const Route = createFileRoute("/downloads")({
 
 function Downloads() {
   const { downloading, getQueue, fetchDownloads } = UseDownloads();
-  const { map: statsMap, set: setStats } = useMapState<
-    string,
-    ITorrent | DownloadData
-  >();
+  const {
+    map: statsMap,
+    set: setStats,
+    remove: removeStats,
+  } = useMapState<string, ITorrent | DownloadData>();
 
   // Retrieve the current download queue once per render
   const queue = useMemo(getQueue, [getQueue]);
@@ -50,15 +51,31 @@ function Downloads() {
     };
   }, [handleProgress]);
 
-  const renderDownloadCard = (item: ITorrent | DownloadData) => {
-    const stats = statsMap.get(isTorrent(item) ? item.infoHash : item.id);
+  const renderDownloadCard = useCallback(
+    (item: ITorrent | DownloadData) => {
+      const stats = statsMap.get(isTorrent(item) ? item.infoHash : item.id);
 
-    console.log("Stats:", stats);
-
-    if (!stats) return <DownloadCardLoading />;
-    if (isTorrent(item)) return <DownloadCard key={item.infoHash} {...stats} />;
-    return <DownloadCard key={item.id} {...stats} />;
-  };
+      if (
+        (stats && stats.status === "stopped") ||
+        stats?.status === "error" ||
+        !stats
+      )
+        return null;
+      if (stats?.status === "pending") return <DownloadCardLoading />;
+      if (isTorrent(item))
+        return (
+          <DownloadCard
+            key={item.infoHash}
+            stats={stats}
+            deleteStats={removeStats}
+          />
+        );
+      return (
+        <DownloadCard key={item.id} stats={stats} deleteStats={removeStats} />
+      );
+    },
+    [removeStats, statsMap]
+  );
 
   return (
     <div className="w-full h-full flex flex-col">

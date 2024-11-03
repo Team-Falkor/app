@@ -7,7 +7,7 @@ import { useAccountServices } from "@/stores/account-services";
 import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
 
 type Props = PluginSearchResponse & {
-  "multiple-choice"?: boolean;
+  multiple_choice?: boolean;
   pluginId?: string;
   game_data: ITorrentGameData;
 };
@@ -24,7 +24,7 @@ const DefaultDownloadCard = (props: Props) => {
 
     const {
       return: returned_url,
-      "multiple-choice": multipleChoice,
+      multiple_choice: multipleChoice,
       pluginId,
     } = props;
 

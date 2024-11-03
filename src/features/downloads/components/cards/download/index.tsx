@@ -9,7 +9,12 @@ import DownloadCardChartArea from "./chartArea";
 import DownloadCardStat from "./stat";
 import DownloadCardTitle from "./title";
 
-const DownloadCard = (stats: ITorrent | DownloadData) => {
+interface DownloadCardProps {
+  stats: ITorrent | DownloadData;
+  deleteStats: (id: string) => void;
+}
+
+const DownloadCard = ({ stats, deleteStats }: DownloadCardProps) => {
   const { speedHistory, updateSpeedHistory, peakSpeed } =
     useDownloadSpeedHistory();
   const { game_data } = stats;
@@ -70,7 +75,7 @@ const DownloadCard = (stats: ITorrent | DownloadData) => {
           <div className="flex flex-col justify-start items-start gap-1.5">
             <DownloadCardTitle title={game_data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
-              <DownloadCardActions {...stats} />
+              <DownloadCardActions stats={stats} deleteStats={deleteStats} />
             </div>
           </div>
         </div>

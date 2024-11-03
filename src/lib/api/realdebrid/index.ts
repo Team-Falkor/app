@@ -62,7 +62,13 @@ class RealDebridClient {
     magnetLink: string,
     fileSelection: string | "all" = "all"
   ): Promise<string> {
-    const torrentId = await this.getOrCreateTorrent(magnetLink);
+    console.log({
+      magnetLink,
+      decodedMagnetLink: decodeURIComponent(magnetLink),
+    });
+    const torrentId = await this.getOrCreateTorrent(
+      decodeURIComponent(magnetLink)
+    );
     let torrentInfo = await this.torrents.info(torrentId);
 
     // Select files if necessary
