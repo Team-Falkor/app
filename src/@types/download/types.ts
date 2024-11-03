@@ -5,8 +5,12 @@ export interface DownloadData {
   url: string;
   filename: string;
   game_data: ITorrentGameData;
-  filePath?: string;
+  path?: string;
+  downloadSpeed: number;
+  progress: number;
+  totalSize?: number;
   status: DownloadStatus;
+  timeRemaining?: number | "completed";
 }
 
 export type DownloadStatus =

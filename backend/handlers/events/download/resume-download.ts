@@ -38,4 +38,4 @@ const resumeDownload = async (event: IpcMainInvokeEvent, id: string) => {
   };
 };
 
-registerEvent("download:resume", resumeDownload);
+registerEvent("download:start", resumeDownload);

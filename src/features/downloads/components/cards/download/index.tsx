@@ -20,18 +20,17 @@ const DownloadCard = (stats: ITorrent | DownloadData) => {
   }, [stats]);
 
   useEffect(() => {
-    if (torrentMode && stats.downloadSpeed) {
+    if (stats.downloadSpeed) {
       updateSpeedHistory(stats.downloadSpeed);
     }
   }, [stats, updateSpeedHistory, torrentMode]);
 
   const statsTexts = useMemo(() => {
-    const downloadSpeed =
-      torrentMode && downloading ? (stats.downloadSpeed ?? 0) : 0;
+    const downloadSpeed = downloading ? (stats.downloadSpeed ?? 0) : 0;
     const uploadSpeed =
       torrentMode && downloading ? (stats.uploadSpeed ?? 0) : 0;
-    const peak = torrentMode && downloading ? (peakSpeed ?? 0) : 0;
-    const totalSize = torrentMode ? stats.totalSize : 0;
+    const peak = downloading ? (peakSpeed ?? 0) : 0;
+    const totalSize = stats.totalSize ?? 0;
 
     return {
       downloadSpeedText: bytesToHumanReadable(downloadSpeed) + "/s",
@@ -80,15 +79,19 @@ const DownloadCard = (stats: ITorrent | DownloadData) => {
         <div className="flex flex-col gap-4 items-end justify-between h-full flex-1">
           {downloading && (
             <>
-              {torrentMode && (
-                <div className="size-full overflow-hidden">
-                  <DownloadCardChartArea
-                    progress={stats.progress ? stats.progress * 100 : 0}
-                    timeRemaining={stats.timeRemaining ?? 0}
-                    chartData={speedHistory}
-                  />
-                </div>
-              )}
+              <div className="size-full overflow-hidden">
+                <DownloadCardChartArea
+                  progress={
+                    stats.progress
+                      ? isTorrent(stats)
+                        ? stats.progress * 100
+                        : stats.progress
+                      : 0
+                  }
+                  timeRemaining={stats.timeRemaining ?? 0}
+                  chartData={speedHistory}
+                />
+              </div>
 
               <div className="flex gap-4 justify-between w-full">
                 <DownloadCardStat

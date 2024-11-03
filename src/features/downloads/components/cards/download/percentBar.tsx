@@ -3,12 +3,12 @@ import { useMemo } from "react";
 
 interface Props {
   percent: number;
-  timeRemaning: number;
+  timeRemaning: number | "completed";
 }
 
 const PercentBar = ({ percent, timeRemaning }: Props) => {
   const estimatedTime = useDownloadTime({
-    timeRemaining: timeRemaning,
+    timeRemaining: timeRemaning !== "completed" ? timeRemaning : 0,
   });
 
   const barStyle = useMemo(() => {
@@ -18,10 +18,12 @@ const PercentBar = ({ percent, timeRemaning }: Props) => {
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex flex-row justify-between w-full">
-        <div className="text-sm text-muted-foreground font-semibold">
-          <span>ETA:</span>
-          <span className="ml-1">{estimatedTime}</span>
-        </div>
+        {!!estimatedTime && (
+          <div className="text-sm text-muted-foreground font-semibold">
+            <span>ETA:</span>
+            <span className="ml-1">{estimatedTime}</span>
+          </div>
+        )}
         <p className="text-sm text-muted-foreground font-semibold">
           {percent.toFixed(2)}%
         </p>

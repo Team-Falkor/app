@@ -1,11 +1,11 @@
 import { AddDownloadData, DownloadData } from "@/@types";
 import { ITorrent, ITorrentGameData } from "@/@types/torrent";
-import { isDownload, isTorrent } from "@/lib";
+import { invoke, isDownload, isTorrent } from "@/lib";
 import { toast } from "sonner";
 import { create } from "zustand";
 
 interface DownloadState {
-  downloading: Array<ITorrent | DownloadData>;
+  downloading: Map<string, ITorrent | DownloadData>;
   torrents: Map<string, ITorrent>;
   downloads: Map<string, DownloadData>;
   error: string | null;
@@ -34,7 +34,7 @@ interface DownloadState {
 }
 
 export const useDownloadStore = create<DownloadState>((set, get) => ({
-  downloading: [],
+  downloading: new Map(),
   torrents: new Map(),
   downloads: new Map(),
   error: null,
@@ -52,11 +52,11 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
 
       set((state) => {
         const newTorrent = { ...torrent, game_data };
-        return {
-          downloading: [...state.downloading, newTorrent],
-          torrents: state.torrents.set(torrentId, newTorrent),
-          loading: false,
-        };
+
+        state.torrents.set(torrentId, newTorrent);
+        state.downloading.set(torrentId, newTorrent);
+        state.loading = false;
+        return state;
       });
       toast.success("Torrent added successfully");
     } catch (error) {
@@ -73,12 +73,10 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       await window.ipcRenderer.invoke("torrent:delete-torrent", infoHash);
       set((state) => {
         state.torrents.delete(infoHash);
-        return {
-          downloading: state.downloading.filter(
-            (t) => isTorrent(t) && t.infoHash !== infoHash
-          ),
-          loading: false,
-        };
+        state.downloading.delete(infoHash);
+        state.loading = false;
+
+        return state;
       });
       toast.success("Torrent deleted successfully");
     } catch (error) {
@@ -98,14 +96,14 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       );
       if (!response.success) throw new Error("Failed to pause torrent");
 
-      set((state) => ({
-        downloading: state.downloading.map((t) =>
-          isTorrent(t) && t.infoHash === infoHash
-            ? { ...t, status: "paused" }
-            : t
-        ),
-        loading: false,
-      }));
+      set((state) => {
+        const download = state.downloading.get(infoHash);
+        if (!download) return state;
+        download.status = "paused";
+        state.downloading.set(infoHash, download);
+        state.loading = false;
+        return state;
+      });
       toast.success("Torrent paused successfully");
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -124,14 +122,14 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       );
       if (!response.success) throw new Error("Failed to resume torrent");
 
-      set((state) => ({
-        downloading: state.downloading.map((t) =>
-          isTorrent(t) && t.infoHash === infoHash
-            ? { ...t, status: "downloading" }
-            : t
-        ),
-        loading: false,
-      }));
+      set((state) => {
+        const download = state.downloading.get(infoHash);
+        if (!download) return state;
+        download.status = "downloading";
+        state.loading = false;
+
+        return state;
+      });
       toast.success("Torrent resumed successfully");
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -149,11 +147,11 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
     set({ loading: true });
     try {
       const torrents = await window.ipcRenderer.invoke("torrent:get-torrents");
-      set((state) => ({
-        downloading: [...state.downloading, ...torrents],
-        torrents: new Map(torrents.map((t: ITorrent) => [t.infoHash, t])),
-        loading: false,
-      }));
+      set((state) => {
+        state.downloading = new Map([...state.downloading, ...torrents]);
+        state.loading = false;
+        return state;
+      });
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to fetch torrents:", error);
@@ -167,11 +165,12 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
         "download:add",
         downloadData
       );
-      set((state) => ({
-        downloading: [...state.downloading, { ...downloadData, ...download }],
-        downloads: state.downloads.set(downloadData.id, download),
-        loading: false,
-      }));
+      set((state) => {
+        state.downloading.set(downloadData.id, download);
+        state.downloads.set(downloadData.id, download);
+        state.loading = false;
+        return state;
+      });
       toast.success("Download added successfully");
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -187,12 +186,14 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       const response = await window.ipcRenderer.invoke("download:pause", id);
       if (response.error) throw new Error(response.message);
 
-      set((state) => ({
-        downloading: state.downloading.map((d) =>
-          isDownload(d) && d.id === id ? { ...d, status: "paused" } : d
-        ),
-        loading: false,
-      }));
+      set((state) => {
+        const download = state.downloading.get(id);
+        if (!download) return state;
+        download.status = "paused";
+        state.downloading.set(id, download);
+        state.loading = false;
+        return state;
+      });
       toast.success(response.message);
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -208,12 +209,14 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       const response = await window.ipcRenderer.invoke("download:resume", id);
       if (response.error) throw new Error(response.message);
 
-      set((state) => ({
-        downloading: state.downloading.map((d) =>
-          isDownload(d) && d.id === id ? { ...d, status: "downloading" } : d
-        ),
-        loading: false,
-      }));
+      set((state) => {
+        const download = state.downloading.get(id);
+        if (!download) return state;
+        download.status = "downloading";
+        state.downloading.set(id, download);
+        state.loading = false;
+        return state;
+      });
       toast.success(response.message);
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -229,11 +232,12 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
       const response = await window.ipcRenderer.invoke("download:stop", id);
       if (response.error) throw new Error(response.message);
 
-      set((state) => ({
-        downloading: state.downloading.filter(
-          (d) => !isDownload(d) || d.id !== id
-        ),
-      }));
+      set((state) => {
+        state.downloading.delete(id);
+        state.downloads.delete(id);
+        state.loading = false;
+        return state;
+      });
       toast.success(response.message);
     } catch (error) {
       set({ error: String(error), loading: false });
@@ -250,14 +254,28 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   fetchDownloads: async () => {
     set({ loading: true });
     try {
-      const downloads = await window.ipcRenderer.invoke(
-        "download:get-downloads"
-      );
-      set((state) => ({
-        downloading: [...state.downloading, ...downloads],
-        downloads: new Map(downloads.map((d: DownloadData) => [d.id, d])),
-        loading: false,
-      }));
+      const downloads =
+        (await invoke<Array<DownloadData>>("download:get-downloads")) ?? [];
+      const torrents =
+        (await invoke<Array<ITorrent>>("torrent:get-torrents")) ?? [];
+
+      set((state) => {
+        torrents?.forEach((t) => {
+          state.torrents.set(t.infoHash, t);
+        });
+
+        downloads?.forEach((d) => {
+          state.downloads.set(d.id, d);
+        });
+
+        [...downloads, ...torrents].forEach((d) => {
+          if (isDownload(d)) state.downloading.set(d.id, d);
+          if (isTorrent(d)) state.downloading.set(d.infoHash, d);
+        });
+
+        state.loading = false;
+        return state;
+      });
     } catch (error) {
       set({ error: String(error), loading: false });
       console.error("Failed to fetch downloads:", error);
@@ -265,12 +283,10 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
   },
 
   getQueue: () => {
-    return get().downloading.filter((item) => {
-      if (isDownload(item)) {
-        return item.status === "downloading";
-      } else if (isTorrent(item)) {
-        return item.status === "downloading";
-      }
+    return Array.from(get().downloading.values()).filter((item) => {
+      if (isDownload(item)) return item.status !== "downloading";
+      if (isTorrent(item)) return item.status !== "downloading";
+      return false;
     });
   },
 }));

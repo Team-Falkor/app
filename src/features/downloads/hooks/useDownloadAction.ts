@@ -12,7 +12,7 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
     // Determine the appropriate action based on whether it's a torrent or download
     const data = isTorrent
       ? await invoke<any, string>("torrent:pause-torrent", id)
-      : await invoke<any, string>("download:pause-download", id);
+      : await invoke<any, string>("download:pause", id);
 
     if (data.error) return;
 
@@ -25,7 +25,7 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
 
     const data = isTorrent
       ? await invoke<any, string>("torrent:start-torrent", id)
-      : await invoke<any, string>("download:start-download", id);
+      : await invoke<any, string>("download:start", id);
 
     if (data.error) return;
 
@@ -38,7 +38,7 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
 
     const data = isTorrent
       ? await invoke<any, string>("torrent:delete-torrent", id)
-      : await invoke<any, string>("download:delete-download", id);
+      : await invoke<any, string>("download:stop", id);
 
     if (data.error) return;
 

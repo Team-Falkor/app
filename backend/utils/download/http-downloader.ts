@@ -8,6 +8,8 @@ class HttpDownloader {
   private request?: ReturnType<typeof https.get>;
   private isPaused: boolean = false;
   private downloadedSize: number = 0;
+  private speedInterval?: NodeJS.Timeout;
+  private previousDownloadedSize: number = 0;
 
   constructor(item: item) {
     this.item = item;
@@ -30,6 +32,8 @@ class HttpDownloader {
           Number(response.headers["content-length"]) +
           (isPartialContent ? this.downloadedSize : 0);
 
+        this.item.totalSize = totalSize;
+
         if (![200, 206].includes(response.statusCode!)) {
           const errorMessage = `Failed to download: ${response.statusMessage}`;
           this.handleError(reject, errorMessage);
@@ -40,6 +44,8 @@ class HttpDownloader {
           flags: isPartialContent ? "a" : "w",
         });
         response.pipe(fileStream);
+
+        this.startSpeedTracking(totalSize);
 
         response.on("data", (chunk) =>
           this.trackProgress(chunk.length, totalSize)
@@ -56,6 +62,26 @@ class HttpDownloader {
     });
   }
 
+  private startSpeedTracking(totalSize: number) {
+    this.previousDownloadedSize = this.downloadedSize;
+
+    // Update download speed and time remaining every second
+    this.speedInterval = setInterval(() => {
+      const bytesDownloaded = this.downloadedSize - this.previousDownloadedSize;
+      this.item.downloadSpeed = bytesDownloaded; // in bytes per second
+
+      // Calculate and set time remaining in milliseconds
+      const remainingBytes = totalSize - this.downloadedSize;
+      const timeRemainingMs =
+        bytesDownloaded > 0
+          ? (remainingBytes / bytesDownloaded) * 1000 // Convert seconds to milliseconds
+          : Infinity; // Avoid division by zero if no progress is made
+      this.item.setTimeRemaining(timeRemainingMs); // in milliseconds
+
+      this.previousDownloadedSize = this.downloadedSize;
+    }, 1000);
+  }
+
   private trackProgress(chunkSize: number, totalSize: number) {
     this.downloadedSize += chunkSize;
     const progress = (this.downloadedSize / totalSize) * 100;
@@ -65,6 +91,7 @@ class HttpDownloader {
   private finishDownload(resolve: () => void) {
     this.item.setStatus("completed");
     this.item.closeFileStream();
+    this.clearSpeedTracking(); // Stop speed tracking
     resolve();
   }
 
@@ -72,6 +99,7 @@ class HttpDownloader {
     this.item.setError(message);
     this.item.setStatus("error");
     this.item.closeFileStream();
+    this.clearSpeedTracking(); // Stop speed tracking on error
 
     logger.log({
       id: Math.floor(Date.now() / 1000),
@@ -83,16 +111,25 @@ class HttpDownloader {
     reject(new Error(message));
   }
 
+  private clearSpeedTracking() {
+    if (this.speedInterval) {
+      clearInterval(this.speedInterval);
+      this.speedInterval = undefined;
+    }
+  }
+
   public stop() {
     this.request?.destroy();
     this.item.setStatus("stopped");
     this.item.closeFileStream();
+    this.clearSpeedTracking();
   }
 
   public pause() {
     if (this.request) {
       this.isPaused = true;
       this.stop();
+      this.clearSpeedTracking();
       this.item.setStatus("paused");
     }
   }
@@ -101,6 +138,8 @@ class HttpDownloader {
     if (this.isPaused) {
       this.isPaused = false;
       await this.download();
+      this.startSpeedTracking(this.item.totalSize);
+      this.item.setStatus("downloading");
     }
   }
 }

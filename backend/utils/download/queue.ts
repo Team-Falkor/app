@@ -3,8 +3,8 @@ import HttpDownloader from "./http-downloader";
 import DownloadItem from "./item";
 
 class DownloadQueue {
-  private queue: DownloadItem[] = [];
-  private activeDownloads: HttpDownloader[] = [];
+  private queue: Map<string, DownloadItem> = new Map();
+  private activeDownloads: Map<string, HttpDownloader> = new Map();
   private maxConcurrentDownloads: number;
 
   constructor(maxConcurrentDownloads: number = 1) {
@@ -12,20 +12,20 @@ class DownloadQueue {
   }
 
   public addToQueue(downloadItem: DownloadItem) {
-    this.queue.push(downloadItem);
+    this.queue.set(downloadItem.id, downloadItem);
     this.processQueue();
   }
 
   private async processQueue() {
     while (
-      this.activeDownloads.length < this.maxConcurrentDownloads &&
-      this.queue.length > 0
+      this.activeDownloads.size < this.maxConcurrentDownloads &&
+      this.queue.size > 0
     ) {
-      const downloadItem = this.queue.shift();
+      const downloadItem = this.queue.values().next().value;
       if (!downloadItem) return;
 
       const downloader = new HttpDownloader(downloadItem);
-      this.activeDownloads.push(downloader);
+      this.activeDownloads.set(downloadItem.id, downloader);
 
       try {
         await downloader.download();
@@ -39,21 +39,22 @@ class DownloadQueue {
         });
       }
 
-      this.activeDownloads = this.activeDownloads.filter(
-        (d) => d !== downloader
-      );
+      this.activeDownloads.delete(downloadItem.id);
+
       this.processQueue();
     }
   }
 
   public stopAll() {
     this.activeDownloads.forEach((downloader) => downloader.stop());
-    this.activeDownloads = [];
+    this.activeDownloads = new Map();
+    this.queue = new Map();
+    this.processQueue();
   }
 
   public async pause(id: string) {
     try {
-      const downloader = this.activeDownloads.find((d) => d.item.id === id);
+      const downloader = this.activeDownloads.get(id);
       if (!downloader) return null;
       downloader.pause();
       await this.processQueue();
@@ -72,7 +73,7 @@ class DownloadQueue {
 
   public async resume(id: string) {
     try {
-      const downloader = this.activeDownloads.find((d) => d.item.id === id);
+      const downloader = this.activeDownloads.get(id);
       if (!downloader) return null;
       downloader.resume();
       await this.processQueue();
@@ -91,7 +92,7 @@ class DownloadQueue {
 
   public async stop(id: string) {
     try {
-      const downloader = this.activeDownloads.find((d) => d.item.id === id);
+      const downloader = this.activeDownloads.get(id);
       if (!downloader) return null;
       downloader.stop();
       await this.processQueue();
@@ -109,7 +110,7 @@ class DownloadQueue {
   }
 
   public async getDownloads() {
-    return this.activeDownloads.map((d) => d.item);
+    return Array.from(this.activeDownloads.values()).map((d) => d.item);
   }
 }
 

@@ -12,6 +12,9 @@ class DownloadItem {
   fileExtension: string;
   status: DownloadStatus;
   progress: number;
+  totalSize: number;
+  downloadSpeed?: number;
+  timeRemaining?: number | "completed";
   error: string;
   progressIntervalId?: ReturnType<typeof setInterval>;
   private fileStream?: ReturnType<typeof createWriteStream>;
@@ -25,6 +28,9 @@ class DownloadItem {
     this.filename = file_name;
     this.status = "pending";
     this.progress = 0;
+    this.totalSize = 0;
+    this.downloadSpeed = 0;
+    this.timeRemaining = 0;
     this.error = "";
     this.fileExtension = file_extension ?? url?.split(".")?.pop() ?? "rar";
     this.filePath = file_path ?? constants.downloadsPath;
@@ -44,6 +50,14 @@ class DownloadItem {
     this.status = status;
   }
 
+  public setTimeRemaining(timeRemaining: number | "completed") {
+    this.timeRemaining = timeRemaining;
+  }
+
+  public setDownloadSpeed(speed: number) {
+    this.downloadSpeed = speed;
+  }
+
   public setError(error: string) {
     this.error = error;
   }
@@ -60,10 +74,14 @@ class DownloadItem {
   public getReturnData = (): DownloadData => ({
     filename: this.filename,
     game_data: this.game_data,
-    filePath: this.filePath,
+    path: this.filePath,
     status: this.status,
     url: this.url,
     id: this.id,
+    progress: this.progress,
+    totalSize: this.totalSize,
+    downloadSpeed: this.downloadSpeed ?? 0,
+    timeRemaining: this.timeRemaining ?? 0,
   });
 }
 

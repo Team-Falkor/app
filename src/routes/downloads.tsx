@@ -22,14 +22,13 @@ function Downloads() {
   // Retrieve the current download queue once per render
   const queue = useMemo(getQueue, [getQueue]);
 
-  // Fetch downloads on component mount
   useEffect(() => {
     fetchDownloads();
   }, [fetchDownloads]);
 
-  // Update `statsMap` whenever progress data is received
   const handleProgress = useCallback(
     (_event: any, data: ITorrent | DownloadData) => {
+      console.log("Download progress:", data);
       if (isTorrent(data)) {
         setStats(data.infoHash, data);
       } else {
@@ -50,23 +49,20 @@ function Downloads() {
     };
   }, [handleProgress]);
 
-  const renderDownloadCard = (torrent: ITorrent | DownloadData) => {
-    // Ensure `infoHash` access only when the type is `ITorrent`
-    if (isTorrent(torrent)) {
-      const stats = statsMap.get(torrent.infoHash);
-      return stats ? (
-        <DownloadCard key={torrent.infoHash} {...stats} />
-      ) : (
-        <DownloadCardLoading />
-      );
-    }
-    return null;
+  const renderDownloadCard = (item: ITorrent | DownloadData) => {
+    const stats = statsMap.get(isTorrent(item) ? item.infoHash : item.id);
+
+    console.log("Stats:", stats);
+
+    if (!stats) return <DownloadCardLoading />;
+    if (isTorrent(item)) return <DownloadCard key={item.infoHash} {...stats} />;
+    return <DownloadCard key={item.id} {...stats} />;
   };
 
   return (
     <div className="w-full h-full flex flex-col">
-      {downloading?.length ? (
-        downloading.map(renderDownloadCard)
+      {downloading?.size ? (
+        Array.from(downloading.values()).map(renderDownloadCard)
       ) : (
         <div className="w-full flex justify-center items-center h-60 bg-primary/5">
           <h1 className="text-xl font-bold text-foreground">
