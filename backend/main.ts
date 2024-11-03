@@ -1,6 +1,6 @@
-import { app, BrowserWindow, ipcMain, shell } from "electron";
+import { app, BrowserWindow, ipcMain, net, protocol, shell } from "electron";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import url, { fileURLToPath } from "node:url";
 
 let win: BrowserWindow | null;
 
@@ -37,6 +37,10 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     createWindow();
+    protocol.handle("local", (request) => {
+      const filePath = request.url.slice("local:".length);
+      return net.fetch(url.pathToFileURL(decodeURI(filePath)).toString());
+    });
 
     await import("./handlers/events");
 
