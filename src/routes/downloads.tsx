@@ -1,5 +1,6 @@
 import { DownloadData } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
+import FolderButton from "@/components/folderButton";
 import DownloadCard from "@/features/downloads/components/cards/download";
 import { DownloadCardLoading } from "@/features/downloads/components/cards/loading";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
@@ -61,10 +62,19 @@ function Downloads() {
 
   return (
     <div className="w-full h-full flex flex-col">
+      {/* ACTION BAR */}
+      <div className="w-full flex justify-end flex-row bg-background/50 border-b mb-5 p-2">
+        <FolderButton
+          path="downloads"
+          tooltip="Open downloads folder"
+          variant={"secondary"}
+        />
+      </div>
+
       {downloading?.size ? (
         Array.from(downloading.values()).map(renderDownloadCard)
       ) : (
-        <div className="w-full flex justify-center items-center h-60 bg-primary/5">
+        <div className="w-full flex justify-center items-center h-60 bg-muted/50">
           <h1 className="text-xl font-bold text-foreground">
             No downloads in progress
           </h1>

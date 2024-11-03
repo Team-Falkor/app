@@ -85,6 +85,8 @@ function createWindow() {
     width: 1280,
   });
 
+  win.removeMenu();
+
   ipcMain.handle("request", async (_e, url: string, options?: RequestInit) => {
     try {
       const response = await fetch(url, options);
