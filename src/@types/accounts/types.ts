@@ -1,3 +1,5 @@
+export type ExternalAccountType = "real-debrid";
+
 export interface ExternalAccount {
   id: number;
   username: string | null;
@@ -8,7 +10,7 @@ export interface ExternalAccount {
   access_token: string;
   refresh_token: string;
   expires_in: number;
-  type: "real-debrid";
+  type: ExternalAccountType;
 }
 
 export interface ExternalNewAccountInput {
@@ -20,7 +22,7 @@ export interface ExternalNewAccountInput {
   access_token: string;
   refresh_token: string;
   expires_in: number;
-  type: "real-debrid";
+  type: ExternalAccountType;
 }
 
 export interface ExternalTokenUpdateInput {
@@ -34,3 +36,8 @@ export type ExternalRefreshTokenFunction = (refresh_token: string) => Promise<{
   refreshToken: string;
   expiresIn: Date;
 }>;
+
+export type ExternalAccountColumn = Pick<
+  ExternalAccount,
+  "avatar" | "username" | "email" | "type" | "access_token"
+>;

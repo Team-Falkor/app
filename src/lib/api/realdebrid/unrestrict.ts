@@ -10,13 +10,19 @@ export class Unrestrict extends RealDebridAPI {
   }
 
   public async check(
-    link: string,
+    url: string,
     password?: string
   ): Promise<RealDebridUnrestrictCheck> {
-    const body = new URLSearchParams({ link, ...(password && { password }) });
-    return this.makeRequest("/rest/1.0/unrestrict/check", "POST", true, body, {
-      "Content-Type": "application/x-www-form-urlencoded",
-    });
+    const body = new URLSearchParams({ link: url });
+
+    if (password) body.set("password", password);
+
+    return this.makeRequest(
+      "/rest/1.0/unrestrict/check",
+      "POST",
+      true,
+      body.toString()
+    );
   }
 
   public async link(
@@ -24,14 +30,16 @@ export class Unrestrict extends RealDebridAPI {
     password?: string,
     remote: number = 0
   ): Promise<RealDebridUnrestrictFileFolder> {
-    const body = new URLSearchParams({
-      link,
-      ...(password && { password }),
-      remote: remote.toString(),
-    });
-    return this.makeRequest("/rest/1.0/unrestrict/link", "POST", true, body, {
-      "Content-Type": "application/x-www-form-urlencoded",
-    });
+    const body = new URLSearchParams({ link, remote: remote.toString() });
+
+    if (password) body.set("password", password);
+
+    return this.makeRequest(
+      "/rest/1.0/unrestrict/link",
+      "POST",
+      true,
+      body.toString()
+    );
   }
 
   public async folder(link: string): Promise<RealDebridUnrestrictFileFolder[]> {
@@ -49,7 +57,7 @@ export class Unrestrict extends RealDebridAPI {
       "/rest/1.0/unrestrict/containerFile",
       "PUT",
       true,
-      body,
+      body.toString(),
       { "Content-Type": "application/x-www-form-urlencoded" }
     );
   }
@@ -62,7 +70,7 @@ export class Unrestrict extends RealDebridAPI {
       "/rest/1.0/unrestrict/containerLink",
       "POST",
       true,
-      body,
+      body.toString(),
       { "Content-Type": "application/x-www-form-urlencoded" }
     );
   }

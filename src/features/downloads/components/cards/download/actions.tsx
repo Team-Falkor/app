@@ -1,23 +1,39 @@
+import { DownloadData } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
 import { Button } from "@/components/ui/button";
 import { UseDownloadAction } from "@/features/downloads/hooks/useDownloadAction";
+import { isTorrent } from "@/lib";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
-const DownloadCardActions = (stats: ITorrent) => {
-  const { pauseDownload, startDownload, stopDownload, status } =
-    UseDownloadAction(stats?.infoHash);
+interface DownloadCardActionsProps {
+  stats: ITorrent | DownloadData;
+  deleteStats: (id: string) => void;
+}
 
+const DownloadCardActions = ({
+  stats,
+  deleteStats,
+}: DownloadCardActionsProps) => {
+  const isTorrentType = isTorrent(stats);
+
+  // Call UseDownloadAction with appropriate id and isTorrent flag
+  const { pauseDownload, startDownload, stopDownload, status } =
+    UseDownloadAction(isTorrentType ? stats.infoHash : stats.id, isTorrentType);
+
+  // Return null if status indicates deletion or if there's no valid action available
   if (status === "deleted" || !stats) return null;
+
+  console.log("Stats:", stats);
 
   return (
     <div className="flex flex-row gap-4">
-      {status === "paused" || stats?.paused ? (
+      {(isTorrentType && !stats.paused) || status === "paused" ? (
         <Button
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={startDownload}
+          onClick={startDownload ?? undefined} // Define onClick only when startDownload is available
         >
           <Play fill="currentColor" />
           Start Download
@@ -27,7 +43,7 @@ const DownloadCardActions = (stats: ITorrent) => {
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={pauseDownload}
+          onClick={pauseDownload ?? undefined} // Define onClick only when pauseDownload is available
         >
           <Pause fill="currentColor" />
           Pause Download
@@ -38,7 +54,10 @@ const DownloadCardActions = (stats: ITorrent) => {
         size="icon"
         variant="destructive"
         className="p-0.5"
-        onClick={stopDownload}
+        onClick={() => {
+          stopDownload();
+          deleteStats(isTorrentType ? stats.infoHash : stats.id);
+        }} // Define onClick only when stopDownload is available
       >
         <MdStop size="fill" />
       </Button>

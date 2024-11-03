@@ -28,6 +28,11 @@ const getTorrent = (
       paused: torrent.paused,
       timeRemaining: torrent.timeRemaining,
       totalSize: torrent.length,
+      status: torrent.done
+        ? "completed"
+        : torrent.paused
+          ? "paused"
+          : "downloading",
       game_data: findTorrent?.game_data,
     };
 

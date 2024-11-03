@@ -1,7 +1,9 @@
 import "./db";
+import "./download";
 import "./generic";
 import "./launcher";
 import "./logger";
 import "./plugins";
+import "./settings";
 import "./themes";
 import "./torrent";

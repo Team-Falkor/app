@@ -7,7 +7,7 @@ type ChartData = {
 
 interface Props {
   progress: number;
-  timeRemaining: number;
+  timeRemaining: number | "completed";
   chartData: ChartData[];
 }
 

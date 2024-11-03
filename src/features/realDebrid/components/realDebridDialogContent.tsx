@@ -1,7 +1,7 @@
 import { ExternalNewAccountInput } from "@/@types/accounts";
 import { DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { invoke } from "@/lib";
-import RealDebridClient from "@/lib/api/realdebrid";
+import { User } from "@/lib/api/realdebrid/user";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { toast } from "sonner";
 import * as auth from "../utils/auth";
@@ -58,9 +58,9 @@ const RealDebridDialogContent = ({
         return;
       }
 
-      const rdClient = new RealDebridClient(data.access_token);
+      const rdClient = new User(data.access_token);
 
-      const user_info = await rdClient.user.getUserInfo();
+      const user_info = await rdClient.getUserInfo();
 
       if (!user_info) {
         toast.error("Failed to obtain user info");
@@ -78,7 +78,7 @@ const RealDebridDialogContent = ({
         "external-accounts:add",
         {
           access_token: data.access_token,
-          expires_in: parseInt(data.expires_in),
+          expires_in: data.expires_in,
           refresh_token: data.refresh_token,
           type: "real-debrid",
           client_id: credentials.client_id,

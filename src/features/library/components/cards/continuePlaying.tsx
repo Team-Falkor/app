@@ -4,7 +4,7 @@ import { usePlayGame } from "../../hooks/usePlayGame";
 
 type ContinuePlayingCardProps = {
   game_name: string;
-  bg_image: string;
+  bg_image: string; // Path to background image (either URL or local)
   game_path: string;
 };
 
@@ -14,6 +14,10 @@ const ContinuePlayingCard = ({
   game_path,
 }: ContinuePlayingCardProps) => {
   const { gameRunning, playGame } = usePlayGame(game_path);
+
+  // Determine if image path is a URL or a local file path
+  const isRemoteImage = /^https?:\/\//i.test(bg_image);
+  const realImagePath = isRemoteImage ? bg_image : `local:${bg_image}`;
 
   return (
     <button
@@ -25,7 +29,7 @@ const ContinuePlayingCard = ({
       )}
       onClick={playGame}
       style={{
-        backgroundImage: `url(${bg_image})`,
+        backgroundImage: `url(${realImagePath})`,
       }}
     >
       <div className="absolute inset-0 bg-black/50 flex flex-col items-start justify-end p-3 z-10">

@@ -56,7 +56,9 @@ const NewGameForm = () => {
       "generic:open-dialog",
       {
         properties: ["openFile"],
-        filters: [{ name: "Images", extensions: ["jpg", "png", "jpeg"] }],
+        filters: [
+          { name: "Images", extensions: ["jpg", "png", "jpeg", "webp"] },
+        ],
       }
     );
 

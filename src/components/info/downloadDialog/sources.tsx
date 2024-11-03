@@ -15,7 +15,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
   if (!sources?.length) return null;
 
   return sources?.map((item) => {
-    if (item.name === "itad") {
+    if (item.id === "itad") {
       // Narrowing item.sources to ITADPrice[]
       return (item.sources as ITADPrice[]).map((source) => {
         return source?.deals?.map((deal, i) => (
@@ -29,7 +29,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
       return (item?.sources as PluginSearchResponse[])?.map((source) => (
         <DefaultDownloadCard
           {...source}
-          multiple-choice={item["multiple-choice"]}
+          multiple_choice={item["multiple_choice"]}
           pluginId={item.id}
           key={source.name}
           game_data={props.game_data}

@@ -12,3 +12,10 @@ export const getSteamIdFromWebsites = (websites: Website[]) => {
 
   return getSteamIdFromUrl(find_steam_url?.url);
 };
+
+export const createSlug = (str: string) => {
+  return str
+    .toLowerCase()
+    .replace(/[^\w ]+/g, "")
+    .replace(/ +/g, "-");
+};

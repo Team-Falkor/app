@@ -1,5 +1,3 @@
-import { invoke } from "@/lib/utils";
-
 export class RealDebridAPI {
   private baseUrl: string = "https://api.real-debrid.com";
   private accessToken: string;
@@ -23,33 +21,40 @@ export class RealDebridAPI {
       ...(authRequired ? { Authorization: `Bearer ${this.accessToken}` } : {}),
       ...headersInit,
     };
+    try {
+      const response = await fetch(url, {
+        method,
+        headers,
+        body: body ? body.toString() : undefined,
+      });
 
-    const response = await invoke<{
-      success: boolean;
-      data?: T;
-      error?: string;
-    }>("request", url, {
-      method,
-      headers,
-      body: body ? JSON.stringify(body) : undefined,
-    });
-
-    // Check response success
-    if (!response?.success) {
-      switch (response?.error) {
-        case "Unauthorized":
-          throw new Error("Bad token (expired, invalid)");
-        case "Forbidden":
-          throw new Error("Permission denied (account locked, not premium)");
-        default:
-          throw new Error(
-            `API request failed: ${response?.error || "Unknown error"}`
-          );
+      // Check response success
+      if (!response?.ok) {
+        switch (response?.status) {
+          case 401:
+            console.log("unauthorized");
+            throw new Error("Bad token (expired, invalid)");
+          case 403:
+            throw new Error("Permission denied (account locked, not premium)");
+          default:
+            throw new Error(
+              `API request failed: ${response?.statusText || "Unknown error"}`
+            );
+        }
       }
+
+      if (response.status === 204) {
+        return {} as T;
+      }
+
+      const data = await response.text();
+
+      if (!data) throw new Error("No data returned from API");
+
+      return JSON.parse(data);
+    } catch (error) {
+      console.error(error);
+      throw new Error("API request failed");
     }
-
-    if (!response.data) throw new Error("No data returned from API");
-
-    return response.data;
   }
 }

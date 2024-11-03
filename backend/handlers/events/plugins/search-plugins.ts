@@ -49,7 +49,7 @@ const searchPlugins = async (
             id: plugin.id,
             name: plugin.name,
             sources: json,
-            "multiple-choice": Boolean(plugin["multiple-choice"]) ?? false,
+            multiple_choice: Boolean(plugin["multiple_choice"]) ?? false,
             config: plugin.config,
           };
         } catch (error) {

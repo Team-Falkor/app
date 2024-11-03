@@ -95,6 +95,23 @@ class AccountsDB {
     }
   }
 
+  async getAccounts(type?: string): Promise<Array<ExternalAccount>> {
+    await this.init();
+
+    try {
+      const query = db("accounts");
+
+      if (type) {
+        query.andWhere("type", type);
+      }
+
+      return await query.select("*");
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+      return [];
+    }
+  }
+
   /**
    * Updates the tokens and expiration for an account
    * @param identifier The email, username, or type of the account to update

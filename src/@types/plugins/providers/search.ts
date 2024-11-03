@@ -10,6 +10,6 @@ export type PluginSearchResponse =
   | {
       type: "ddl";
       name: string;
-      url: string;
+      return: string;
       size: number;
     };

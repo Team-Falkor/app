@@ -10,7 +10,6 @@ class Logger {
     if (this.hasInitalized) return;
 
     try {
-      console.log(this.logsPath);
       fs.writeFileSync(this.logsPath, "");
       this.hasInitalized = true;
     } catch (error) {

@@ -1,4 +1,5 @@
 import { ITADPrice } from "@/lib/api/itad/types";
+import { ReactElement } from "react";
 import { PluginConfig, PluginSearchResponse } from "./plugins";
 
 export type IGDBImageSize =
@@ -46,7 +47,7 @@ export type ItemDownload = {
   sources: Array<PluginSearchResponse | ITADPrice>;
   name: string;
   id?: string;
-  "multiple-choice"?: boolean;
+  multiple_choice?: boolean;
 };
 
 export interface ListGame {
@@ -106,6 +107,26 @@ export type SearchPlugiData = {
   id: string;
   name: string;
   sources: PluginSearchResponse[];
-  "multiple-choice"?: boolean;
+  multiple_choice?: boolean;
   config: false | PluginConfig;
+};
+
+export interface LinkItemType {
+  icon: ReactElement;
+  title: string;
+  url: string;
+}
+
+export interface AppInfo {
+  app_version: string;
+  electron_version: string;
+  app_name: string;
+  app_path: string;
+  user_data_path: string;
+  os: string;
+}
+
+export type SourceProvider = {
+  label: string;
+  value: string;
 };
