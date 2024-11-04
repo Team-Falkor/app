@@ -30,9 +30,9 @@ export const useAppStartup = () => {
     if (!rd || !rd.access_token) return;
 
     // Convert `expires_in` from seconds to milliseconds
-    const expiresInMs = rd.expires_in / 1000 - 1000;
+    const expiresInMs = rd.expires_in;
 
-    if (Date.now() + expiresInMs < Date.now()) {
+    if (expiresInMs < Date.now()) {
       console.log("Access token expired, refreshing...");
 
       const auth = getRealDebridAuthInstance();
@@ -50,7 +50,7 @@ export const useAppStartup = () => {
       const input: ExternalTokenUpdateInput = {
         access_token: access_token!,
         refresh_token: refresh_token!,
-        expires_in: new Date(Date.now() + expires_in * 1000), // Convert seconds to milliseconds here
+        expires_in: new Date(Date.now() + expires_in / 1000), // Convert seconds to milliseconds here
       };
 
       await invoke<boolean>(

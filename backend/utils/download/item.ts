@@ -54,6 +54,10 @@ class DownloadItem {
     this.timeRemaining = timeRemaining;
   }
 
+  public setTotalSize(totalSize: number) {
+    this.totalSize = totalSize;
+  }
+
   public setDownloadSpeed(speed: number) {
     this.downloadSpeed = speed;
   }
@@ -69,6 +73,10 @@ class DownloadItem {
 
   public closeFileStream() {
     this.fileStream?.close();
+  }
+
+  public isCompleted(): boolean {
+    return this.status === "completed";
   }
 
   public getReturnData = (): DownloadData => ({

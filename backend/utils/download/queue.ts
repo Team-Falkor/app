@@ -12,37 +12,42 @@ class DownloadQueue {
   }
 
   public addToQueue(downloadItem: DownloadItem) {
-    this.queue.set(downloadItem.id, downloadItem);
-    this.processQueue();
+    if (downloadItem.status !== "completed") {
+      this.queue.set(downloadItem.id, downloadItem);
+      this.processQueue();
+    }
   }
 
   private async processQueue() {
-    while (
-      this.activeDownloads.size < this.maxConcurrentDownloads &&
-      this.queue.size > 0
+    if (
+      this.activeDownloads.size >= this.maxConcurrentDownloads ||
+      this.queue.size === 0
     ) {
-      const downloadItem = this.queue.values().next().value;
-      if (!downloadItem) return;
-
-      const downloader = new HttpDownloader(downloadItem);
-      this.activeDownloads.set(downloadItem.id, downloader);
-
-      try {
-        await downloader.download();
-      } catch (error) {
-        console.error(`Failed to download ${downloadItem.url}: ${error}`);
-        logger.log({
-          id: Math.floor(Date.now() / 1000),
-          message: `Failed to download ${downloadItem.url}: ${error}`,
-          timestamp: new Date().toISOString(),
-          type: "error",
-        });
-      }
-
-      this.activeDownloads.delete(downloadItem.id);
-
-      this.processQueue();
+      return;
     }
+
+    const downloadItem = this.queue.values().next().value;
+    if (!downloadItem) return;
+
+    const downloader = new HttpDownloader(downloadItem);
+    this.activeDownloads.set(downloadItem.id, downloader);
+
+    try {
+      await downloader.download();
+    } catch (error) {
+      console.error(`Failed to download ${downloadItem.url}: ${error}`);
+      logger.log({
+        id: Math.floor(Date.now() / 1000),
+        message: `Failed to download ${downloadItem.url}: ${error}`,
+        timestamp: new Date().toISOString(),
+        type: "error",
+      });
+    }
+
+    // After download completion, remove from active and queue
+    this.activeDownloads.delete(downloadItem.id);
+    this.queue.delete(downloadItem.id); // Ensure it is removed
+    this.processQueue(); // Continue with remaining queue items
   }
 
   public stopAll() {

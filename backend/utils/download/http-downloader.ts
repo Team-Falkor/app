@@ -10,12 +10,17 @@ class HttpDownloader {
   private downloadedSize: number = 0;
   private speedInterval?: NodeJS.Timeout;
   private previousDownloadedSize: number = 0;
+  private fileStream?: fs.WriteStream;
 
   constructor(item: item) {
     this.item = item;
   }
 
   public async download(): Promise<void> {
+    if (this.item.status === "completed") {
+      return;
+    }
+
     this.item.setStatus("downloading");
 
     return new Promise<void>((resolve, reject) => {
@@ -31,7 +36,6 @@ class HttpDownloader {
         const totalSize =
           Number(response.headers["content-length"]) +
           (isPartialContent ? this.downloadedSize : 0);
-
         this.item.totalSize = totalSize;
 
         if (![200, 206].includes(response.statusCode!)) {
@@ -40,21 +44,21 @@ class HttpDownloader {
           return;
         }
 
-        const fileStream = fs.createWriteStream(this.item.fullPath, {
+        this.fileStream = fs.createWriteStream(this.item.fullPath, {
           flags: isPartialContent ? "a" : "w",
         });
-        response.pipe(fileStream);
+        response.pipe(this.fileStream);
 
         this.startSpeedTracking(totalSize);
 
         response.on("data", (chunk) =>
           this.trackProgress(chunk.length, totalSize)
         );
-        fileStream.on("finish", () => this.finishDownload(resolve));
-        fileStream.on("error", (error) => {
-          return this.handleError(reject, error.message);
-        });
-
+        this.fileStream.on("finish", () => this.finishDownload(resolve));
+        this.fileStream.on("error", (error) =>
+          this.handleError(reject, error.message)
+        );
+        response.on("close", () => this.fileStream?.close()); // Ensures file is properly closed
         this.request!.on("error", (error) =>
           this.handleError(reject, error.message)
         );
@@ -68,7 +72,7 @@ class HttpDownloader {
     // Update download speed and time remaining every second
     this.speedInterval = setInterval(() => {
       const bytesDownloaded = this.downloadedSize - this.previousDownloadedSize;
-      this.item.downloadSpeed = bytesDownloaded; // in bytes per second
+      this.item.setDownloadSpeed(bytesDownloaded); // in bytes per second
 
       // Calculate and set time remaining in milliseconds
       const remainingBytes = totalSize - this.downloadedSize;
@@ -90,16 +94,16 @@ class HttpDownloader {
 
   private finishDownload(resolve: () => void) {
     this.item.setStatus("completed");
-    this.item.closeFileStream();
-    this.clearSpeedTracking(); // Stop speed tracking
+    this.fileStream?.close(); // Ensure the file stream is closed
+    this.clearSpeedTracking();
     resolve();
   }
 
   private handleError(reject: (reason?: any) => void, message: string) {
     this.item.setError(message);
     this.item.setStatus("error");
-    this.item.closeFileStream();
-    this.clearSpeedTracking(); // Stop speed tracking on error
+    this.fileStream?.close();
+    this.clearSpeedTracking();
 
     logger.log({
       id: Math.floor(Date.now() / 1000),
@@ -121,7 +125,7 @@ class HttpDownloader {
   public stop() {
     this.request?.destroy();
     this.item.setStatus("stopped");
-    this.item.closeFileStream();
+    this.fileStream?.close();
     this.clearSpeedTracking();
   }
 
@@ -129,7 +133,6 @@ class HttpDownloader {
     if (this.request) {
       this.isPaused = true;
       this.stop();
-      this.clearSpeedTracking();
       this.item.setStatus("paused");
     }
   }
