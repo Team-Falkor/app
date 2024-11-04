@@ -51,12 +51,7 @@ const GenericRow = ({
             <CarouselItem
               key={game.id}
               className="
-              basis-1/2
-              sm:basis-1/3
-              md:basis-1/4
-              lg:basis-1/5
-              xl:basis-[17.77%]
-              2xl:basis-[13.5%]
+              basis-auto
               px-2
             "
               id={`carousel-item`}

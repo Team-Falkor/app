@@ -190,6 +190,214 @@ export class PluginHandler {
       return [];
     }
   }
+
+  async checkForUpdates(pluginId: PluginId): Promise<boolean> {
+    try {
+      await this.init();
+
+      const filePath = join(this.path, `${pluginId}.json`);
+      if (!fs.existsSync(filePath)) return false;
+
+      const data = await fs.promises.readFile(filePath, "utf-8");
+      const json = JSON.parse(data);
+
+      const response = await fetch(json.update_url);
+      const latest = await response.json();
+      if (latest.version === json.version) return false;
+
+      return true;
+    } catch (error) {
+      console.error(`Failed to check for updates: ${error}`);
+      return false;
+    }
+  }
+
+  async checkForUpdatesAll(): Promise<Array<PluginSetupJSONDisabled>> {
+    try {
+      await this.init();
+
+      const plugins: Array<PluginSetupJSONDisabled> = [];
+
+      const files = await fs.promises.readdir(this.path);
+      for await (const file of files) {
+        const filePath = join(this.path, file);
+        if (file.endsWith(".json")) {
+          const data = await fs.promises.readFile(filePath, "utf-8");
+
+          const json = JSON.parse(data);
+          const response = await fetch(json.update_url);
+          const latest = await response.json();
+          if (latest.version === json.version) continue;
+
+          plugins.push({
+            disabled: false,
+            ...json,
+          });
+        }
+        if (file.endsWith(".disabled")) {
+          const data = await fs.promises.readFile(filePath, "utf-8");
+
+          const json = JSON.parse(data);
+          const response = await fetch(json.update_url);
+          const latest = await response.json();
+          if (latest.version === json.version) continue;
+
+          plugins.push({
+            disabled: true,
+            ...json,
+          });
+        }
+      }
+      return plugins;
+    } catch (error) {
+      console.error(`Failed to check for updates: ${error}`);
+      return [];
+    }
+  }
+
+  /**
+   * Updates a specific plugin by its ID if a new version is available.
+   *
+   * @param pluginId The ID of the plugin to update
+   * @returns true if the update was successful, false otherwise
+   */
+  public async update(pluginId: PluginId): Promise<boolean> {
+    try {
+      await this.init();
+
+      const filePath = join(this.path, `${pluginId}.json`);
+      // Check if the plugin file exists
+      if (!fs.existsSync(filePath)) return false;
+
+      // Read and parse the existing plugin data
+      const data = await fs.promises.readFile(filePath, "utf-8");
+      const json = JSON.parse(data);
+
+      // Fetch the latest plugin data from the update URL
+      const response = await fetch(json.update_url);
+      const latest = await response.json();
+
+      // Compare versions to determine if an update is necessary
+      if (latest.version === json.version) return false;
+
+      // Merging existing config with new setup
+      const mergedSetup = this.mergeConfigs(pluginId, latest);
+
+      // Remove the old plugin file and save the updated data
+      await fs.promises.unlink(filePath);
+      await fs.promises.writeFile(
+        filePath,
+        JSON.stringify(mergedSetup, null, 2),
+        "utf-8"
+      );
+
+      return true;
+    } catch (error) {
+      console.error(`Failed to update plugin with ID (${pluginId}): ${error}`);
+      return false;
+    }
+  }
+
+  /**
+   * Updates all plugins if a new version is available.
+   * If a plugin is disabled, it will be updated and remain disabled.
+   * If a plugin is enabled, it will be updated and remain enabled.
+   * @returns An array of JSON objects containing the updated plugins.
+   * The objects have the same structure as the original JSON data,
+   * but with the added "disabled" field, which is true if the plugin
+   * was disabled before the update, and false otherwise.
+   */
+  async updateAll(): Promise<Array<PluginSetupJSONDisabled>> {
+    try {
+      await this.init();
+
+      const plugins: Array<PluginSetupJSONDisabled> = [];
+
+      const files = await fs.promises.readdir(this.path);
+      for await (const file of files) {
+        const filePath = join(this.path, file);
+
+        // Check if the file is a plugin JSON file
+        if (file.endsWith(".json")) {
+          const data = await fs.promises.readFile(filePath, "utf-8");
+
+          const json = JSON.parse(data);
+          const response = await fetch(json.update_url);
+          const latest = await response.json();
+
+          // Check if the plugin needs to be updated
+          if (latest.version === json.version) continue;
+
+          const mergedSetup = this.mergeConfigs(latest.id, latest);
+
+          // Update the plugin
+          await fs.promises.unlink(filePath);
+          await fs.promises.writeFile(
+            filePath,
+            JSON.stringify(mergedSetup, null, 2),
+            "utf-8"
+          );
+
+          // Add the plugin to the list of updated plugins
+          plugins.push({
+            disabled: false,
+            ...json,
+          });
+        }
+
+        // Check if the file is a disabled plugin JSON file
+        if (file.endsWith(".disabled")) {
+          const data = await fs.promises.readFile(filePath, "utf-8");
+
+          const json = JSON.parse(data);
+          const response = await fetch(json.update_url);
+          const latest = await response.json();
+
+          // Check if the plugin needs to be updated
+          if (latest.version === json.version) continue;
+
+          // Merging existing config with new setup
+          const mergedSetup = this.mergeConfigs(latest.id, latest);
+
+          // Update the plugin
+          await fs.promises.unlink(filePath);
+          await fs.promises.writeFile(
+            filePath,
+            JSON.stringify(mergedSetup, null, 2),
+            "utf-8"
+          );
+
+          // Add the plugin to the list of updated plugins
+          plugins.push({
+            disabled: true,
+            ...json,
+          });
+        }
+      }
+      return plugins;
+    } catch (error) {
+      console.error(`Failed to update plugins: ${error}`);
+      return [];
+    }
+  }
+
+  private mergeConfigs(
+    pluginId: PluginId,
+    newSetup: PluginSetupJSON
+  ): PluginSetupJSON {
+    const filePath = join(this.path, `${pluginId}.json`);
+    if (!fs.existsSync(filePath)) return newSetup;
+
+    const data = fs.readFileSync(filePath, "utf-8");
+    const json: PluginSetupJSON = JSON.parse(data);
+
+    const setup: PluginSetupJSON = {
+      ...newSetup,
+      config: json.config,
+    };
+
+    return setup;
+  }
 }
 
 const pluginHandler = new PluginHandler();

@@ -10,7 +10,15 @@ type InvokeReturn = {
 };
 
 const UsePlugins = () => {
-  const { plugins, setPlugins } = usePluginsStore();
+  const {
+    plugins,
+    setPlugins,
+    checkForUpdates,
+    hasDoneFirstCheck,
+    needsUpdate,
+    setHasDoneFirstCheck,
+    setNeedsUpdate,
+  } = usePluginsStore();
 
   const getPlugins = useCallback(
     async (wantDisabled: boolean = false) => {
@@ -40,14 +48,24 @@ const UsePlugins = () => {
   };
 
   useEffect(() => {
-    if (!getPlugins || plugins.length) return;
+    if (hasDoneFirstCheck || !getPlugins || plugins.size) return;
     getPlugins();
-  }, [getPlugins, plugins]);
+    checkForUpdates();
+    setHasDoneFirstCheck();
+  }, [
+    checkForUpdates,
+    getPlugins,
+    hasDoneFirstCheck,
+    plugins,
+    setHasDoneFirstCheck,
+  ]);
 
   return {
     plugins,
     getPlugins,
     searchAllPlugins,
+    needsUpdate,
+    setNeedsUpdate,
   };
 };
 
