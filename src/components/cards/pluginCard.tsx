@@ -1,6 +1,8 @@
+import { PluginSetupJSONAuthor } from "@/@types";
 import { Button } from "@/components/ui/button";
 import { useLanguageContext } from "@/contexts/I18N";
 import { usePluginActions } from "@/hooks";
+import { cn, openLink } from "@/lib";
 
 interface Props {
   image: string;
@@ -9,6 +11,7 @@ interface Props {
   name: string;
   id: string;
   version: string;
+  author: PluginSetupJSONAuthor;
 
   installed?: boolean;
   disabled: boolean;
@@ -20,21 +23,33 @@ const PluginCard = ({
   id,
   version,
   description,
-
+  banner,
   installed = false,
+  author,
   disabled,
 }: Props) => {
   const { disablePlugin, enablePlugin, uninstallPlugin } = usePluginActions(id);
   const { t } = useLanguageContext();
 
   return (
-    <div className="grid items-center gap-4 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
-      <div className="flex flex-col items-start gap-4">
-        <div className="flex self-start gap-3">
+    <div className="grid relative ritems-center gap-4 px-4 py-2 border border-gray-200 rounded-lg bg-gray-50 dark:border-gray-800 dark:bg-gray-900">
+      {!!banner && (
+        <div className="absolute top-0 left-0 right-0 bottom-0 rounded-lg transition-all -z-0">
+          <img
+            src={banner}
+            alt={name}
+            className="rounded object-cover w-full h-full relative z-[1]"
+          />
+          <div className="absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-gradient-to-tl from-card to-transparent z-[2]" />
+        </div>
+      )}
+
+      <div className="flex flex-col items-start gap-4 relative z-10">
+        <div className="flex self-start gap-3 relative">
           <img
             src={image}
             alt={name}
-            className="rounded object-contain size-[40px] bg-card-foreground"
+            className="rounded object-contain size-[50px] bg-card-foreground"
           />
           <div className="flex flex-col items-start justify-end">
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -42,12 +57,27 @@ const PluginCard = ({
             </p>
 
             <h3 className="text-sm font-semibold truncate">{name}</h3>
+
+            <p
+              className={cn(
+                "text-xs font-medium text-gray-500 dark:text-gray-400",
+                {
+                  "cursor-pointer hover:underline": author.url,
+                }
+              )}
+              onClick={() => {
+                if (author.url) openLink(author.url);
+              }}
+            >
+              {author.name}
+            </p>
           </div>
         </div>
 
         <p className="text-xs font-medium text-left">{description}</p>
       </div>
-      <div className="flex items-center justify-end gap-2">
+
+      <div className="flex items-center justify-end gap-2 relative z-10">
         {disabled ? (
           <Button variant={"secondary"} onClick={enablePlugin}>
             Enable

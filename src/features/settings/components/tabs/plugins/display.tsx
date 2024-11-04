@@ -1,9 +1,10 @@
+import { PluginSetupJSONDisabled } from "@/@types";
 import PluginCard from "@/components/cards/pluginCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
 import { cn } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { SortBy } from ".";
 
 interface Props {
@@ -12,9 +13,15 @@ interface Props {
 
   sortBy: SortBy;
   showEnabledOnly: boolean;
+  search: string;
 }
 
-const PluginDisplay = ({ showRows, sortBy, showEnabledOnly }: Props) => {
+const PluginDisplay = ({
+  showRows,
+  sortBy,
+  showEnabledOnly,
+  search,
+}: Props) => {
   const { getPlugins } = UsePlugins();
 
   const { data, isPending, error } = useQuery({
@@ -26,26 +33,36 @@ const PluginDisplay = ({ showRows, sortBy, showEnabledOnly }: Props) => {
     },
   });
 
+  const onSearch = useCallback(
+    (search: string, toSearch?: PluginSetupJSONDisabled[] | null) => {
+      const realData = toSearch ?? data;
+      if (!search) return realData;
+      return realData?.filter(
+        (plugin) =>
+          plugin.name.toLowerCase().includes(search.toLowerCase()) ||
+          plugin.id.toLowerCase().includes(search.toLowerCase())
+      );
+    },
+    [data]
+  );
+
   const sortedPlugins = useMemo(() => {
+    let sorted = data;
     if (showEnabledOnly) {
-      const plugins = data?.filter((plugin) => !plugin.disabled);
-      if (sortBy === "alphabetic-asc") {
-        return plugins?.sort((a, b) => a.name.localeCompare(b.name));
-      } else if (sortBy === "alphabetic-desc") {
-        return plugins?.sort((a, b) => b.name.localeCompare(a.name));
-      }
-      return plugins;
+      sorted = sorted?.filter((plugin) => !plugin.disabled);
     }
 
     if (sortBy === "alphabetic-asc") {
-      return data?.sort((a, b) => a.name.localeCompare(b.name));
-    }
-    if (sortBy === "alphabetic-desc") {
-      return data?.sort((a, b) => b.name.localeCompare(a.name));
+      sorted = sorted?.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (sortBy === "alphabetic-desc") {
+      sorted = sorted?.sort((a, b) => b.name.localeCompare(a.name));
     }
 
-    return data;
-  }, [data, showEnabledOnly, sortBy]);
+    if (search?.length > 0) {
+      sorted = onSearch(search, sorted);
+    }
+    return sorted;
+  }, [data, onSearch, search, showEnabledOnly, sortBy]);
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
@@ -59,10 +76,11 @@ const PluginDisplay = ({ showRows, sortBy, showEnabledOnly }: Props) => {
           {
             "grid grid-cols-2 gap-4": showRows,
             "grid grid-cols-1 gap-4": !showRows,
+            flex: !sortedPlugins?.length,
           },
         ])}
       >
-        {!!sortedPlugins?.length &&
+        {sortedPlugins?.length ? (
           sortedPlugins?.map((plugin: any) => (
             <PluginCard
               key={plugin.id}
@@ -74,8 +92,16 @@ const PluginDisplay = ({ showRows, sortBy, showEnabledOnly }: Props) => {
               banner={plugin.banner}
               installed={true}
               disabled={plugin.disabled}
+              author={plugin.author}
             />
-          ))}
+          ))
+        ) : (
+          <div className="w-full flex items-center justify-start py-2">
+            <p className="text-left text-lg w-full font-bold">
+              {search?.length ? `No results for "${search}"` : "No plugins"}
+            </p>
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

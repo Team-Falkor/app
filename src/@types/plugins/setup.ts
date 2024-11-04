@@ -10,10 +10,12 @@ export interface PluginSetupJSON {
   logo: string;
   banner?: string;
   api_url: string;
-  author?: {
-    name?: string;
-    url?: string;
-  };
+  author?: PluginSetupJSONAuthor;
+}
+
+export interface PluginSetupJSONAuthor {
+  name?: string;
+  url?: string;
 }
 
 export type PluginSetupJSONDisabled = PluginSetupJSON & {

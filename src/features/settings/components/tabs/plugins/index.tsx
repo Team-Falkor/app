@@ -24,6 +24,7 @@ const PluginSettings = () => {
   const [showRows, setShowRows] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("alphabetic-asc");
   const [showEnabledOnly, setShowEnabledOnly] = useState(false);
+  const [search, setSearch] = useState("");
 
   return (
     <div>
@@ -36,6 +37,8 @@ const PluginSettings = () => {
               <Input
                 placeholder={t("what_plugin_are_you_looking_for")}
                 type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
 
@@ -70,6 +73,7 @@ const PluginSettings = () => {
           setShowRows={setShowRows}
           sortBy={sortBy}
           showEnabledOnly={showEnabledOnly}
+          search={search}
         />
       </SettingsContainer>
     </div>
