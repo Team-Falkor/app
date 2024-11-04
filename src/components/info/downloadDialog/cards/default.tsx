@@ -67,8 +67,6 @@ const DefaultDownloadCard = (props: Props) => {
     addTorrent(url, props.game_data);
   };
 
-  if (props.type === "ddl") return null;
-
   if (!props["return"]) return null;
 
   return (
@@ -86,11 +84,11 @@ const DefaultDownloadCard = (props: Props) => {
         </div>
         <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
           <UserIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-          {props?.uploader ?? "??"}
+          {props.type !== "ddl" ? (props?.uploader ?? "??") : "??"}
         </div>{" "}
         <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
           <Users2Icon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-          {props?.seeds ?? "??"}
+          {props.type !== "ddl" ? (props?.seeds ?? "??") : "??"}
         </div>
       </div>
     </button>
