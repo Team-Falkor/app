@@ -80,12 +80,18 @@ function Downloads() {
   return (
     <div className="w-full h-full flex flex-col">
       {/* ACTION BAR */}
-      <div className="w-full flex justify-end flex-row bg-background/50 border-b mb-5 p-2">
-        <FolderButton
-          path="downloads"
-          tooltip="Open downloads folder"
-          variant={"secondary"}
-        />
+      <div className="w-full flex justify-between flex-row bg-background/50 border-b mb-5 p-4 py-2.5">
+        <div className="flex flex-row items-center gap-2">
+          <h1 className="text-xl font-bold text-foreground">Downloads</h1>
+        </div>
+
+        <div>
+          <FolderButton
+            path="downloads"
+            tooltip="Open downloads folder"
+            variant={"secondary"}
+          />
+        </div>
       </div>
 
       {downloading?.size ? (
