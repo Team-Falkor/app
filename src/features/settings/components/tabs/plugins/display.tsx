@@ -22,7 +22,7 @@ const PluginDisplay = ({
   showEnabledOnly,
   search,
 }: Props) => {
-  const { getPlugins, needsUpdate, setNeedsUpdate } = UsePlugins();
+  const { getPlugins, needsUpdate } = UsePlugins();
 
   const { data, isPending, error } = useQuery({
     queryKey: ["plugins", "all"],

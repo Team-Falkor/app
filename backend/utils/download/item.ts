@@ -3,6 +3,7 @@ import { ITorrentGameData } from "@/@types/torrent";
 import { createWriteStream } from "node:fs";
 import path from "node:path";
 import { constants } from "../constants";
+import { settings } from "../settings/settings";
 
 class DownloadItem {
   id: string;
@@ -33,7 +34,8 @@ class DownloadItem {
     this.timeRemaining = 0;
     this.error = "";
     this.fileExtension = file_extension ?? url?.split(".")?.pop() ?? "rar";
-    this.filePath = file_path ?? constants.downloadsPath;
+    this.filePath =
+      file_path ?? settings?.get("downloadsPath") ?? constants.downloadsPath;
     this.game_data = game_data;
   }
 
