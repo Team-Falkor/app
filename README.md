@@ -6,7 +6,7 @@
 
 Dive into Falkor, where you'll discover a vast selection of games coupled with community-driven enhancements. Experience seamless and secure gaming within a single, universal hub.
 
-Built with the cutting-edge technology of electron and React, Falkor offers an unparalleled gaming experience that's fast, secure, and cross-platform.
+Built with the cutting-edge technology of Electron and React, Falkor offers an unparalleled gaming experience that's fast, secure, and cross-platform.
 
 ## Features
 
@@ -24,15 +24,13 @@ Stay tuned—there’s plenty more to come!
 
 To get started with Falkor, follow these steps:
 
-1. Ensure that you have Bun installed on your system. You can find installation instructions [here](https://bun.sh/docs/installation).
+1. Ensure that you have Yarn installed on your system. You can find installation instructions [here](https://classic.yarnpkg.com/en/docs/install).
 
-2. Navigate to the main directory and execute `bun pm trust --all`, this is to tell bun to trust some scripts, if this is not ran it will not install some of webtorrents deps
+2. Navigate to the main directory and execute `yarn install`. This command will install all dependencies required for the project.
 
-3. Navigate to the main directory and execute `bun install`. Wait patiently for it to complete the installation of all dependencies.
+3. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
 
-4. Set up the necessary environment variables by duplicating the file `.env.example` and renaming it to `.env`. Then, fill in the required information.
-
-5. Run `bun dev` to kick off the development server and watch your changes in real-time.
+4. Run `yarn dev` to kick off the development server and watch your changes in real-time.
 
 ### IGDB (Twitch)
 
@@ -41,11 +39,11 @@ To get started with Falkor, follow these steps:
 
 ### ITAD (IsThereAnyDeal)
 
-- `VITE_ITAD_API_KEY`: ITAD api key (https://docs.isthereanydeal.com/#section/Access)
+- `VITE_ITAD_API_KEY`: ITAD API key (https://docs.isthereanydeal.com/#section/Access)
 
 ### RD (Real Debrid)
 
-- `VITE_RD_CLIENT_ID`: Open source app RD client ID found on the Real Debrid documentation (https://api.real-debrid.com/)
+- `VITE_RD_CLIENT_ID`: Open source app RD client ID found in the Real Debrid documentation (https://api.real-debrid.com/)
 
 ## Contributing
 
@@ -54,7 +52,7 @@ We welcome contributions to Falkor! If you are looking for ways to contribute, h
 - Assisting in writing and enhancing the documentation.
 - Contributing code that you believe could enhance the project.
 - Aiding in bug testing on pre-releases.
-- Adding i18n Translations for Multiple Languages
+- Adding i18n translations for multiple languages.
 
 If you're unable to assist with any of these, no worries! We simply appreciate your presence and support on this journey! 😄
 
@@ -70,9 +68,9 @@ That's it! Thank you for helping make Falkor accessible to more users.
 
 ## Acknowledgments
 
-- Built with [electron](https://www.electronjs.org) and [React](https://react.dev/).
+- Built with [Electron](https://www.electronjs.org) and [React](https://react.dev/).
 
-- All game data comes from the following apis [IGDB](https://www.igdb.com/), [ITAD](https://isthereanydeal.com/), and [Steam](https://store.steampowered.com/). We are not affiliated with any of these services; we simply utilize their APIs for data.
+- All game data comes from the following APIs: [IGDB](https://www.igdb.com/), [ITAD](https://isthereanydeal.com/), and [Steam](https://store.steampowered.com/). We are not affiliated with any of these services; we simply utilize their APIs for data.
 
 Thanks to everyone who helps us make this possible. A list of contributors can be found [here](https://github.com/team-Falkor/app/graphs/contributors).
 
