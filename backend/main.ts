@@ -1,4 +1,12 @@
-import { app, BrowserWindow, ipcMain, net, protocol, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  net,
+  protocol,
+  screen,
+  shell,
+} from "electron";
 import path from "node:path";
 import url, { fileURLToPath } from "node:url";
 
@@ -76,17 +84,23 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
  */
 
 function createWindow() {
-  // TODO: find better way of disabling cors
+  const { width: screenWidth, height: screenHeight } =
+    screen.getPrimaryDisplay().workAreaSize;
+
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
     },
     autoHideMenuBar: true,
-    minWidth: 1280,
-    minHeight: 800,
-    height: 800,
-    width: 1280,
+    minWidth: 1000,
+    minHeight: 900,
+
+    // Set the initial width and height based on available screen size
+    width: Math.min(screenWidth * 0.8, 1000), // 80% of screen width, max 1000
+    height: Math.min(screenHeight * 0.8, 900), // 80% of screen height, max 900
+
+    resizable: true,
   });
 
   // if (!isDev()) {
