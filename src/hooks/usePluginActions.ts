@@ -16,20 +16,20 @@ export const usePluginActions = (pluginId: string) => {
   };
 
   const disablePlugin = async () => {
-    await reloadQueries();
     const disabled = await invoke("plugins:disable", pluginId);
 
     if (!disabled) return;
+    await reloadQueries();
 
     return disabled;
   };
 
   const enablePlugin = async () => {
-    await reloadQueries();
     const enabled = await invoke("plugins:enable", pluginId);
 
     if (!enabled) return;
 
+    await reloadQueries();
     return enabled;
   };
 
