@@ -94,11 +94,11 @@ function createWindow() {
     },
     autoHideMenuBar: true,
     minWidth: 1000,
-    minHeight: 900,
+    minHeight: 600,
 
     // Set the initial width and height based on available screen size
     width: Math.min(screenWidth * 0.8, 1000), // 80% of screen width, max 1000
-    height: Math.min(screenHeight * 0.8, 900), // 80% of screen height, max 900
+    height: Math.min(screenHeight * 0.8, 600), // 80% of screen height, max 600
 
     resizable: true,
   });
