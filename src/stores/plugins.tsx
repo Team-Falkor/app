@@ -10,6 +10,7 @@ interface PluginsState {
 
   setPlugins: (plugins: Array<PluginSetupJSON>) => void;
   setNeedsUpdate: (needsUpdate: Array<PluginSetupJSON>) => void;
+  removeNeedsUpdate: (pluginId: string) => void;
   checkForUpdates: (pluginId?: string) => Promise<Array<PluginSetupJSON>>;
 }
 
@@ -25,6 +26,13 @@ export const usePluginsStore = create<PluginsState>((set) => ({
     set({ plugins: pluginMap });
   },
 
+  removeNeedsUpdate: (pluginId) => {
+    set((state) => {
+      state.needsUpdate.delete(pluginId);
+      return state;
+    });
+  },
+
   setNeedsUpdate: (needsUpdate) => {
     const needsUpdateMap = new Map(
       needsUpdate.map((plugin) => [plugin.id, plugin])
@@ -33,6 +41,7 @@ export const usePluginsStore = create<PluginsState>((set) => ({
   },
 
   checkForUpdates: async (pluginId) => {
+    console.log("Checking for updates...");
     try {
       // Invoke the event to check for plugin updates
       const updatedPlugins = await window.ipcRenderer.invoke(

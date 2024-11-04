@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { useLanguageContext } from "@/contexts/I18N";
 import { usePluginActions } from "@/hooks";
 import { cn, openLink } from "@/lib";
+import { Download, Trash2 } from "lucide-react";
 
 interface Props {
   image: string;
@@ -11,10 +12,11 @@ interface Props {
   name: string;
   id: string;
   version: string;
-  author: PluginSetupJSONAuthor;
+  author?: PluginSetupJSONAuthor;
 
   installed?: boolean;
   disabled: boolean;
+  needsUpdate: boolean;
 }
 
 const PluginCard = ({
@@ -27,8 +29,10 @@ const PluginCard = ({
   installed = false,
   author,
   disabled,
+  needsUpdate,
 }: Props) => {
-  const { disablePlugin, enablePlugin, uninstallPlugin } = usePluginActions(id);
+  const { disablePlugin, enablePlugin, uninstallPlugin, updatePlugin } =
+    usePluginActions(id);
   const { t } = useLanguageContext();
 
   return (
@@ -58,26 +62,42 @@ const PluginCard = ({
 
             <h3 className="text-sm font-semibold truncate">{name}</h3>
 
-            <p
-              className={cn(
-                "text-xs font-medium text-gray-500 dark:text-gray-400",
-                {
-                  "cursor-pointer hover:underline": author.url,
-                }
-              )}
-              onClick={() => {
-                if (author.url) openLink(author.url);
-              }}
-            >
-              {author.name}
-            </p>
+            {!!author && (
+              <p
+                className={cn(
+                  "text-xs font-medium text-gray-500 dark:text-gray-400",
+                  {
+                    "cursor-pointer hover:underline": author.url,
+                  }
+                )}
+                onClick={() => {
+                  if (author.url) openLink(author.url);
+                }}
+              >
+                {author.name}
+              </p>
+            )}
           </div>
         </div>
 
         <p className="text-xs font-medium text-left">{description}</p>
       </div>
 
-      <div className="flex items-center justify-end gap-2 relative z-10">
+      <div className="flex items-center justify-end gap-3 relative z-10">
+        {needsUpdate && (
+          <Button variant="secondary" onClick={updatePlugin} size={"icon"}>
+            <Download />
+          </Button>
+        )}
+
+        {installed ? (
+          <Button variant="destructive" onClick={uninstallPlugin} size={"icon"}>
+            <Trash2 />
+          </Button>
+        ) : (
+          <Button variant="secondary">{t("install")}</Button>
+        )}
+
         {disabled ? (
           <Button variant={"secondary"} onClick={enablePlugin}>
             Enable
@@ -86,14 +106,6 @@ const PluginCard = ({
           <Button variant={"destructive"} onClick={disablePlugin}>
             Disable
           </Button>
-        )}
-
-        {installed ? (
-          <Button variant="destructive" onClick={uninstallPlugin}>
-            {t("uninstall")}
-          </Button>
-        ) : (
-          <Button variant="secondary">{t("install")}</Button>
         )}
       </div>
     </div>

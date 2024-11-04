@@ -10,6 +10,7 @@ export interface PluginSetupJSON {
   logo: string;
   banner?: string;
   api_url: string;
+  setup_path: string;
   author?: PluginSetupJSONAuthor;
 }
 

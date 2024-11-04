@@ -30,9 +30,11 @@ export const useAppStartup = () => {
     if (!rd || !rd.access_token) return;
 
     // Convert `expires_in` from seconds to milliseconds
-    const expiresInMs = rd.expires_in;
+    const expiresInMs = rd.expires_in + 100000;
 
-    if (expiresInMs < Date.now()) {
+    const now = Math.floor(new Date().getTime());
+
+    if (expiresInMs < now) {
       console.log("Access token expired, refreshing...");
 
       const auth = getRealDebridAuthInstance();

@@ -199,9 +199,11 @@ export class PluginHandler {
       if (!fs.existsSync(filePath)) return false;
 
       const data = await fs.promises.readFile(filePath, "utf-8");
-      const json = JSON.parse(data);
+      const json: PluginSetupJSON = JSON.parse(data);
 
-      const response = await fetch(json.update_url);
+      if (!json.api_url || !json.setup_path) return false;
+
+      const response = await fetch(`${json.api_url}/${json.setup_path}`);
       const latest = await response.json();
       if (latest.version === json.version) return false;
 
@@ -224,8 +226,11 @@ export class PluginHandler {
         if (file.endsWith(".json")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json = JSON.parse(data);
-          const response = await fetch(json.update_url);
+          const json: PluginSetupJSON = JSON.parse(data);
+
+          if (!json.api_url || !json.setup_path) continue;
+
+          const response = await fetch(`${json.api_url}/${json.setup_path}`);
           const latest = await response.json();
           if (latest.version === json.version) continue;
 
@@ -237,8 +242,10 @@ export class PluginHandler {
         if (file.endsWith(".disabled")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json = JSON.parse(data);
-          const response = await fetch(json.update_url);
+          const json: PluginSetupJSON = JSON.parse(data);
+          if (!json.api_url || !json.setup_path) continue;
+
+          const response = await fetch(`${json.api_url}/${json.setup_path}`);
           const latest = await response.json();
           if (latest.version === json.version) continue;
 
@@ -271,23 +278,22 @@ export class PluginHandler {
 
       // Read and parse the existing plugin data
       const data = await fs.promises.readFile(filePath, "utf-8");
-      const json = JSON.parse(data);
+      const json: PluginSetupJSON = JSON.parse(data);
+
+      if (!json.api_url || !json.setup_path) return false;
 
       // Fetch the latest plugin data from the update URL
-      const response = await fetch(json.update_url);
+      const response = await fetch(`${json.api_url}/${json.setup_path}`);
       const latest = await response.json();
 
       // Compare versions to determine if an update is necessary
       if (latest.version === json.version) return false;
 
-      // Merging existing config with new setup
-      const mergedSetup = this.mergeConfigs(pluginId, latest);
-
       // Remove the old plugin file and save the updated data
       await fs.promises.unlink(filePath);
       await fs.promises.writeFile(
         filePath,
-        JSON.stringify(mergedSetup, null, 2),
+        JSON.stringify(latest, null, 2),
         "utf-8"
       );
 
@@ -321,20 +327,21 @@ export class PluginHandler {
         if (file.endsWith(".json")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json = JSON.parse(data);
-          const response = await fetch(json.update_url);
+          const json: PluginSetupJSON = JSON.parse(data);
+
+          if (!json.api_url || !json.setup_path) continue;
+
+          const response = await fetch(`${json.api_url}/${json.setup_path}`);
           const latest = await response.json();
 
           // Check if the plugin needs to be updated
           if (latest.version === json.version) continue;
 
-          const mergedSetup = this.mergeConfigs(latest.id, latest);
-
           // Update the plugin
           await fs.promises.unlink(filePath);
           await fs.promises.writeFile(
             filePath,
-            JSON.stringify(mergedSetup, null, 2),
+            JSON.stringify(latest, null, 2),
             "utf-8"
           );
 
@@ -349,21 +356,21 @@ export class PluginHandler {
         if (file.endsWith(".disabled")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json = JSON.parse(data);
-          const response = await fetch(json.update_url);
+          const json: PluginSetupJSON = JSON.parse(data);
+
+          if (!json.api_url || !json.setup_path) continue;
+
+          const response = await fetch(`${json.api_url}/${json.setup_path}`);
           const latest = await response.json();
 
           // Check if the plugin needs to be updated
           if (latest.version === json.version) continue;
 
-          // Merging existing config with new setup
-          const mergedSetup = this.mergeConfigs(latest.id, latest);
-
           // Update the plugin
           await fs.promises.unlink(filePath);
           await fs.promises.writeFile(
             filePath,
-            JSON.stringify(mergedSetup, null, 2),
+            JSON.stringify(latest, null, 2),
             "utf-8"
           );
 

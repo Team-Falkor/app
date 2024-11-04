@@ -22,7 +22,7 @@ const PluginDisplay = ({
   showEnabledOnly,
   search,
 }: Props) => {
-  const { getPlugins } = UsePlugins();
+  const { getPlugins, needsUpdate, setNeedsUpdate } = UsePlugins();
 
   const { data, isPending, error } = useQuery({
     queryKey: ["plugins", "all"],
@@ -81,7 +81,7 @@ const PluginDisplay = ({
         ])}
       >
         {sortedPlugins?.length ? (
-          sortedPlugins?.map((plugin: any) => (
+          sortedPlugins?.map((plugin: PluginSetupJSONDisabled) => (
             <PluginCard
               key={plugin.id}
               id={plugin.id}
@@ -93,6 +93,7 @@ const PluginDisplay = ({
               installed={true}
               disabled={plugin.disabled}
               author={plugin.author}
+              needsUpdate={!!needsUpdate?.get(plugin.id)}
             />
           ))
         ) : (

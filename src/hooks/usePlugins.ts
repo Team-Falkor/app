@@ -18,6 +18,7 @@ const UsePlugins = () => {
     needsUpdate,
     setHasDoneFirstCheck,
     setNeedsUpdate,
+    removeNeedsUpdate,
   } = usePluginsStore();
 
   const getPlugins = useCallback(
@@ -66,6 +67,7 @@ const UsePlugins = () => {
     searchAllPlugins,
     needsUpdate,
     setNeedsUpdate,
+    removeNeedsUpdate,
   };
 };
 
