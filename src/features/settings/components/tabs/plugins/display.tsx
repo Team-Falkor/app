@@ -3,6 +3,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
 import { cn } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 import { SortBy } from ".";
 
 interface Props {
@@ -10,9 +11,10 @@ interface Props {
   setShowRows: (showRows: boolean) => void;
 
   sortBy: SortBy;
+  showEnabledOnly: boolean;
 }
 
-const PluginDisplay = ({ showRows }: Props) => {
+const PluginDisplay = ({ showRows, sortBy, showEnabledOnly }: Props) => {
   const { getPlugins } = UsePlugins();
 
   const { data, isPending, error } = useQuery({
@@ -23,6 +25,27 @@ const PluginDisplay = ({ showRows }: Props) => {
       return plugins?.data;
     },
   });
+
+  const sortedPlugins = useMemo(() => {
+    if (showEnabledOnly) {
+      const plugins = data?.filter((plugin) => !plugin.disabled);
+      if (sortBy === "alphabetic-asc") {
+        return plugins?.sort((a, b) => a.name.localeCompare(b.name));
+      } else if (sortBy === "alphabetic-desc") {
+        return plugins?.sort((a, b) => b.name.localeCompare(a.name));
+      }
+      return plugins;
+    }
+
+    if (sortBy === "alphabetic-asc") {
+      return data?.sort((a, b) => a.name.localeCompare(b.name));
+    }
+    if (sortBy === "alphabetic-desc") {
+      return data?.sort((a, b) => b.name.localeCompare(a.name));
+    }
+
+    return data;
+  }, [data, showEnabledOnly, sortBy]);
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
@@ -39,8 +62,8 @@ const PluginDisplay = ({ showRows }: Props) => {
           },
         ])}
       >
-        {!!data?.length &&
-          data?.map((plugin: any) => (
+        {!!sortedPlugins?.length &&
+          sortedPlugins?.map((plugin: any) => (
             <PluginCard
               key={plugin.id}
               id={plugin.id}

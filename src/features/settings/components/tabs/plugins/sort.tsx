@@ -14,6 +14,9 @@ interface PluginsSortProps {
   setShowRows: (showRows: boolean) => void;
   sortBy: SortBy;
   setSortBy: Dispatch<SetStateAction<SortBy>>;
+
+  setShowEnabledOnly: Dispatch<SetStateAction<boolean>>;
+  showEnabledOnly: boolean;
 }
 
 const PluginsSort = ({
@@ -21,6 +24,8 @@ const PluginsSort = ({
   showRows,
   setSortBy,
   sortBy,
+  setShowEnabledOnly,
+  showEnabledOnly,
 }: PluginsSortProps) => {
   const { t } = useLanguageContext();
 
@@ -28,7 +33,11 @@ const PluginsSort = ({
     <div className="flex gap-2">
       <Tooltip>
         <TooltipTrigger>
-          <Button variant={"ghost"} size={"icon"}>
+          <Button
+            variant={showEnabledOnly ? "secondary" : "ghost"}
+            size={"icon"}
+            onClick={() => setShowEnabledOnly(!showEnabledOnly)}
+          >
             <Check />
           </Button>
         </TooltipTrigger>

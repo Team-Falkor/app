@@ -15,11 +15,7 @@ import AddPluginModal from "./addPluginModal";
 import PluginDisplay from "./display";
 import PluginsSort from "./sort";
 
-export type SortBy =
-  | "alphabetic-asc"
-  | "alphabetic-desc"
-  | "popularity-asc"
-  | "popularity-desc";
+export type SortBy = "alphabetic-asc" | "alphabetic-desc";
 
 const PluginSettings = () => {
   const { t } = useLanguageContext();
@@ -27,6 +23,7 @@ const PluginSettings = () => {
 
   const [showRows, setShowRows] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("alphabetic-asc");
+  const [showEnabledOnly, setShowEnabledOnly] = useState(false);
 
   return (
     <div>
@@ -63,6 +60,8 @@ const PluginSettings = () => {
             setShowRows={setShowRows}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            setShowEnabledOnly={setShowEnabledOnly}
+            showEnabledOnly={showEnabledOnly}
           />
         </div>
 
@@ -70,6 +69,7 @@ const PluginSettings = () => {
           showRows={showRows}
           setShowRows={setShowRows}
           sortBy={sortBy}
+          showEnabledOnly={showEnabledOnly}
         />
       </SettingsContainer>
     </div>
