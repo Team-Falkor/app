@@ -387,24 +387,6 @@ export class PluginHandler {
       return [];
     }
   }
-
-  private mergeConfigs(
-    pluginId: PluginId,
-    newSetup: PluginSetupJSON
-  ): PluginSetupJSON {
-    const filePath = join(this.path, `${pluginId}.json`);
-    if (!fs.existsSync(filePath)) return newSetup;
-
-    const data = fs.readFileSync(filePath, "utf-8");
-    const json: PluginSetupJSON = JSON.parse(data);
-
-    const setup: PluginSetupJSON = {
-      ...newSetup,
-      config: json.config,
-    };
-
-    return setup;
-  }
 }
 
 const pluginHandler = new PluginHandler();
