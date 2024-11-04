@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 import { useMemo } from "react";
+import ErrorComponent from "./components/errorComponent";
 import { ThemeProvider } from "./components/theme-provider";
 import { useThemes } from "./hooks/useThemes";
 import { memoryHistory } from "./lib/history";
@@ -31,6 +32,7 @@ const createAppRouter = (queryClient: QueryClient) => {
     },
     defaultPreload: "intent",
     defaultPreloadStaleTime: 0,
+    defaultErrorComponent: (props) => <ErrorComponent {...props} />,
   });
 };
 
