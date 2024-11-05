@@ -20,9 +20,7 @@ const DownloadCard = ({ stats, deleteStats }: DownloadCardProps) => {
   const { game_data } = stats;
   const torrentMode = isTorrent(stats);
 
-  const downloading = useMemo(() => {
-    return stats.status === "downloading";
-  }, [stats]);
+  const downloading = useMemo(() => stats.status === "downloading", [stats]);
 
   useEffect(() => {
     if (stats.downloadSpeed) {

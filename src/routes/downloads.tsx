@@ -5,7 +5,7 @@ import DownloadCard from "@/features/downloads/components/cards/download";
 import { DownloadCardLoading } from "@/features/downloads/components/cards/loading";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { useMapState } from "@/hooks";
-import { isTorrent } from "@/lib"; // Importing the type guard
+import { isTorrent } from "@/lib";
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo } from "react";
 
@@ -30,7 +30,7 @@ function Downloads() {
 
   const handleProgress = useCallback(
     (_event: any, data: ITorrent | DownloadData) => {
-      console.log("Download progress:", data);
+      // console.log("Download progress:", data);
       if (isTorrent(data)) {
         setStats(data.infoHash, data);
       } else {
@@ -46,6 +46,7 @@ function Downloads() {
     ipcRenderer.on("torrent:progress", handleProgress);
     ipcRenderer.on("download:progress", handleProgress);
     ipcRenderer.on("download:complete", handleProgress);
+
     return () => {
       ipcRenderer.off("torrent:progress", handleProgress);
       ipcRenderer.off("download:progress", handleProgress);
@@ -53,17 +54,32 @@ function Downloads() {
     };
   }, [handleProgress]);
 
+  // Combine downloading and queue, removing duplicates by ID/infoHash
+  const uniqueDownloads = useMemo(() => {
+    const uniqueSet = new Map<string, ITorrent | DownloadData>();
+
+    downloading?.forEach((item) => {
+      const key = isTorrent(item) ? item.infoHash : item.id;
+      uniqueSet.set(key, item);
+    });
+
+    queue.forEach((item) => {
+      const key = isTorrent(item) ? item.infoHash : item.id;
+      if (!uniqueSet.has(key)) {
+        uniqueSet.set(key, item);
+      }
+    });
+
+    return Array.from(uniqueSet.values());
+  }, [downloading, queue]);
+
   const renderDownloadCard = useCallback(
     (item: ITorrent | DownloadData) => {
       const stats =
         statsMap?.get(isTorrent(item) ? item.infoHash : item.id) ?? item;
 
-      if (
-        (stats && stats.status === "stopped") ||
-        stats?.status === "error" ||
-        !stats
-      )
-        return null;
+      // if ((stats && stats.status === "stopped") || stats?.status === "error")
+      //   return null;
       if (stats?.status === "pending") return <DownloadCardLoading />;
       if (isTorrent(item))
         return (
@@ -97,19 +113,15 @@ function Downloads() {
         </div>
       </div>
 
-      {downloading?.size ? (
-        Array.from(downloading.values()).map(renderDownloadCard)
+      {uniqueDownloads.length ? (
+        <div className="p-3.5 mt-2 flex flex-col gap-4">
+          {uniqueDownloads.map(renderDownloadCard)}
+        </div>
       ) : (
         <div className="w-full flex justify-center items-center h-60 bg-muted/50">
           <h1 className="text-xl font-bold text-foreground">
             No downloads in progress
           </h1>
-        </div>
-      )}
-
-      {!!queue.length && (
-        <div className="p-3.5 mt-2 flex flex-col gap-4">
-          {queue.map(renderDownloadCard)}
         </div>
       )}
     </div>

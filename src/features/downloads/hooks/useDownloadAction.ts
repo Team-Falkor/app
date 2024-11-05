@@ -1,24 +1,39 @@
+import { DownloadStatus } from "@/@types";
+import { ITorrentGameData } from "@/@types/torrent";
 import { invoke } from "@/lib";
 import { useState } from "react";
+import { toast } from "sonner";
 import UseDownloads from "./useDownloads";
+
+interface DownloadPauseReturn {
+  message: string;
+  error: boolean;
+  data: {
+    id: string;
+    status: DownloadStatus;
+    game_data: ITorrentGameData;
+  };
+}
 
 export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
   const { fetchDownloads } = UseDownloads();
-  const [status, setStatus] = useState<"paused" | "started" | "deleted" | null>(
-    null
-  );
+  const [status, setStatus] = useState<DownloadStatus | null>(null);
 
   const pauseDownload = async () => {
     if (!id) return null;
 
-    // Determine the appropriate action based on whether it's a torrent or download
     const data = isTorrent
-      ? await invoke<any, string>("torrent:pause-torrent", id)
-      : await invoke<any, string>("download:pause", id);
+      ? await invoke<DownloadPauseReturn, string>("torrent:pause-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:pause", id);
 
-    if (data.error) return;
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
 
     setStatus("paused");
+    fetchDownloads();
     return data;
   };
 
@@ -26,12 +41,17 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
     if (!id) return null;
 
     const data = isTorrent
-      ? await invoke<any, string>("torrent:start-torrent", id)
-      : await invoke<any, string>("download:start", id);
+      ? await invoke<DownloadPauseReturn, string>("torrent:start-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:start", id);
 
-    if (data.error) return;
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
 
-    setStatus("started");
+    setStatus("downloading");
+    fetchDownloads();
     return data;
   };
 
@@ -39,13 +59,17 @@ export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
     if (!id) return null;
 
     const data = isTorrent
-      ? await invoke<any, string>("torrent:delete-torrent", id)
-      : await invoke<any, string>("download:stop", id);
+      ? await invoke<DownloadPauseReturn, string>("torrent:delete-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:stop", id);
+
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
+
+    setStatus("stopped");
     fetchDownloads();
-
-    if (data.error) return;
-
-    setStatus("deleted");
     return data;
   };
 

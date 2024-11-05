@@ -20,11 +20,13 @@ const DownloadCardActions = ({
   const { pauseDownload, startDownload, stopDownload, status } =
     UseDownloadAction(isTorrentType ? stats.infoHash : stats.id, isTorrentType);
 
-  if (status === "deleted" || !stats) return null;
+  if (status === "stopped" || !stats) return null;
+
+  // console.log("status");
 
   return (
     <div className="flex flex-row gap-4">
-      {stats?.status === "paused" || (!!isTorrent(stats) && stats.paused) ? (
+      {status !== "paused" ? (
         <Button
           size="default"
           variant="secondary"

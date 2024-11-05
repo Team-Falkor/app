@@ -5,6 +5,7 @@ import path from "node:path";
 import { win } from "../../main";
 import { constants } from "../constants";
 import { settings } from "../settings/settings";
+import download_events from "./events";
 
 class DownloadItem {
   id: string;
@@ -114,7 +115,7 @@ class DownloadItem {
     }
 
     const progressData = this.getReturnData();
-    win?.webContents?.send("download:progress", progressData);
+    win?.webContents?.send(download_events.progress, progressData);
   }
 }
 
