@@ -9,6 +9,7 @@ export const defaultSettings: SettingsConfig = {
   autoUpdateInterval: 1,
   autoCheckForUpdates: true,
   checkForUpdatesOnStartup: true,
+  checkForPluginUpdatesOnStartup: true,
   minimizeToTray: true,
   useAccountsForDownloads: false,
 };
