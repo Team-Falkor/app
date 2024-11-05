@@ -18,9 +18,9 @@ const SearchCard = ({
       to={`/info/${id}`}
       onClick={() => setOpen(false)}
     >
-      <div className="flex">
+      <div className="flex gap-1.5">
         <p className="text-sm flex-1 line-clamp-2">{name}</p>
-        <span>({year})</span>
+        <span className="text-xs text-muted-foreground">({year})</span>
       </div>
     </Link>
   );
