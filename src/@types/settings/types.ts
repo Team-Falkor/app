@@ -6,6 +6,7 @@ export interface SettingsConfig {
   autoUpdateInterval: number;
   autoCheckForUpdates: boolean;
   checkForUpdatesOnStartup: boolean;
+  checkForPluginUpdatesOnStartup: boolean;
   minimizeToTray: boolean;
   useAccountsForDownloads: boolean;
 }

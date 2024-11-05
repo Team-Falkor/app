@@ -2,6 +2,7 @@ import { PluginSetupJSONDisabled, SearchPluginResponse } from "@/@types";
 import { invoke } from "@/lib";
 import { usePluginsStore } from "@/stores/plugins";
 import { useCallback, useEffect } from "react";
+import { useSettings } from "./useSettings";
 
 type InvokeReturn = {
   data: PluginSetupJSONDisabled[];
@@ -20,6 +21,7 @@ const UsePlugins = () => {
     setNeedsUpdate,
     removeNeedsUpdate,
   } = usePluginsStore();
+  const { settings } = useSettings();
 
   const getPlugins = useCallback(
     async (wantDisabled: boolean = false) => {
@@ -51,7 +53,9 @@ const UsePlugins = () => {
   useEffect(() => {
     if (hasDoneFirstCheck || !getPlugins || plugins.size) return;
     getPlugins();
-    checkForUpdates();
+    if (settings?.checkForPluginUpdatesOnStartup) {
+      checkForUpdates();
+    }
     setHasDoneFirstCheck();
   }, [
     checkForUpdates,
@@ -59,6 +63,7 @@ const UsePlugins = () => {
     hasDoneFirstCheck,
     plugins,
     setHasDoneFirstCheck,
+    settings.checkForPluginUpdatesOnStartup,
   ]);
 
   return {
