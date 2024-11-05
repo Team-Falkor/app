@@ -5,6 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import UseDownloads from "./useDownloads";
 
+// TODO: fix if download pause and resume not updating ui
+
 interface DownloadPauseReturn {
   message: string;
   error: boolean;

@@ -6,6 +6,8 @@ import { isTorrent } from "@/lib";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
+// TODO: fix if download pause and resume not updating ui
+
 interface DownloadCardActionsProps {
   stats: ITorrent | DownloadData;
   deleteStats: (id: string) => void;
@@ -26,27 +28,28 @@ const DownloadCardActions = ({
 
   return (
     <div className="flex flex-row gap-4">
-      {status !== "paused" ? (
-        <Button
-          size="default"
-          variant="secondary"
-          className="gap-2"
-          onClick={startDownload ?? undefined}
-        >
-          <Play fill="currentColor" />
-          Start Download
-        </Button>
-      ) : (
-        <Button
-          size="default"
-          variant="secondary"
-          className="gap-2"
-          onClick={pauseDownload ?? undefined}
-        >
-          <Pause fill="currentColor" />
-          Pause Download
-        </Button>
-      )}
+      {isTorrentType &&
+        (status !== "paused" ? (
+          <Button
+            size="default"
+            variant="secondary"
+            className="gap-2"
+            onClick={startDownload ?? undefined}
+          >
+            <Play fill="currentColor" />
+            Start Download
+          </Button>
+        ) : (
+          <Button
+            size="default"
+            variant="secondary"
+            className="gap-2"
+            onClick={pauseDownload ?? undefined}
+          >
+            <Pause fill="currentColor" />
+            Pause Download
+          </Button>
+        ))}
 
       <Button
         size="icon"
