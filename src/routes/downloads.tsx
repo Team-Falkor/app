@@ -46,11 +46,13 @@ function Downloads() {
     ipcRenderer.on("torrent:progress", handleProgress);
     ipcRenderer.on("download:progress", handleProgress);
     ipcRenderer.on("download:complete", handleProgress);
+    ipcRenderer.on("download:paused", handleProgress);
 
     return () => {
       ipcRenderer.off("torrent:progress", handleProgress);
       ipcRenderer.off("download:progress", handleProgress);
       ipcRenderer.off("download:complete", handleProgress);
+      ipcRenderer.off("download:paused", handleProgress);
     };
   }, [handleProgress]);
 
@@ -114,7 +116,7 @@ function Downloads() {
       </div>
 
       {uniqueDownloads.length ? (
-        <div className="p-3.5 mt-2 flex flex-col gap-4">
+        <div className=" mt-2 flex flex-col gap-4">
           {uniqueDownloads.map(renderDownloadCard)}
         </div>
       ) : (

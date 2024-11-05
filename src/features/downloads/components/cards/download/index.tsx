@@ -21,6 +21,7 @@ const DownloadCard = ({ stats, deleteStats }: DownloadCardProps) => {
   const torrentMode = isTorrent(stats);
 
   const downloading = useMemo(() => stats.status === "downloading", [stats]);
+  const isPaused = useMemo(() => stats.status === "paused", [stats]);
 
   useEffect(() => {
     if (stats.downloadSpeed) {
@@ -73,7 +74,11 @@ const DownloadCard = ({ stats, deleteStats }: DownloadCardProps) => {
           <div className="flex flex-col justify-start items-start gap-1.5">
             <DownloadCardTitle title={game_data?.name ?? ""} />
             <div className="overflow-hidden p-1 relative">
-              <DownloadCardActions stats={stats} deleteStats={deleteStats} />
+              <DownloadCardActions
+                stats={stats}
+                deleteStats={deleteStats}
+                isPaused={isPaused}
+              />
             </div>
           </div>
         </div>

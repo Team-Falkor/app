@@ -139,7 +139,10 @@ class HttpDownloader {
     this.fileStream?.close();
     this.item.updateStatus("stopped");
     this.clearSpeedTracking();
-    win?.webContents?.send(download_events.stopped, this.item.getReturnData());
+    win?.webContents?.send(download_events.stopped, {
+      ...this.item.getReturnData(),
+      status: "stopped",
+    });
   }
 
   public pause() {
@@ -147,7 +150,10 @@ class HttpDownloader {
     this.isPaused = true;
     this.item.updateStatus("paused");
     this.stop();
-    win?.webContents?.send(download_events.paused, this.item.getReturnData());
+    win?.webContents?.send(download_events.paused, {
+      ...this.item.getReturnData(),
+      status: "paused",
+    });
   }
 
   public async resume() {
@@ -155,13 +161,19 @@ class HttpDownloader {
     this.isPaused = false;
     this.item.updateStatus("downloading");
     await this.download();
-    win?.webContents?.send(download_events.paused, this.item.getReturnData());
+    win?.webContents?.send(download_events.paused, {
+      ...this.item.getReturnData(),
+      status: "downloading",
+    });
   }
 
   private handleComplete() {
     this.item.updateStatus("completed");
     this.clearSpeedTracking();
-    win?.webContents?.send(download_events.complete, this.item.getReturnData());
+    win?.webContents?.send(download_events.complete, {
+      ...this.item.getReturnData(),
+      status: "completed",
+    });
   }
 }
 

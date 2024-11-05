@@ -11,11 +11,13 @@ import { MdStop } from "react-icons/md";
 interface DownloadCardActionsProps {
   stats: ITorrent | DownloadData;
   deleteStats: (id: string) => void;
+  isPaused?: boolean;
 }
 
 const DownloadCardActions = ({
   stats,
   deleteStats,
+  isPaused,
 }: DownloadCardActionsProps) => {
   const isTorrentType = isTorrent(stats);
 
@@ -24,32 +26,31 @@ const DownloadCardActions = ({
 
   if (status === "stopped" || !stats) return null;
 
-  // console.log("status");
+  console.log("status", stats.status);
 
   return (
     <div className="flex flex-row gap-4">
-      {isTorrentType &&
-        (status !== "paused" ? (
-          <Button
-            size="default"
-            variant="secondary"
-            className="gap-2"
-            onClick={startDownload ?? undefined}
-          >
-            <Play fill="currentColor" />
-            Start Download
-          </Button>
-        ) : (
-          <Button
-            size="default"
-            variant="secondary"
-            className="gap-2"
-            onClick={pauseDownload ?? undefined}
-          >
-            <Pause fill="currentColor" />
-            Pause Download
-          </Button>
-        ))}
+      {isPaused ? (
+        <Button
+          size="default"
+          variant="secondary"
+          className="gap-2"
+          onClick={startDownload ?? undefined}
+        >
+          <Play fill="currentColor" />
+          Start Download
+        </Button>
+      ) : (
+        <Button
+          size="default"
+          variant="secondary"
+          className="gap-2"
+          onClick={pauseDownload ?? undefined}
+        >
+          <Pause fill="currentColor" />
+          Pause Download
+        </Button>
+      )}
 
       <Button
         size="icon"
