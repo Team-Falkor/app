@@ -4,7 +4,7 @@ import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { useSettings } from "@/hooks";
 import { createSlug, invoke } from "@/lib";
 import { useAccountServices } from "@/stores/account-services";
-import { DownloadIcon, UserIcon, Users2Icon } from "lucide-react";
+import { DownloadIcon, Gamepad2Icon, UserIcon, Users2Icon } from "lucide-react";
 
 type Props = PluginSearchResponse & {
   multiple_choice?: boolean;
@@ -80,16 +80,22 @@ const DefaultDownloadCard = (props: Props) => {
       <div className="flex flex-row items-center justify-start w-full gap-3">
         <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
           <DownloadIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-          {props?.type ?? "??"}
+          {(props?.type === "ddl" ? "Direct Download" : props.type) ?? "??"}
         </div>
         <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
           <UserIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
           {props.type !== "ddl" ? (props?.uploader ?? "??") : "??"}
-        </div>{" "}
+        </div>
         <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
           <Users2Icon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
           {props.type !== "ddl" ? (props?.seeds ?? "??") : "??"}
         </div>
+        {!!props?.game_version && (
+          <div className="flex items-center gap-1 text-xs text-slate-300 capitalize">
+            <Gamepad2Icon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
+            {props.game_version}
+          </div>
+        )}
       </div>
     </button>
   );

@@ -6,10 +6,15 @@ export type PluginSearchResponse =
       uploader: string;
       return: string;
       size?: number;
+      game_version?: string;
+      password?: string;
     }
   | {
       type: "ddl";
       name: string;
       return: string;
-      size: number;
+      uploader: string;
+      size?: number;
+      game_version?: string;
+      password?: string;
     };
