@@ -32,10 +32,10 @@ function Index() {
           </div>
         </h3>
 
-        <Banner id="top-rated-banner" className="h-64 lg:h-80 xl:h-96" />
+        <Banner id="top-rated-banner" />
       </Carousel>
 
-      <div className="space-y-14">
+      <div className="space-y-14 mt-16">
         <RowContainer
           id="new-releases-row"
           title={t("new_releases")}
