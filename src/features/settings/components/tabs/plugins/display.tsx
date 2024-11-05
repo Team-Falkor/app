@@ -39,8 +39,8 @@ const PluginDisplay = ({
       if (!search) return realData;
       return realData?.filter(
         (plugin) =>
-          plugin.name.toLowerCase().includes(search.toLowerCase()) ||
-          plugin.id.toLowerCase().includes(search.toLowerCase())
+          plugin?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+          plugin?.id?.toLowerCase()?.includes(search?.toLowerCase())
       );
     },
     [data]
@@ -49,13 +49,13 @@ const PluginDisplay = ({
   const sortedPlugins = useMemo(() => {
     let sorted = data;
     if (showEnabledOnly) {
-      sorted = sorted?.filter((plugin) => !plugin.disabled);
+      sorted = sorted?.filter((plugin) => !plugin?.disabled);
     }
 
     if (sortBy === "alphabetic-asc") {
-      sorted = sorted?.sort((a, b) => a.name.localeCompare(b.name));
+      sorted = sorted?.sort((a, b) => a?.name?.localeCompare(b?.name));
     } else if (sortBy === "alphabetic-desc") {
-      sorted = sorted?.sort((a, b) => b.name.localeCompare(a.name));
+      sorted = sorted?.sort((a, b) => b?.name?.localeCompare(a?.name));
     }
 
     if (search?.length > 0) {

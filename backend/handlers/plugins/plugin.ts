@@ -282,8 +282,11 @@ export class PluginHandler {
 
       if (!json.api_url || !json.setup_path) return false;
 
+      const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
+
       // Fetch the latest plugin data from the update URL
-      const response = await fetch(`${json.api_url}/${json.setup_path}`);
+      const response = await fetch(url);
+
       const latest = await response.json();
 
       // Compare versions to determine if an update is necessary
