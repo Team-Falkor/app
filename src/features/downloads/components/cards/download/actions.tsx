@@ -6,8 +6,6 @@ import { isTorrent } from "@/lib";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
-// TODO: fix if download pause and resume not updating ui
-
 interface DownloadCardActionsProps {
   stats: ITorrent | DownloadData;
   deleteStats: (id: string) => void;
