@@ -39,5 +39,5 @@ export type ExternalRefreshTokenFunction = (refresh_token: string) => Promise<{
 
 export type ExternalAccountColumn = Pick<
   ExternalAccount,
-  "avatar" | "username" | "email" | "type" | "access_token"
+  "avatar" | "username" | "email" | "type" | "access_token" | "expires_in"
 >;

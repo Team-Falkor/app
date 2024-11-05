@@ -44,6 +44,7 @@ const PluginCard = ({
             alt={name}
             className="rounded object-cover w-full h-full relative z-[1]"
           />
+
           <div className="absolute top-0 left-0 right-0 bottom-0 rounded-lg bg-gradient-to-tl from-card to-transparent z-[2]" />
         </div>
       )}
@@ -55,6 +56,7 @@ const PluginCard = ({
             alt={name}
             className="rounded object-contain size-[50px] bg-card-foreground"
           />
+
           <div className="flex flex-col items-start justify-end">
             <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
               {id} - V{version}

@@ -44,5 +44,12 @@ export const columns: ColumnDef<ExternalAccountColumn>[] = [
   {
     accessorKey: "type",
     header: "Type",
+    cell: ({ row }) => {
+      return (
+        <span className="capitalize">
+          {row.original.type.replace("-", " ")}
+        </span>
+      );
+    },
   },
 ];
