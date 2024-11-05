@@ -14,8 +14,6 @@ const pauseDownload = async (_event: IpcMainInvokeEvent, id: string) => {
       };
     }
 
-    clearInterval(downloadItem.progressIntervalId);
-
     return {
       message: "Download paused",
       error: false,

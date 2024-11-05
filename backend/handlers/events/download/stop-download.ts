@@ -16,10 +16,6 @@ const stopDownload = async (_event: IpcMainInvokeEvent, id: string) => {
     };
   }
 
-  if (downloadItem.progressIntervalId) {
-    clearInterval(downloadItem.progressIntervalId);
-  }
-
   return {
     message: "Download stopped",
     error: false,

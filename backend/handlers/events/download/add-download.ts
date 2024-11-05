@@ -6,25 +6,11 @@ import { downloadQueue } from "../../../utils/download/queue";
 import { registerEvent } from "../utils";
 
 const addDownload = (
-  event: IpcMainInvokeEvent,
+  _event: IpcMainInvokeEvent,
   downloadData: AddDownloadData
 ) => {
   const downloadItem = new DownloadItem(downloadData);
   downloadQueue.addToQueue(downloadItem);
-
-  const sendProgress = () => {
-    if (downloadItem.status !== "downloading") {
-      clearInterval(downloadItem.progressIntervalId);
-    } else {
-      const return_data = downloadItem.getReturnData();
-
-      console.log(JSON.stringify(return_data, null, 2));
-
-      event.sender.send("download:progress", return_data);
-    }
-  };
-
-  downloadItem.progressIntervalId = setInterval(sendProgress, 1000);
 
   return {
     id: downloadItem.id,

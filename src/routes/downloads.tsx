@@ -45,15 +45,18 @@ function Downloads() {
     const ipcRenderer = window.ipcRenderer;
     ipcRenderer.on("torrent:progress", handleProgress);
     ipcRenderer.on("download:progress", handleProgress);
+    ipcRenderer.on("download:complete", handleProgress);
     return () => {
       ipcRenderer.off("torrent:progress", handleProgress);
       ipcRenderer.off("download:progress", handleProgress);
+      ipcRenderer.off("download:complete", handleProgress);
     };
   }, [handleProgress]);
 
   const renderDownloadCard = useCallback(
     (item: ITorrent | DownloadData) => {
-      const stats = statsMap.get(isTorrent(item) ? item.infoHash : item.id);
+      const stats =
+        statsMap?.get(isTorrent(item) ? item.infoHash : item.id) ?? item;
 
       if (
         (stats && stats.status === "stopped") ||

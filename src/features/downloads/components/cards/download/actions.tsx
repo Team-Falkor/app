@@ -17,23 +17,19 @@ const DownloadCardActions = ({
 }: DownloadCardActionsProps) => {
   const isTorrentType = isTorrent(stats);
 
-  // Call UseDownloadAction with appropriate id and isTorrent flag
   const { pauseDownload, startDownload, stopDownload, status } =
     UseDownloadAction(isTorrentType ? stats.infoHash : stats.id, isTorrentType);
 
-  // Return null if status indicates deletion or if there's no valid action available
   if (status === "deleted" || !stats) return null;
-
-  console.log("Stats:", stats);
 
   return (
     <div className="flex flex-row gap-4">
-      {(isTorrentType && !stats.paused) || status === "paused" ? (
+      {stats?.status === "paused" || (!!isTorrent(stats) && stats.paused) ? (
         <Button
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={startDownload ?? undefined} // Define onClick only when startDownload is available
+          onClick={startDownload ?? undefined}
         >
           <Play fill="currentColor" />
           Start Download
@@ -43,7 +39,7 @@ const DownloadCardActions = ({
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={pauseDownload ?? undefined} // Define onClick only when pauseDownload is available
+          onClick={pauseDownload ?? undefined}
         >
           <Pause fill="currentColor" />
           Pause Download
@@ -57,7 +53,7 @@ const DownloadCardActions = ({
         onClick={() => {
           stopDownload();
           deleteStats(isTorrentType ? stats.infoHash : stats.id);
-        }} // Define onClick only when stopDownload is available
+        }}
       >
         <MdStop size="fill" />
       </Button>

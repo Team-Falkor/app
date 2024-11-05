@@ -2,7 +2,7 @@ import { IpcMainInvokeEvent } from "electron";
 import { downloadQueue } from "../../../utils/download/queue";
 import { registerEvent } from "../utils";
 
-const resumeDownload = async (event: IpcMainInvokeEvent, id: string) => {
+const resumeDownload = async (_event: IpcMainInvokeEvent, id: string) => {
   const downloadItem = await downloadQueue.resume(id);
 
   if (!downloadItem) {
@@ -20,12 +20,6 @@ const resumeDownload = async (event: IpcMainInvokeEvent, id: string) => {
       data: null,
     };
   }
-
-  downloadItem.progressIntervalId = setInterval(() => {
-    const return_data = downloadItem.getReturnData();
-
-    event.sender.send("download:progress", return_data);
-  }, 1000);
 
   return {
     message: "Download resumed",

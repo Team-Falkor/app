@@ -10,7 +10,7 @@ import {
 import path from "node:path";
 import url, { fileURLToPath } from "node:url";
 
-let win: BrowserWindow | null;
+export let win: BrowserWindow | null;
 
 // DEEP LINKING
 const deepLinkName = "falkor";

@@ -1,7 +1,8 @@
 import { AddDownloadData, DownloadData, DownloadStatus } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
-import { createWriteStream } from "node:fs";
+import { createWriteStream, WriteStream } from "node:fs";
 import path from "node:path";
+import { win } from "../../main";
 import { constants } from "../constants";
 import { settings } from "../settings/settings";
 
@@ -12,13 +13,13 @@ class DownloadItem {
   filePath: string;
   fileExtension: string;
   status: DownloadStatus;
-  progress: number;
-  totalSize: number;
-  downloadSpeed?: number;
-  timeRemaining?: number | "completed";
-  error: string;
+  progress: number = 0;
+  totalSize: number = 0;
+  downloadSpeed: number = 0;
+  timeRemaining: number | "completed" = 0;
+  error: string = "";
   progressIntervalId?: ReturnType<typeof setInterval>;
-  private fileStream?: ReturnType<typeof createWriteStream>;
+  private fileStream?: WriteStream;
 
   game_data: ITorrentGameData;
 
@@ -28,52 +29,62 @@ class DownloadItem {
     this.url = url;
     this.filename = file_name;
     this.status = "pending";
-    this.progress = 0;
-    this.totalSize = 0;
-    this.downloadSpeed = 0;
-    this.timeRemaining = 0;
-    this.error = "";
-    this.fileExtension = file_extension ?? url?.split(".")?.pop() ?? "rar";
-    this.filePath =
-      file_path ?? settings?.get("downloadsPath") ?? constants.downloadsPath;
+    this.fileExtension = file_extension ?? this.getFileExtension(url);
+    this.filePath = file_path ?? this.getDownloadPath();
     this.game_data = game_data;
   }
 
-  public get fullPath(): string {
-    const fileName_withExtension = `${this.filename}.${this.fileExtension}`;
-    return path.join(this.filePath, fileName_withExtension);
+  private getFileExtension(url: string): string {
+    return url?.split(".")?.pop() ?? "rar";
   }
 
-  public setProgress(progress: number) {
+  private getDownloadPath(): string {
+    return settings?.get("downloadsPath") ?? constants.downloadsPath;
+  }
+
+  public get fullPath(): string {
+    return path.join(this.filePath, `${this.filename}.${this.fileExtension}`);
+  }
+
+  public updateProgress(progress: number): void {
     this.progress = progress;
   }
 
-  public setStatus(status: DownloadStatus) {
+  public updateStatus(status: DownloadStatus): void {
     this.status = status;
   }
 
-  public setTimeRemaining(timeRemaining: number | "completed") {
+  public updateTimeRemaining(timeRemaining: number | "completed"): void {
     this.timeRemaining = timeRemaining;
   }
 
-  public setTotalSize(totalSize: number) {
+  public updateTotalSize(totalSize: number): void {
     this.totalSize = totalSize;
   }
 
-  public setDownloadSpeed(speed: number) {
+  public updateDownloadSpeed(speed: number): void {
     this.downloadSpeed = speed;
   }
 
-  public setError(error: string) {
+  public setError(error: string): void {
     this.error = error;
   }
 
-  public createFileStream() {
-    this.fileStream = createWriteStream(this.fullPath);
-    return this.fileStream;
+  public createFileStream(): WriteStream | undefined {
+    try {
+      this.fileStream = createWriteStream(this.fullPath);
+      return this.fileStream;
+    } catch (error) {
+      console.error(
+        `Failed to create file stream for ${this.fullPath}:`,
+        error
+      );
+      this.setError("Failed to create file stream.");
+      return undefined;
+    }
   }
 
-  public closeFileStream() {
+  public closeFileStream(): void {
     this.fileStream?.close();
   }
 
@@ -81,18 +92,30 @@ class DownloadItem {
     return this.status === "completed";
   }
 
-  public getReturnData = (): DownloadData => ({
-    filename: this.filename,
-    game_data: this.game_data,
-    path: this.filePath,
-    status: this.status,
-    url: this.url,
-    id: this.id,
-    progress: this.progress,
-    totalSize: this.totalSize,
-    downloadSpeed: this.downloadSpeed ?? 0,
-    timeRemaining: this.timeRemaining ?? 0,
-  });
+  public getReturnData(): DownloadData {
+    return {
+      filename: this.filename,
+      game_data: this.game_data,
+      path: this.filePath,
+      status: this.status,
+      url: this.url,
+      id: this.id,
+      progress: this.progress,
+      totalSize: this.totalSize,
+      downloadSpeed: this.downloadSpeed,
+      timeRemaining: this.timeRemaining,
+    };
+  }
+
+  public sendProgress(): void {
+    if (this.status !== "downloading") {
+      clearInterval(this.progressIntervalId);
+      return;
+    }
+
+    const progressData = this.getReturnData();
+    win?.webContents?.send("download:progress", progressData);
+  }
 }
 
 export default DownloadItem;

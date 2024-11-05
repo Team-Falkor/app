@@ -1,6 +1,7 @@
 import fs from "fs";
 import https from "https";
 import { logger } from "../../handlers/logging";
+import { win } from "../../main";
 import item from "./item";
 
 class HttpDownloader {
@@ -17,11 +18,10 @@ class HttpDownloader {
   }
 
   public async download(): Promise<void> {
-    if (this.item.status === "completed") {
-      return;
-    }
+    if (this.item.status === "completed") return;
 
-    this.item.setStatus("downloading");
+    this.item.updateStatus("downloading");
+    this.previousDownloadedSize = this.downloadedSize; // Initialize downloaded size
 
     return new Promise<void>((resolve, reject) => {
       const options = {
@@ -32,33 +32,40 @@ class HttpDownloader {
       };
 
       this.request = https.get(this.item.url, options, (response) => {
+        if (![200, 206].includes(response.statusCode!)) {
+          this.handleError(
+            reject,
+            `Failed to download: ${response.statusMessage}`
+          );
+          return;
+        }
+
         const isPartialContent = response.statusCode === 206;
         const totalSize =
           Number(response.headers["content-length"]) +
           (isPartialContent ? this.downloadedSize : 0);
         this.item.totalSize = totalSize;
 
-        if (![200, 206].includes(response.statusCode!)) {
-          const errorMessage = `Failed to download: ${response.statusMessage}`;
-          this.handleError(reject, errorMessage);
-          return;
-        }
-
         this.fileStream = fs.createWriteStream(this.item.fullPath, {
           flags: isPartialContent ? "a" : "w",
         });
+
         response.pipe(this.fileStream);
 
+        // Start tracking download speed and progress
         this.startSpeedTracking(totalSize);
-
         response.on("data", (chunk) =>
           this.trackProgress(chunk.length, totalSize)
         );
-        this.fileStream.on("finish", () => this.finishDownload(resolve));
+
+        response.on("end", () => {
+          this.fileStream?.close();
+          this.finishDownload(resolve);
+        });
+
         this.fileStream.on("error", (error) =>
           this.handleError(reject, error.message)
         );
-        response.on("close", () => this.fileStream?.close()); // Ensures file is properly closed
         this.request!.on("error", (error) =>
           this.handleError(reject, error.message)
         );
@@ -69,18 +76,16 @@ class HttpDownloader {
   private startSpeedTracking(totalSize: number) {
     this.previousDownloadedSize = this.downloadedSize;
 
-    // Update download speed and time remaining every second
     this.speedInterval = setInterval(() => {
       const bytesDownloaded = this.downloadedSize - this.previousDownloadedSize;
-      this.item.setDownloadSpeed(bytesDownloaded); // in bytes per second
+      this.item.updateDownloadSpeed(bytesDownloaded);
 
-      // Calculate and set time remaining in milliseconds
       const remainingBytes = totalSize - this.downloadedSize;
       const timeRemainingMs =
         bytesDownloaded > 0
-          ? (remainingBytes / bytesDownloaded) * 1000 // Convert seconds to milliseconds
-          : Infinity; // Avoid division by zero if no progress is made
-      this.item.setTimeRemaining(timeRemainingMs); // in milliseconds
+          ? (remainingBytes / bytesDownloaded) * 1000
+          : Infinity;
+      this.item.updateTimeRemaining(timeRemainingMs);
 
       this.previousDownloadedSize = this.downloadedSize;
     }, 1000);
@@ -89,21 +94,21 @@ class HttpDownloader {
   private trackProgress(chunkSize: number, totalSize: number) {
     this.downloadedSize += chunkSize;
     const progress = (this.downloadedSize / totalSize) * 100;
-    this.item.setProgress(progress);
+    this.item.updateProgress(progress);
+    this.item.sendProgress();
   }
 
   private finishDownload(resolve: () => void) {
-    this.item.setStatus("completed");
-    this.fileStream?.close(); // Ensure the file stream is closed
+    this.item.updateStatus("completed");
     this.clearSpeedTracking();
+    this.handleComplete();
     resolve();
   }
 
   private handleError(reject: (reason?: any) => void, message: string) {
     this.item.setError(message);
-    this.item.setStatus("error");
-    this.fileStream?.close();
-    this.clearSpeedTracking();
+    this.item.updateStatus("error");
+    this.stop();
 
     logger.log({
       id: Math.floor(Date.now() / 1000),
@@ -124,26 +129,29 @@ class HttpDownloader {
 
   public stop() {
     this.request?.destroy();
-    this.item.setStatus("stopped");
     this.fileStream?.close();
+    this.item.updateStatus("stopped");
     this.clearSpeedTracking();
   }
 
   public pause() {
-    if (this.request) {
-      this.isPaused = true;
-      this.stop();
-      this.item.setStatus("paused");
-    }
+    if (!this.request || this.isPaused) return;
+    this.isPaused = true;
+    this.item.updateStatus("paused");
+    this.stop();
   }
 
   public async resume() {
-    if (this.isPaused) {
-      this.isPaused = false;
-      await this.download();
-      this.startSpeedTracking(this.item.totalSize);
-      this.item.setStatus("downloading");
-    }
+    if (!this.isPaused) return;
+    this.isPaused = false;
+    this.item.updateStatus("downloading");
+    await this.download();
+  }
+
+  private handleComplete() {
+    this.item.updateStatus("completed");
+    this.clearSpeedTracking();
+    win?.webContents?.send("download:complete", this.item.getReturnData());
   }
 }
 
