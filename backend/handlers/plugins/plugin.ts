@@ -290,6 +290,7 @@ export class PluginHandler {
       const latest = await response.json();
 
       // Compare versions to determine if an update is necessary
+      if (!latest?.version) return false;
       if (latest.version === json.version) return false;
 
       // Remove the old plugin file and save the updated data
@@ -338,6 +339,7 @@ export class PluginHandler {
           const latest = await response.json();
 
           // Check if the plugin needs to be updated
+          if (!latest?.version) continue;
           if (latest.version === json.version) continue;
 
           // Update the plugin
@@ -367,6 +369,7 @@ export class PluginHandler {
           const latest = await response.json();
 
           // Check if the plugin needs to be updated
+          if (!latest?.version) continue;
           if (latest.version === json.version) continue;
 
           // Update the plugin
