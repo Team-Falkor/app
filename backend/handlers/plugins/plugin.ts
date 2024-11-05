@@ -203,7 +203,8 @@ export class PluginHandler {
 
       if (!json.api_url || !json.setup_path) return false;
 
-      const response = await fetch(`${json.api_url}/${json.setup_path}`);
+      const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
+      const response = await fetch(url);
       const latest = await response.json();
       if (latest.version === json.version) return false;
 
@@ -229,8 +230,9 @@ export class PluginHandler {
           const json: PluginSetupJSON = JSON.parse(data);
 
           if (!json.api_url || !json.setup_path) continue;
+          const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
 
-          const response = await fetch(`${json.api_url}/${json.setup_path}`);
+          const response = await fetch(url);
           const latest = await response.json();
           if (latest.version === json.version) continue;
 
@@ -245,7 +247,8 @@ export class PluginHandler {
           const json: PluginSetupJSON = JSON.parse(data);
           if (!json.api_url || !json.setup_path) continue;
 
-          const response = await fetch(`${json.api_url}/${json.setup_path}`);
+          const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
+          const response = await fetch(url);
           const latest = await response.json();
           if (latest.version === json.version) continue;
 
