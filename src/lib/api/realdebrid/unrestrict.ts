@@ -20,7 +20,7 @@ export class Unrestrict extends RealDebridAPI {
     return this.makeRequest(
       "/rest/1.0/unrestrict/check",
       "POST",
-      true,
+      false,
       body.toString()
     );
   }
@@ -28,13 +28,14 @@ export class Unrestrict extends RealDebridAPI {
   public async link(
     link: string,
     password?: string,
-    remote: number = 0
+    remote?: number
   ): Promise<RealDebridUnrestrictFileFolder> {
-    const body = new URLSearchParams({ link, remote: remote.toString() });
+    const body = new URLSearchParams({ link });
 
     if (password) body.set("password", password);
+    if (remote) body.set("remote", remote.toString());
 
-    return this.makeRequest(
+    return await this.makeRequest(
       "/rest/1.0/unrestrict/link",
       "POST",
       true,

@@ -1,4 +1,5 @@
 import { getInfoHashFromMagnet } from "@/lib/utils";
+import { toast } from "sonner";
 import { Torrents } from "./torrents";
 import { Unrestrict } from "./unrestrict";
 import { User } from "./user";
@@ -60,12 +61,9 @@ class RealDebridClient {
 
   public async downloadTorrentFromMagnet(
     magnetLink: string,
+    password?: string,
     fileSelection: string | "all" = "all"
   ): Promise<string> {
-    console.log({
-      magnetLink,
-      decodedMagnetLink: decodeURIComponent(magnetLink),
-    });
     const torrentId = await this.getOrCreateTorrent(
       decodeURIComponent(magnetLink)
     );
@@ -90,9 +88,24 @@ class RealDebridClient {
 
     // Unrestrict the first available link
     try {
-      const unrestrictedLink = await this.unrestrict.link(firstLink);
+      const unrestrictedLink = await this.unrestrict.link(firstLink, password);
       return unrestrictedLink.download;
     } catch (error) {
+      throw new Error(`Failed to unrestrict link: ${(error as Error).message}`);
+    }
+  }
+
+  public async downloadFromFileHost(
+    url: string,
+    password?: string
+  ): Promise<string> {
+    try {
+      const unrestrictedLink = await this.unrestrict.link(url, password);
+      return unrestrictedLink.download;
+    } catch (error) {
+      toast.error(`Failed to unrestrict link`, {
+        description: (error as Error).message,
+      });
       throw new Error(`Failed to unrestrict link: ${(error as Error).message}`);
     }
   }

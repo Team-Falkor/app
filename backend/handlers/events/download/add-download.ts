@@ -9,20 +9,28 @@ const addDownload = (
   _event: IpcMainInvokeEvent,
   downloadData: AddDownloadData
 ) => {
-  const downloadItem = new DownloadItem(downloadData);
-  downloadQueue.addToQueue(downloadItem);
+  try {
+    const downloadItem = new DownloadItem(downloadData);
+    downloadQueue.addToQueue(downloadItem);
 
-  return {
-    id: downloadItem.id,
-    url: downloadItem.url,
-    filename: downloadItem.filename,
-    status: downloadItem.status,
-    progress: downloadItem.progress,
-    error: downloadItem.error,
-    game_data: downloadItem.game_data,
-    filePath: downloadItem.filePath,
-    fullPath: downloadItem.fullPath,
-  };
+    return {
+      id: downloadItem.id,
+      url: downloadItem.url,
+      filename: downloadItem.filename,
+      status: downloadItem.status,
+      progress: downloadItem.progress,
+      error: downloadItem.error,
+      game_data: downloadItem.game_data,
+      filePath: downloadItem.filePath,
+      fullPath: downloadItem.fullPath,
+    };
+  } catch (error) {
+    return {
+      message: "Error adding download",
+      error: true,
+      data: null,
+    };
+  }
 };
 
 registerEvent("download:add", addDownload);

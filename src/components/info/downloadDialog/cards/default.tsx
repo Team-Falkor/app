@@ -26,6 +26,7 @@ const DefaultDownloadCard = (props: Props) => {
       return: returned_url,
       multiple_choice: multipleChoice,
       pluginId,
+      password,
     } = props;
 
     let url = returned_url;
@@ -43,7 +44,9 @@ const DefaultDownloadCard = (props: Props) => {
     }
 
     if (settings.useAccountsForDownloads && realDebrid) {
-      url = await realDebrid.downloadTorrentFromMagnet(url);
+      if (props.type !== "ddl") {
+        url = await realDebrid.downloadTorrentFromMagnet(url, password);
+      } else url = await realDebrid.downloadFromFileHost(url, password);
 
       addDownload({
         id: createSlug(props.name),

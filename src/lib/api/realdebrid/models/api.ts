@@ -32,10 +32,11 @@ export class RealDebridAPI {
       if (!response?.ok) {
         switch (response?.status) {
           case 401:
-            console.log("unauthorized");
             throw new Error("Bad token (expired, invalid)");
           case 403:
             throw new Error("Permission denied (account locked, not premium)");
+          case 503:
+            throw new Error("Hoster is unsported");
           default:
             throw new Error(
               `API request failed: ${response?.statusText || "Unknown error"}`
@@ -54,7 +55,10 @@ export class RealDebridAPI {
       return JSON.parse(data);
     } catch (error) {
       console.error(error);
-      throw new Error("API request failed");
+
+      throw new Error(
+        `Real Debrid error: ${(error as Error).message ?? "Unknown error"}`
+      );
     }
   }
 }

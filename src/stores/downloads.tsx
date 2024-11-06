@@ -165,6 +165,12 @@ export const useDownloadStore = create<DownloadState>((set, get) => ({
         "download:add",
         downloadData
       );
+
+      if (download?.error) {
+        toast.error(download.message);
+        return;
+      }
+
       set((state) => {
         state.downloading.set(downloadData.id, download);
         state.downloads.set(downloadData.id, download);
