@@ -30,7 +30,6 @@ function Downloads() {
 
   const handleProgress = useCallback(
     (_event: any, data: ITorrent | DownloadData) => {
-      // console.log("Download progress:", data);
       if (isTorrent(data)) {
         setStats(data.infoHash, data);
       } else {
@@ -49,10 +48,10 @@ function Downloads() {
     ipcRenderer.on("download:paused", handleProgress);
 
     return () => {
-      ipcRenderer.off("torrent:progress", handleProgress);
-      ipcRenderer.off("download:progress", handleProgress);
-      ipcRenderer.off("download:complete", handleProgress);
-      ipcRenderer.off("download:paused", handleProgress);
+      ipcRenderer.removeAllListeners("torrent:progress");
+      ipcRenderer.removeAllListeners("download:progress");
+      ipcRenderer.removeAllListeners("download:complete");
+      ipcRenderer.removeAllListeners("download:paused");
     };
   }, [handleProgress]);
 

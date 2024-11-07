@@ -24,8 +24,6 @@ const DownloadCardActions = ({
 
   if (status === "stopped" || !stats) return null;
 
-  console.log("status", stats.status);
-
   return (
     <div className="flex flex-row gap-4">
       {isPaused ? (

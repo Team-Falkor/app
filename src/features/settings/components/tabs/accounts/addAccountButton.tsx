@@ -9,10 +9,12 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import RealDebridDialogContent from "@/features/realDebrid/components/realDebridDialogContent";
+import { useAccountServices } from "@/stores/account-services";
 import { useState } from "react";
 
 const AddAccountButton = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const { realDebrid } = useAccountServices();
 
   return (
     <DropdownMenu>
@@ -22,8 +24,11 @@ const AddAccountButton = () => {
       <DropdownMenuContent align="start">
         <DropdownMenuLabel>Choose an account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => setIsDialogOpen(true)}>
-          Real Debrid
+        <DropdownMenuItem
+          onSelect={() => setIsDialogOpen(true)}
+          disabled={!!realDebrid}
+        >
+          Real Debrid ({realDebrid ? "Connected" : "Not Connected"})
         </DropdownMenuItem>
       </DropdownMenuContent>
 
