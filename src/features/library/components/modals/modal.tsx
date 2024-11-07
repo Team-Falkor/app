@@ -5,15 +5,16 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import NewGameForm from "./form";
+import { useLanguageContext } from "@/contexts/I18N";
 
 const NewGameModalContent = () => {
+  const { t } = useLanguageContext();
+
   return (
     <DialogContent className="sm:max-w-[550px]">
       <DialogHeader>
-        <DialogTitle>Add a New Game</DialogTitle>
-        <DialogDescription>
-          Add a new game, so you can easily launch it from the app
-        </DialogDescription>
+        <DialogTitle>{t("new_game")}</DialogTitle>
+        <DialogDescription>{t("new_game_modal_description")}</DialogDescription>
       </DialogHeader>
       <div className="grid gap-6 py-2">
         <NewGameForm />

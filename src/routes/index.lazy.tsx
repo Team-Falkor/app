@@ -25,7 +25,7 @@ function Index() {
           id="top-rated-heading"
           className="text-lg lg:text-xl xl:text-2xl font-mono font-medium leading-6 flex justify-between items-center mb-5"
         >
-          {t("top_rated")}
+          {t("sections.top_rated")}
           <div className="flex space-x-4">
             <CarouselButton direction="left" id="top-rated-left-btn" />
             <CarouselButton direction="right" id="top-rated-right-btn" />
@@ -38,13 +38,13 @@ function Index() {
       <div className="space-y-14 mt-16">
         <RowContainer
           id="new-releases-row"
-          title={t("new_releases")}
+          title={t("sections.new_releases")}
           dataToFetch="newReleases"
         />
 
         <RowContainer
           id="most-anticipated-row"
-          title={t("most_anticipated")}
+          title={t("sections.most_anticipated")}
           dataToFetch="mostAnticipated"
         />
       </div>

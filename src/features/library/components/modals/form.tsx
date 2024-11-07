@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGames } from "../../hooks/useGames";
 import NewGameSetting from "./setting";
+import { useLanguageContext } from "@/contexts/I18N";
 
 const formSchema = z.object({
   gameName: z.string().min(1, { message: "Required" }),
@@ -21,6 +22,7 @@ const formSchema = z.object({
 });
 
 const NewGameForm = () => {
+  const { t } = useLanguageContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -117,8 +119,8 @@ const NewGameForm = () => {
           name="gameName"
           render={({ field }) => (
             <NewGameSetting
-              text={"Name"}
-              description={"The name of the game"}
+              text={t("name")}
+              description={t("the_name_of_the_game")}
               field={field}
               type="search"
               required
@@ -137,8 +139,8 @@ const NewGameForm = () => {
           }}
           render={({ field }) => (
             <NewGameSetting
-              text={"Path"}
-              description={"The path to the game"}
+              text={t("path")}
+              description={t("the_path_to_the_game")}
               type="search"
               Button={
                 <Button
@@ -160,8 +162,8 @@ const NewGameForm = () => {
           name="gameId"
           render={({ field }) => (
             <NewGameSetting
-              text={"Id"}
-              description={"game id"}
+              text={t("id")}
+              description={t("game_id")}
               required
               field={field}
               type="search"
@@ -183,8 +185,8 @@ const NewGameForm = () => {
           name="gameIcon"
           render={({ field }) => (
             <NewGameSetting
-              text={"Icon"}
-              description={"The path/or url of the icon"}
+              text={t("icon")}
+              description={t("the_path_or_url_of_the_icon")}
               type="search"
               required
               Button={
@@ -206,8 +208,8 @@ const NewGameForm = () => {
           name="gameArgs"
           render={({ field }) => (
             <NewGameSetting
-              text={"Arguments"}
-              description={"The arguments to pass to the game"}
+              text={t("arguments")}
+              description={t("the_arguments_to_pass_to_the_game")}
               field={field}
             />
           )}
@@ -218,8 +220,8 @@ const NewGameForm = () => {
           name="gameCommand"
           render={({ field }) => (
             <NewGameSetting
-              text={"Command"}
-              description={"The command to run the game, e.g. wine"}
+              text={t("command")}
+              description={t("the_command_to_run_the_game_e_g_wine")}
               field={field}
             />
           )}
@@ -228,14 +230,14 @@ const NewGameForm = () => {
 
       <DialogFooter className="pt-2">
         <DialogClose>
-          <Button variant={"destructive"}>Cancel</Button>
+          <Button variant={"destructive"}>{t("cancel")}</Button>
         </DialogClose>
         <Button
           variant="secondary"
           onClick={form.handleSubmit(onSubmit)}
           disabled={loading}
         >
-          {loading ? "Adding..." : "Add Game"}
+          {loading ? `${t("adding")}...` : t("add_game")}
         </Button>
       </DialogFooter>
       {error && <p className="text-red-500 w-full text-right">{error}</p>}

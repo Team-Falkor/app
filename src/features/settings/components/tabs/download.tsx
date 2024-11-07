@@ -42,17 +42,17 @@ const TorrentSettings = () => {
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.torrent")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.download")}</SettingTitle>
 
       <SettingsContainer>
         <div className="flex flex-col gap-2">
           <div className="flex justify-between">
             <Input
-              placeholder={t("Settings.placeholders.downloadPath")}
+              placeholder={t("settings.settings.downloads_path")}
               type="text"
               value={downloadPath}
               onChange={(e) => setDownloadPath(e.target.value)}
-              aria-label="Torrent Downloads Path"
+              aria-label="Downloads Path"
             />
 
             <Button

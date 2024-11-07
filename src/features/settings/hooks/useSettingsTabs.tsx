@@ -2,7 +2,7 @@ import { Blocks, Code2, Cog, FileCog2, Settings2, UserCog } from "lucide-react";
 import { ComponentType, lazy, ReactElement, useState } from "react";
 
 const GeneralSettings = lazy(() => import("../components/tabs/general"));
-const TorrentSettings = lazy(() => import("../components/tabs/torrent"));
+const DownloadSettings = lazy(() => import("../components/tabs/download"));
 const PluginSettings = lazy(() => import("../components/tabs/plugins"));
 const AccountSettings = lazy(() => import("../components/tabs/accounts"));
 const MiscellaneousSettings = lazy(
@@ -29,9 +29,9 @@ export const useSettingsTabs = () => {
     },
     {
       icon: <FileCog2 />,
-      titleKey: "torrent_configuration",
+      titleKey: "download",
       index: 1,
-      component: TorrentSettings,
+      component: DownloadSettings,
     },
     {
       icon: <UserCog />,

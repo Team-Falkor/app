@@ -102,11 +102,11 @@ const PluginCard = ({
 
         {disabled ? (
           <Button variant={"secondary"} onClick={enablePlugin}>
-            Enable
+            {t("enable")}
           </Button>
         ) : (
           <Button variant={"destructive"} onClick={disablePlugin}>
-            Disable
+            {t("disable")}
           </Button>
         )}
       </div>

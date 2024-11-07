@@ -32,8 +32,6 @@ const SettingsSidebar = ({
 }: {
   settingsTabs: ReactElement[];
 }) => {
-  // const { t } = useLanguageContext();
-
   const { data, isPending, isError } = useQuery({
     queryKey: ["settings", "version"],
     queryFn: async () => {

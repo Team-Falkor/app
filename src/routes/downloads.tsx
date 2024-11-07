@@ -1,6 +1,7 @@
 import { DownloadData } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
 import FolderButton from "@/components/folderButton";
+import { useLanguageContext } from "@/contexts/I18N";
 import DownloadCard from "@/features/downloads/components/cards/download";
 import { DownloadCardLoading } from "@/features/downloads/components/cards/loading";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
@@ -14,6 +15,7 @@ export const Route = createFileRoute("/downloads")({
 });
 
 function Downloads() {
+  const { t } = useLanguageContext();
   const { downloading, getQueue, fetchDownloads } = UseDownloads();
   const {
     map: statsMap,
@@ -102,13 +104,15 @@ function Downloads() {
       {/* ACTION BAR */}
       <div className="w-full flex justify-between flex-row bg-background/50 border-b mb-5 p-4 py-2.5">
         <div className="flex flex-row items-center gap-2">
-          <h1 className="text-xl font-bold text-foreground">Downloads</h1>
+          <h1 className="text-xl font-bold text-foreground">
+            {t("sections.downloads")}
+          </h1>
         </div>
 
         <div>
           <FolderButton
             path="downloads"
-            tooltip="Open downloads folder"
+            tooltip={t("open_downloads_folder")}
             variant={"secondary"}
           />
         </div>
@@ -121,7 +125,7 @@ function Downloads() {
       ) : (
         <div className="w-full flex justify-center items-center h-60 bg-muted/50">
           <h1 className="text-xl font-bold text-foreground">
-            No downloads in progress
+            {t("no_downloads_in_progress")}
           </h1>
         </div>
       )}

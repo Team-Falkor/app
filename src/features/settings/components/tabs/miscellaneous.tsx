@@ -16,11 +16,11 @@ const MiscellaneousSettings = () => {
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.miscellaneous")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.miscellaneous")}</SettingTitle>
 
       <SettingsContainer>
         <Button variant={"secondary"} onClick={handleResetCache}>
-          Reset IGDB Cache
+          {t("settings.settings.reset-igdb-cache")}
         </Button>
       </SettingsContainer>
     </div>

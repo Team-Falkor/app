@@ -12,7 +12,7 @@ const GeneralSetting = () => {
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.general")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.general")}</SettingTitle>
 
       <SettingsContainer>
         <div className="flex items-center gap-2 mb-2">
@@ -27,12 +27,12 @@ const GeneralSetting = () => {
             }
           />
           <Label htmlFor="check-for-plugin-updates-on-startup">
-            Check for plugin updates on startup
+            {t("settings.settings.check-for-plugin-updates-on-startup")}
           </Label>
         </div>
 
         <div className="flex flex-col gap-4 justify-center items-start">
-          <h1 className="text-xl">{t("Settings.change_local.title")}</h1>
+          <h1 className="text-xl">{t("settings.settings.change_language")}</h1>
           <LanguageDropdown />
         </div>
       </SettingsContainer>

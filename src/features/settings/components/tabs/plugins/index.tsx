@@ -28,7 +28,7 @@ const PluginSettings = () => {
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.plugins")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.plugins")}</SettingTitle>
 
       <SettingsContainer>
         <div className="flex justify-between">

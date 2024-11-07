@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguageContext } from "@/contexts/I18N";
 import UsePlugins from "@/hooks/usePlugins";
 import { formatName } from "@/lib";
 import { Website } from "@/lib/api/igdb/types";
@@ -33,6 +34,7 @@ const DownloadDialog = ({
   title,
   game_data,
 }: DownloadDialogProps) => {
+  const { t } = useLanguageContext();
   const [selectedProvider, setSelectedProvider] = useState<SourceProvider>({
     value: "all",
     label: "All",
@@ -93,7 +95,7 @@ const DownloadDialog = ({
     return (
       <Button variant="secondary" disabled>
         <Download className="mr-2 size-4" />
-        Not Released
+        {t("not_released")}
       </Button>
     );
   }
@@ -107,12 +109,12 @@ const DownloadDialog = ({
           ) : (
             <Download className="mr-2 size-4" />
           )}
-          Download
+          {t("download")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-[700px] max-h-[540px] overflow-hidden">
         <DialogHeader className="flex flex-col w-full gap-6">
-          <DialogTitle>Select your source</DialogTitle>
+          <DialogTitle>{t("select_your_source")}</DialogTitle>
 
           <DownloadDialogProviders
             providers={providers}
@@ -122,7 +124,9 @@ const DownloadDialog = ({
         </DialogHeader>
         <div className="h-[300px] flex flex-col">
           <div className="bg-muted z-10">
-            <h4 className="p-3 text-sm font-medium leading-none">Sources</h4>
+            <h4 className="p-3 text-sm font-medium leading-none">
+              {t("sources")}
+            </h4>
           </div>
           <ScrollArea className="w-full border rounded-md flex-1">
             <ul className="flex flex-col gap-4 px-4 py-3 relative z-0">
@@ -139,7 +143,7 @@ const DownloadDialog = ({
                 <div className="flex items-center justify-center w-full gap-2">
                   <XCircle className="size-5" />
                   <p className="text-sm text-slate-300">
-                    No source providers found
+                    {t("no_sources_found")}
                   </p>
                 </div>
               )}
@@ -154,7 +158,7 @@ const DownloadDialog = ({
               getPlugins();
             }}
           >
-            Refresh Sources
+            {t("refresh_sources")}
           </Button>
         </div>
       </DialogContent>

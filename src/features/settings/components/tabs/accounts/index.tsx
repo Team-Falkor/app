@@ -13,7 +13,7 @@ const AccountSettings = () => {
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.accounts")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.accounts")}</SettingTitle>
 
       <SettingsContainer>
         <div className="flex gap-4">
@@ -30,7 +30,7 @@ const AccountSettings = () => {
               }
             />
             <Label htmlFor="use-accounts-for-downloads">
-              Use Account(s) to download
+              {t("settings.settings.accounts_use_for_downloads")}
             </Label>
           </div>
         </div>

@@ -42,7 +42,7 @@ const PluginsSort = ({
           </Button>
         </TooltipTrigger>
         <TooltipContent className="capitalize">
-          {t("show_installed_only")}
+          {!showEnabledOnly ? t("enabled_only") : t("all_plugins")}
         </TooltipContent>
       </Tooltip>
 
