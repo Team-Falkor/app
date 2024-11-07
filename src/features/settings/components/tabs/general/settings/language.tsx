@@ -8,16 +8,19 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useLanguageContext } from "@/contexts/I18N";
+import { useSettings } from "@/hooks";
 import { useMemo } from "react";
 
 const LanguageDropdown = () => {
   const { languages, i18n } = useLanguageContext();
+  const { settings } = useSettings();
 
   const currentLanguage = useMemo(() => {
-    return Object.entries(languages).find(
-      ([key, _value]) => key === i18n.language
-    );
-  }, [languages, i18n.language]);
+    return Object.entries(languages).find(([key, _value]) => {
+      if (settings.language) return key === settings.language;
+      return key === i18n.language;
+    });
+  }, [languages, settings.language, i18n.language]);
 
   return (
     <DropdownMenu>
