@@ -4,16 +4,19 @@ export interface PluginSetupJSON {
   id: string;
   version: string;
   config: false | PluginConfig;
-  "multiple-choice": boolean;
+  multiple_choice: boolean;
   name: string;
   description: string;
   logo: string;
   banner?: string;
   api_url: string;
-  author?: {
-    name?: string;
-    url?: string;
-  };
+  setup_path: string;
+  author?: PluginSetupJSONAuthor;
+}
+
+export interface PluginSetupJSONAuthor {
+  name?: string;
+  url?: string;
 }
 
 export type PluginSetupJSONDisabled = PluginSetupJSON & {

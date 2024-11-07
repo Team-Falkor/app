@@ -3,7 +3,6 @@ name: build
 on:
   push:
     branches:
-      - release
       - testing
 
 jobs:
@@ -22,43 +21,36 @@ jobs:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-      - name: Cache Bun dependencies
-        uses: actions/cache@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
-          path: |
-            ~/.bun
-            ~/.cache/bun
-            ~/.bun/cache
-          key: ${{ runner.os }}-bun-${{ hashFiles('**/bun.lock') }}
-          restore-keys: ${{ runner.os }}-bun-
+          node-version: 22
+          cache: yarn
 
-      - name: install bun
-        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: yarn install
 
-      - name: install dependencies
-        run: bun install
-
-      - name: Check Environment Variables
-        run: |
-          [ -z "$VITE_TWITCH_CLIENT_ID" ] && echo "VITE_TWITCH_CLIENT_ID not set" && exit 1
-          [ -z "$VITE_TWITCH_CLIENT_SECRET" ] && echo "VITE_TWITCH_CLIENT_SECRET not set" && exit 1
-          [ -z "$VITE_ITAD_API_KEY" ] && echo "VITE_ITAD_API_KEY not set" && exit 1
-          [ -z "$VITE_STEAMGRIDDB_API_KEY" ] && echo "VITE_STEAMGRIDDB_API_KEY not set" && exit 1
-          [ -z "$VITE_RD_CLIENT_ID" ] && echo "VITE_RD_CLIENT_ID not set" && exit 1
-          echo "All necessary environment variables are set."
-
-      - name: build linux
+      - name: Build on Linux
         if: matrix.os == 'ubuntu-latest'
         run: |
           sudo apt-get update
           sudo apt-get install -y libarchive-tools fakeroot dpkg snapd flatpak flatpak-builder rpm
           sudo ln -s /snap/bin/snapcraft /usr/local/bin/snapcraft
           sudo snap install snapcraft --classic
-          bun run prebuild && bun run build:linux
+          yarn run prebuild && yarn run build:linux
 
-      - name: build windows
+      - name: Build on Windows
         if: matrix.os == 'windows-latest'
-        run: bun run prebuild && bun run build:win
+        run: yarn run prebuild && yarn run build:win
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.os }}
+          path: |
+            release/**
+            dist/**
+            dist-electron/**

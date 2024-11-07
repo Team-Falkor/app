@@ -16,7 +16,7 @@ function Library() {
       <div className="flex flex-col w-full h-full gap-10">
         <div className="flex flex-col w-full gap-4">
           <h3 className="pb-2 font-mono text-lg font-medium leading-6">
-            {t("continue_playing")}
+            {t("sections.continue_playing")}
           </h3>
 
           <ContinuePlaying />

@@ -1,6 +1,6 @@
 import { igdb } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import DefaultCard from "./cards/defaultCard";
 import GenericRowSkeleton from "./skeletons/genericRow";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
@@ -19,13 +19,13 @@ const GenericRow = ({
   id,
 }: GenericRowProps) => {
   // Memoize the fetcher function to prevent unnecessary re-creations
-  const fetcher = useCallback(async () => {
+  const fetcher = async () => {
     const data = await igdb[dataToFetch]();
     return data;
-  }, [dataToFetch]);
+  };
 
   const { data, isPending, error } = useQuery({
-    queryKey: fetchKey,
+    queryKey: ["igdb", ...fetchKey],
     queryFn: fetcher,
   });
 
@@ -51,12 +51,7 @@ const GenericRow = ({
             <CarouselItem
               key={game.id}
               className="
-              basis-1/2
-              sm:basis-1/3
-              md:basis-1/4
-              lg:basis-1/5
-              xl:basis-[17.77%]
-              2xl:basis-[13.5%]
+              basis-auto
               px-2
             "
               id={`carousel-item`}

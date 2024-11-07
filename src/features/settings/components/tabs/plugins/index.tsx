@@ -15,11 +15,7 @@ import AddPluginModal from "./addPluginModal";
 import PluginDisplay from "./display";
 import PluginsSort from "./sort";
 
-export type SortBy =
-  | "alphabetic-asc"
-  | "alphabetic-desc"
-  | "popularity-asc"
-  | "popularity-desc";
+export type SortBy = "alphabetic-asc" | "alphabetic-desc";
 
 const PluginSettings = () => {
   const { t } = useLanguageContext();
@@ -27,10 +23,12 @@ const PluginSettings = () => {
 
   const [showRows, setShowRows] = useState(true);
   const [sortBy, setSortBy] = useState<SortBy>("alphabetic-asc");
+  const [showEnabledOnly, setShowEnabledOnly] = useState(false);
+  const [search, setSearch] = useState("");
 
   return (
     <div>
-      <SettingTitle>{t("Settings.titles.plugins")}</SettingTitle>
+      <SettingTitle>{t("settings.titles.plugins")}</SettingTitle>
 
       <SettingsContainer>
         <div className="flex justify-between">
@@ -39,6 +37,8 @@ const PluginSettings = () => {
               <Input
                 placeholder={t("what_plugin_are_you_looking_for")}
                 type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
               />
             </div>
 
@@ -63,6 +63,8 @@ const PluginSettings = () => {
             setShowRows={setShowRows}
             sortBy={sortBy}
             setSortBy={setSortBy}
+            setShowEnabledOnly={setShowEnabledOnly}
+            showEnabledOnly={showEnabledOnly}
           />
         </div>
 
@@ -70,6 +72,8 @@ const PluginSettings = () => {
           showRows={showRows}
           setShowRows={setShowRows}
           sortBy={sortBy}
+          showEnabledOnly={showEnabledOnly}
+          search={search}
         />
       </SettingsContainer>
     </div>

@@ -1,23 +1,37 @@
+import { DownloadData } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
 import { Button } from "@/components/ui/button";
 import { UseDownloadAction } from "@/features/downloads/hooks/useDownloadAction";
+import { isTorrent } from "@/lib";
 import { Pause, Play } from "lucide-react";
 import { MdStop } from "react-icons/md";
 
-const DownloadCardActions = (stats: ITorrent) => {
-  const { pauseDownload, startDownload, stopDownload, status } =
-    UseDownloadAction(stats?.infoHash);
+interface DownloadCardActionsProps {
+  stats: ITorrent | DownloadData;
+  deleteStats: (id: string) => void;
+  isPaused?: boolean;
+}
 
-  if (status === "deleted" || !stats) return null;
+const DownloadCardActions = ({
+  stats,
+  deleteStats,
+  isPaused,
+}: DownloadCardActionsProps) => {
+  const isTorrentType = isTorrent(stats);
+
+  const { pauseDownload, startDownload, stopDownload, status } =
+    UseDownloadAction(isTorrentType ? stats.infoHash : stats.id, isTorrentType);
+
+  if (status === "stopped" || !stats) return null;
 
   return (
     <div className="flex flex-row gap-4">
-      {status === "paused" || stats?.paused ? (
+      {isPaused ? (
         <Button
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={startDownload}
+          onClick={startDownload ?? undefined}
         >
           <Play fill="currentColor" />
           Start Download
@@ -27,7 +41,7 @@ const DownloadCardActions = (stats: ITorrent) => {
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={pauseDownload}
+          onClick={pauseDownload ?? undefined}
         >
           <Pause fill="currentColor" />
           Pause Download
@@ -38,7 +52,10 @@ const DownloadCardActions = (stats: ITorrent) => {
         size="icon"
         variant="destructive"
         className="p-0.5"
-        onClick={stopDownload}
+        onClick={() => {
+          stopDownload();
+          deleteStats(isTorrentType ? stats.infoHash : stats.id);
+        }}
       >
         <MdStop size="fill" />
       </Button>

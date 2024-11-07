@@ -18,7 +18,7 @@ const LogDisplay = () => {
         />
 
         <Label htmlFor="enable-dev-console">
-          {t("Settings.developer_enable_console.title")}
+          {t("settings.settings.enable_developer_console")}
         </Label>
       </div>
 

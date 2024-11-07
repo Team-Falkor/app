@@ -9,10 +9,14 @@ const NavBarBottom = () => {
     <div className="grid gap-3.5">
       <NavItem
         href="/downloads"
-        title={t("downloads")}
+        title={t("sections.downloads")}
         icon={<DownloadIcon />}
       />
-      <NavItem href="/settings" title={t("settings")} icon={<Settings2 />} />
+      <NavItem
+        href="/settings"
+        title={t("sections.settings")}
+        icon={<Settings2 />}
+      />
     </div>
   );
 };

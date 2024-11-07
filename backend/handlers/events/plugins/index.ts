@@ -1,3 +1,4 @@
+import "./check-for-updates";
 import "./delete-plugin";
 import "./disable-plugin";
 import "./enable-plugin";
@@ -6,3 +7,5 @@ import "./get-plugin";
 import "./install-plugin";
 import "./list-plugins";
 import "./search-plugins";
+import "./update-all";
+import "./update-plugin";

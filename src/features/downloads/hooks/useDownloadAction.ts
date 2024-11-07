@@ -1,38 +1,75 @@
+import { DownloadStatus } from "@/@types";
+import { ITorrentGameData } from "@/@types/torrent";
 import { invoke } from "@/lib";
 import { useState } from "react";
+import { toast } from "sonner";
+import UseDownloads from "./useDownloads";
 
-export const UseDownloadAction = (infoHash?: string) => {
-  const [status, setStatus] = useState<"paused" | "started" | "deleted" | null>(
-    null
-  );
+interface DownloadPauseReturn {
+  message: string;
+  error: boolean;
+  data: {
+    id: string;
+    status: DownloadStatus;
+    game_data: ITorrentGameData;
+  };
+}
+
+export const UseDownloadAction = (id?: string, isTorrent: boolean = false) => {
+  const { fetchDownloads } = UseDownloads();
+  const [status, setStatus] = useState<DownloadStatus | null>(null);
 
   const pauseDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:pause-torrent", infoHash);
+    if (!id) return null;
 
-    if (data.error) return;
+    const data = isTorrent
+      ? await invoke<DownloadPauseReturn, string>("torrent:pause-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:pause", id);
+
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
 
     setStatus("paused");
+    fetchDownloads();
     return data;
   };
 
   const startDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:start-torrent", infoHash);
+    if (!id) return null;
 
-    if (data.error) return;
+    const data = isTorrent
+      ? await invoke<DownloadPauseReturn, string>("torrent:start-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:start", id);
 
-    setStatus("started");
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
+
+    setStatus("downloading");
+    fetchDownloads();
     return data;
   };
 
   const stopDownload = async () => {
-    if (!infoHash) return null;
-    const data = await invoke<any, string>("torrent:delete-torrent", infoHash);
+    if (!id) return null;
 
-    if (data.error) return;
+    const data = isTorrent
+      ? await invoke<DownloadPauseReturn, string>("torrent:delete-torrent", id)
+      : await invoke<DownloadPauseReturn, string>("download:stop", id);
 
-    setStatus("deleted");
+    if (!data) return;
+    if (data.error) {
+      toast.error(data.message);
+      return;
+    }
+
+    setStatus("stopped");
+    fetchDownloads();
     return data;
   };
 

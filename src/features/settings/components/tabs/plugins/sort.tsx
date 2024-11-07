@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useLanguageContext } from "@/contexts/I18N";
 import { ArrowDownAZ, ArrowUpAZ, Check, Columns2, Rows3 } from "lucide-react";
-import { Dispatch, FC, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { SortBy } from ".";
 
 interface PluginsSortProps {
@@ -14,26 +14,35 @@ interface PluginsSortProps {
   setShowRows: (showRows: boolean) => void;
   sortBy: SortBy;
   setSortBy: Dispatch<SetStateAction<SortBy>>;
+
+  setShowEnabledOnly: Dispatch<SetStateAction<boolean>>;
+  showEnabledOnly: boolean;
 }
 
-const PluginsSort: FC<PluginsSortProps> = ({
+const PluginsSort = ({
   setShowRows,
   showRows,
   setSortBy,
   sortBy,
-}) => {
+  setShowEnabledOnly,
+  showEnabledOnly,
+}: PluginsSortProps) => {
   const { t } = useLanguageContext();
 
   return (
     <div className="flex gap-2">
       <Tooltip>
         <TooltipTrigger>
-          <Button variant={"ghost"} size={"icon"}>
+          <Button
+            variant={showEnabledOnly ? "secondary" : "ghost"}
+            size={"icon"}
+            onClick={() => setShowEnabledOnly(!showEnabledOnly)}
+          >
             <Check />
           </Button>
         </TooltipTrigger>
         <TooltipContent className="capitalize">
-          {t("show_installed_only")}
+          {!showEnabledOnly ? t("enabled_only") : t("all_plugins")}
         </TooltipContent>
       </Tooltip>
 

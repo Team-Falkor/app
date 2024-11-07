@@ -1,8 +1,10 @@
+import { PluginSetupJSONDisabled } from "@/@types";
 import PluginCard from "@/components/cards/pluginCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import UsePlugins from "@/hooks/usePlugins";
 import { cn } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
+import { useCallback, useMemo } from "react";
 import { SortBy } from ".";
 
 interface Props {
@@ -10,10 +12,17 @@ interface Props {
   setShowRows: (showRows: boolean) => void;
 
   sortBy: SortBy;
+  showEnabledOnly: boolean;
+  search: string;
 }
 
-const PluginDisplay = ({ showRows }: Props) => {
-  const { getPlugins } = UsePlugins();
+const PluginDisplay = ({
+  showRows,
+  sortBy,
+  showEnabledOnly,
+  search,
+}: Props) => {
+  const { getPlugins, needsUpdate } = UsePlugins();
 
   const { data, isPending, error } = useQuery({
     queryKey: ["plugins", "all"],
@@ -23,6 +32,37 @@ const PluginDisplay = ({ showRows }: Props) => {
       return plugins?.data;
     },
   });
+
+  const onSearch = useCallback(
+    (search: string, toSearch?: PluginSetupJSONDisabled[] | null) => {
+      const realData = toSearch ?? data;
+      if (!search) return realData;
+      return realData?.filter(
+        (plugin) =>
+          plugin?.name?.toLowerCase()?.includes(search?.toLowerCase()) ||
+          plugin?.id?.toLowerCase()?.includes(search?.toLowerCase())
+      );
+    },
+    [data]
+  );
+
+  const sortedPlugins = useMemo(() => {
+    let sorted = data;
+    if (showEnabledOnly) {
+      sorted = sorted?.filter((plugin) => !plugin?.disabled);
+    }
+
+    if (sortBy === "alphabetic-asc") {
+      sorted = sorted?.sort((a, b) => a?.name?.localeCompare(b?.name));
+    } else if (sortBy === "alphabetic-desc") {
+      sorted = sorted?.sort((a, b) => b?.name?.localeCompare(a?.name));
+    }
+
+    if (search?.length > 0) {
+      sorted = onSearch(search, sorted);
+    }
+    return sorted;
+  }, [data, onSearch, search, showEnabledOnly, sortBy]);
 
   if (isPending) return <div>Loading...</div>;
   if (error) return <div>Error</div>;
@@ -36,11 +76,12 @@ const PluginDisplay = ({ showRows }: Props) => {
           {
             "grid grid-cols-2 gap-4": showRows,
             "grid grid-cols-1 gap-4": !showRows,
+            flex: !sortedPlugins?.length,
           },
         ])}
       >
-        {!!data?.length &&
-          data?.map((plugin: any) => (
+        {sortedPlugins?.length ? (
+          sortedPlugins?.map((plugin: PluginSetupJSONDisabled) => (
             <PluginCard
               key={plugin.id}
               id={plugin.id}
@@ -51,8 +92,17 @@ const PluginDisplay = ({ showRows }: Props) => {
               banner={plugin.banner}
               installed={true}
               disabled={plugin.disabled}
+              author={plugin.author}
+              needsUpdate={!!needsUpdate?.get(plugin.id)}
             />
-          ))}
+          ))
+        ) : (
+          <div className="w-full flex items-center justify-start py-2">
+            <p className="text-left text-lg w-full font-bold">
+              {search?.length ? `No results for "${search}"` : "No plugins"}
+            </p>
+          </div>
+        )}
       </div>
     </ScrollArea>
   );

@@ -1,25 +1,23 @@
-import { InfoItadProps, ItemDownload } from "@/@types";
+import { InfoItadProps, ItemDownload, SourceProvider } from "@/@types";
+import { ITorrentGameData } from "@/@types/torrent";
 import Spinner from "@/components/spinner";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Website } from "@/lib/api/igdb/types";
-
-import { ITorrentGameData } from "@/@types/torrent";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useLanguageContext } from "@/contexts/I18N";
 import UsePlugins from "@/hooks/usePlugins";
 import { formatName } from "@/lib";
-import { Separator } from "@radix-ui/react-separator";
+import { Website } from "@/lib/api/igdb/types";
 import { useQuery } from "@tanstack/react-query";
 import { Download, XCircle } from "lucide-react";
 import { useMemo, useState } from "react";
-import DownloadDialogPopover from "./popover";
+import DownloadDialogProviders from "./providers";
 import DownloadDialogSources from "./sources";
 
 interface DownloadDialogProps extends InfoItadProps {
@@ -29,9 +27,6 @@ interface DownloadDialogProps extends InfoItadProps {
   game_data: ITorrentGameData;
 }
 
-// Centralized provider management
-const baseProviders = [{ value: "itad", label: "IsThereAnyDeal" }];
-
 const DownloadDialog = ({
   isReleased,
   itadData,
@@ -39,120 +34,131 @@ const DownloadDialog = ({
   title,
   game_data,
 }: DownloadDialogProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedProvider, setSelectedProvider] = useState(baseProviders[0]);
-  const { searchAllPlugins, plugins, getPlugins } = UsePlugins();
+  const { t } = useLanguageContext();
+  const [selectedProvider, setSelectedProvider] = useState<SourceProvider>({
+    value: "all",
+    label: "All",
+  });
+
+  const { searchAllPlugins, getPlugins } = UsePlugins();
 
   const itadSources: ItemDownload[] = useMemo(
-    () => [
-      {
-        name: "itad",
-        sources: itadData ?? [],
-      },
-    ],
+    () => [{ id: "itad", name: "IsThereAnyDeal", sources: itadData ?? [] }],
     [itadData]
   );
 
   const {
-    data: sources,
-    isPending,
+    data: pluginSources,
+    isFetching: pluginLoading,
     refetch,
   } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
-      console.log("getting sources");
       const plugins = await searchAllPlugins(formatName(title));
-      const pluginSources: ItemDownload[] = plugins.filter((plugin) => {
-        return plugin.sources.length > 0;
-      });
-
-      return pluginSources;
+      return plugins.filter((plugin) => plugin.sources.length > 0);
     },
     enabled: isReleased,
   });
 
-  const isLoading = itadPending || isPending;
+  const allSources = useMemo(
+    () => [...itadSources, ...(pluginSources ?? [])],
+    [itadSources, pluginSources]
+  );
 
-  // Early return if not released
+  const providers = useMemo((): Array<SourceProvider> => {
+    return [
+      {
+        value: "all",
+        label: "All",
+      },
+      ...allSources
+        .filter((source) => source.sources.length > 0)
+        .map((source) => ({
+          value: source.id ?? "unknown",
+          label: source.name ?? "Unknown",
+        }))
+        .filter((provider) => provider.value !== "unknown"),
+    ];
+  }, [allSources]);
+
+  const filteredSources = useMemo((): Array<ItemDownload> => {
+    if (selectedProvider.value === "all") return allSources;
+    const searchValue = selectedProvider.value.toLowerCase();
+    return allSources.filter((source) =>
+      source.id?.toLowerCase().includes(searchValue)
+    );
+  }, [allSources, selectedProvider]);
+
+  const isLoading = itadPending || pluginLoading;
+
   if (!isReleased) {
     return (
       <Button variant="secondary" disabled>
         <Download className="mr-2 size-4" />
-        Not Released
+        {t("not_released")}
       </Button>
     );
   }
 
   return (
     <Dialog>
-      <DialogTrigger>
+      <DialogTrigger asChild>
         <Button variant="secondary">
-          {!isLoading ? (
-            <Download className="mr-2 size-4" />
-          ) : (
+          {isLoading ? (
             <Spinner className="mr-2 size-4" />
+          ) : (
+            <Download className="mr-2 size-4" />
           )}
-          Download
+          {t("download")}
         </Button>
       </DialogTrigger>
-      <DialogContent>
-        <DialogHeader className="flex flex-col w-full gap-4">
-          <DialogTitle className="text-center">Select your source</DialogTitle>
-          <DialogDescription className="w-full mx-auto">
-            <DownloadDialogPopover
-              providers={[
-                ...baseProviders,
-                ...plugins.map((plugin) => ({
-                  value: plugin.id,
-                  label: plugin.name,
-                })),
-              ]}
-              selectedProvider={selectedProvider}
-              setSelectedProvider={setSelectedProvider}
-              isOpen={isOpen}
-              setIsOpen={setIsOpen}
-            />
-          </DialogDescription>
-        </DialogHeader>
-        <ScrollArea className="w-full border rounded-md h-72 mt-1">
-          <div className="pb-5">
-            <div className="sticky top-0 left-0 right-0 mb-3 bg-muted z-10">
-              <h4 className="p-3 pb-1 text-sm font-medium leading-none">
-                Sources
-              </h4>
-              <Separator orientation="horizontal" className="mt-2" />
-            </div>
+      <DialogContent className="max-w-[700px] max-h-[540px] overflow-hidden">
+        <DialogHeader className="flex flex-col w-full gap-6">
+          <DialogTitle>{t("select_your_source")}</DialogTitle>
 
-            <ul className="flex flex-col gap-4 p-4 py-0 relative z-0">
-              {!isLoading ? (
+          <DownloadDialogProviders
+            providers={providers}
+            selectedProvider={selectedProvider}
+            setSelectedProvider={setSelectedProvider}
+          />
+        </DialogHeader>
+        <div className="h-[300px] flex flex-col">
+          <div className="bg-muted z-10">
+            <h4 className="p-3 text-sm font-medium leading-none">
+              {t("sources")}
+            </h4>
+          </div>
+          <ScrollArea className="w-full border rounded-md flex-1">
+            <ul className="flex flex-col gap-4 px-4 py-3 relative z-0">
+              {isLoading ? (
+                <div className="flex items-center justify-center w-full gap-2">
+                  <Spinner />
+                </div>
+              ) : filteredSources.length > 0 ? (
                 <DownloadDialogSources
-                  sources={[...itadSources, ...(sources ?? [])]}
+                  sources={filteredSources}
                   game_data={game_data}
                 />
-              ) : isLoading && !itadPending ? (
-                <div className="flex flex-row items-center justify-center w-full gap-2">
-                  <Spinner /> {/* Loading indicator */}
-                </div>
               ) : (
-                <div className="flex flex-row items-center justify-center w-full gap-2">
+                <div className="flex items-center justify-center w-full gap-2">
                   <XCircle className="size-5" />
                   <p className="text-sm text-slate-300">
-                    No source providers found
+                    {t("no_sources_found")}
                   </p>
                 </div>
               )}
             </ul>
-          </div>
-        </ScrollArea>
+          </ScrollArea>
+        </div>
         <div className="w-full flex justify-end items-center">
           <Button
-            variant={"secondary"}
+            variant="secondary"
             onClick={() => {
               refetch();
               getPlugins();
             }}
           >
-            Refresh Sources
+            {t("refresh_sources")}
           </Button>
         </div>
       </DialogContent>

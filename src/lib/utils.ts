@@ -121,7 +121,7 @@ export const openLink = (url: string) =>
  * @param args The arguments to pass to the invoked method.
  * @returns The result of the invocation as `T` or `null`.
  */
-export const invoke = async <T, A>(
+export const invoke = async <T, A = any>(
   channel: string,
   ...args: A[]
 ): Promise<T | null> => {
@@ -139,4 +139,9 @@ export const convertBytesToHumanReadable = (bytes: number): string => {
   const i = Math.floor(Math.log(bytes) / Math.log(1024));
   const value = bytes / Math.pow(1024, i);
   return `${value.toFixed(2)} ${sizes[i]}`;
+};
+
+export const getInfoHashFromMagnet = (magnetURI: string): string | null => {
+  const match = magnetURI.match(/xt=urn:btih:([a-fA-F0-9]{40,})/);
+  return match ? match[1] : null;
 };

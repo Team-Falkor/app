@@ -5,65 +5,89 @@ import { ApiResponse, IGDBReturnDataType, InfoReturn } from "./types";
 
 const { VITE_TWITCH_CLIENT_ID, VITE_TWITCH_CLIENT_SECRET } = import.meta.env;
 
+type TokenType = { accessToken: string | null; expiresIn: number };
+
 class IGDB extends BaseApi {
   private clientId: string = VITE_TWITCH_CLIENT_ID ?? "";
   private clientSecret: string = VITE_TWITCH_CLIENT_SECRET ?? "";
   private clientAccessToken?: string;
-  private tokenExpiration: number = 0;
-
   private gettingAccessToken = false;
 
-  async getAccessToken() {
-    if (this.gettingAccessToken) return;
-    if (this.clientAccessToken && Date.now() < this.tokenExpiration)
-      return this.clientAccessToken;
+  private getCachedToken(): TokenType {
+    const token = localStorage.getItem("igdb_access_token");
+    const expiration = Number(
+      localStorage.getItem("igdb_token_expiration") ?? "0"
+    );
 
-    this.gettingAccessToken = true;
-
-    // Check for an access token in local storage and check if it's still valid
-    const accessToken = localStorage.getItem("igdb_access_token");
-    const tokenExpiration = localStorage.getItem("igdb_token_expiration");
-
-    if (accessToken && tokenExpiration) {
-      if (Date.now() > Number(tokenExpiration)) {
-        localStorage.removeItem("igdb_access_token");
-        localStorage.removeItem("igdb_token_expiration");
-      } else {
-        console.log("Using cached access token");
-
-        this.clientAccessToken = accessToken;
-        this.tokenExpiration = Number(tokenExpiration);
-        this.gettingAccessToken = false;
-        return this.clientAccessToken;
-      }
-    }
-
-    const response = await (
-      await fetch(
-        `https://id.twitch.tv/oauth2/token?client_id=${this.clientId}&client_secret=${this.clientSecret}&grant_type=client_credentials`,
-        { method: "POST" }
-      )
-    ).json();
-
-    console.log(`Getting a new access token`);
-
-    const access_token = response.access_token;
-    const token_expiration = Date.now() + response.expires_in * 1000;
-
-    this.gettingAccessToken = false;
-    this.clientAccessToken = access_token;
-    this.tokenExpiration = token_expiration; // Convert to milliseconds
-
-    // SAVE TO LOCAL STORAGE
-    localStorage.setItem("igdb_access_token", access_token);
-    localStorage.setItem("igdb_token_expiration", token_expiration.toString());
-
-    return this.clientAccessToken;
+    return {
+      accessToken: token ?? null,
+      expiresIn: expiration,
+    };
   }
 
-  checkAndRenewToken = async () =>
-    !!(Date.now() >= this.tokenExpiration - 100) &&
-    (await this.getAccessToken());
+  private async getNewToken(): Promise<TokenType> {
+    try {
+      const response = await fetch(
+        `https://id.twitch.tv/oauth2/token?client_id=${this.clientId}&client_secret=${this.clientSecret}&grant_type=client_credentials`,
+        { method: "POST" }
+      );
+      const data = await response.json();
+
+      const token = data.access_token;
+      const expiration = Date.now() + data.expires_in;
+
+      localStorage.setItem("igdb_access_token", token);
+      localStorage.setItem("igdb_token_expiration", expiration.toString());
+
+      this.clientAccessToken = token;
+
+      return { accessToken: token, expiresIn: expiration };
+    } catch (error) {
+      console.error("Error fetching new token:", error);
+      return { accessToken: null, expiresIn: 0 };
+    }
+  }
+
+  private hasTokenExpired(expiration: number): boolean {
+    return expiration < Date.now() - 100;
+  }
+
+  private async renewToken(): Promise<TokenType> {
+    const newToken = await this.getNewToken();
+    return newToken;
+  }
+
+  async getAccessToken(): Promise<TokenType | void> {
+    if (this.gettingAccessToken) return;
+    this.gettingAccessToken = true;
+
+    const fetchToken = async (): Promise<TokenType | void> => {
+      const cachedToken = this.getCachedToken();
+
+      const hasExpired = this.hasTokenExpired(cachedToken.expiresIn);
+
+      if (cachedToken.accessToken && !hasExpired) {
+        console.log("[IGDB] Using cached token");
+        this.clientAccessToken = cachedToken.accessToken;
+        return cachedToken;
+      }
+
+      console.log("[IGDB] Fetching new token");
+      const newToken = cachedToken.accessToken
+        ? await this.renewToken()
+        : await this.getNewToken();
+
+      this.gettingAccessToken = false;
+      return newToken;
+    };
+
+    try {
+      await fetchToken();
+      return;
+    } finally {
+      this.gettingAccessToken = false;
+    }
+  }
 
   async search(query: string): Promise<IGDBReturnDataType[]> {
     const realQuery = query;
@@ -74,6 +98,7 @@ class IGDB extends BaseApi {
 
     const data = await this.request<IGDBReturnDataType[]>("games", {
       search: realQuery,
+      where: `platforms.abbreviation = "PC" & category = 0 & version_parent = null`,
     });
 
     return data;
@@ -138,7 +163,7 @@ class IGDB extends BaseApi {
     }
 
     try {
-      await this.checkAndRenewToken();
+      await this.getAccessToken();
 
       // Construct the request body
       let requestBody = "";

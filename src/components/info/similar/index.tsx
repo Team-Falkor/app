@@ -44,11 +44,7 @@ const SimilarGames = ({ data }: SimilarGamesProps) => {
             <CarouselItem
               key={game.id}
               className="
-              basis-1/2
-              sm:basis-1/3
-              md:basis-1/4
-              lg:basis-1/5
-              2xl:basis-[16.7%]
+              basis-auto
               px-2"
             >
               <DefaultCard key={game.id} {...game} />

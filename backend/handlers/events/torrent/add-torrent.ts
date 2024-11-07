@@ -1,6 +1,7 @@
-import { ITorrentGameData } from "@/@types/torrent";
+import { ITorrent, ITorrentGameData } from "@/@types/torrent";
 import type { IpcMainInvokeEvent } from "electron";
 import { Torrent } from "webtorrent";
+import { logger } from "../../../handlers/logging";
 import {
   client,
   combineTorrentData,
@@ -26,23 +27,32 @@ const handleTorrentProgress = (
 ) => {
   const now = Date.now();
 
-  if (!lastUpdateTime || now - lastUpdateTime < THROTTLE_INTERVAL) return;
+  if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
+    torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
-  torrents.set(game_data.id, combineTorrentData(torrent, game_data));
+    const reutrn_data: ITorrent = {
+      infoHash: torrent.infoHash,
+      name: torrent.name,
+      progress: torrent.progress,
+      numPeers: torrent.numPeers,
+      downloadSpeed: torrent.downloadSpeed,
+      uploadSpeed: torrent.uploadSpeed,
+      totalSize: torrent.length,
+      timeRemaining: torrent.timeRemaining,
+      paused: torrent.paused,
+      status: torrent.done
+        ? "completed"
+        : torrent.paused
+          ? "paused"
+          : "downloading",
+      path: torrent.path,
+      game_data,
+    };
 
-  event.sender.send(TORRENT_PROGRESS_EVENT, {
-    infoHash: torrent.infoHash,
-    name: torrent.name,
-    progress: torrent.progress,
-    numPeers: torrent.numPeers,
-    downloadSpeed: torrent.downloadSpeed,
-    uploadSpeed: torrent.uploadSpeed,
-    totalSize: torrent.length,
-    timeRemaining: torrent.timeRemaining,
-    game_data,
-  });
+    event.sender.send(TORRENT_PROGRESS_EVENT, reutrn_data);
 
-  lastUpdateTime = now;
+    lastUpdateTime = now;
+  }
 };
 
 // Handle torrent completion
@@ -77,18 +87,27 @@ const addTorrent = async (
 
         torrents.set(game_data.id, combineTorrentData(torrent, game_data));
 
+        const reutrn_data: ITorrent = {
+          infoHash: torrent.infoHash,
+          name: torrent.name,
+          progress: torrent.progress,
+          numPeers: torrent.numPeers,
+          downloadSpeed: torrent.downloadSpeed,
+          uploadSpeed: torrent.uploadSpeed,
+          totalSize: torrent.length,
+          timeRemaining: torrent.timeRemaining,
+          paused: torrent.paused,
+          status: torrent.done
+            ? "completed"
+            : torrent.paused
+              ? "paused"
+              : "downloading",
+          path: torrent.path,
+          game_data,
+        };
+
         torrent.on("metadata", () => {
-          event.sender.send("torrent:metadata", {
-            infoHash: torrent.infoHash,
-            name: torrent.name,
-            progress: torrent.progress,
-            numPeers: torrent.numPeers,
-            downloadSpeed: torrent.downloadSpeed,
-            uploadSpeed: torrent.uploadSpeed,
-            totalSize: torrent.length,
-            timeRemaining: torrent.timeRemaining,
-            game_data,
-          });
+          event.sender.send("torrent:metadata", reutrn_data);
         });
 
         torrent.on("warning", (message) =>
@@ -98,12 +117,19 @@ const addTorrent = async (
           })
         );
 
-        torrent.on("error", (error) =>
-          event.sender.send("torrent:error", {
+        torrent.on("error", (error) => {
+          logger.log({
+            id: Math.floor(Date.now() / 1000),
+            message: `Failed to download ${torrent.name}: ${error}`,
+            timestamp: new Date().toISOString(),
+            type: "error",
+          });
+
+          return event.sender.send("torrent:error", {
             message: error,
             infoHash: torrent.infoHash,
-          })
-        );
+          });
+        });
 
         torrent.once("ready", () => {
           event.sender.send("torrent:ready", {
@@ -139,6 +165,13 @@ const addTorrent = async (
     event.sender.send("torrent:error", {
       message: `Error adding torrent: ${torrentId}`,
       error: (error as Error).message,
+    });
+
+    logger.log({
+      id: Math.floor(Date.now() / 1000),
+      message: `Failed to add torrent: ${torrentId}`,
+      timestamp: new Date().toISOString(),
+      type: "error",
     });
   }
 };

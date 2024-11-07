@@ -13,7 +13,7 @@ const InfoBottom = (props: InfoReturn & InfoProps) => {
 
       <GameMedia {...props} />
 
-      <PcSpecs {...props.steam?.data.pc_requirements} />
+      <PcSpecs {...props.steam?.data?.pc_requirements} />
     </div>
   );
 };

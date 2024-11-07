@@ -68,10 +68,7 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
         <Carousel>
           <CarouselContent>
             {data.map((game) => (
-              <CarouselItem
-                className="md:basis-[12%] basis-1/6 2xl:basis-[13.3%] xl:basis-[18%]"
-                key={game.game_id}
-              >
+              <CarouselItem className="basis-auto" key={game.game_id}>
                 <ListCard {...game} />
               </CarouselItem>
             ))}

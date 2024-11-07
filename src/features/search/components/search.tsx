@@ -17,7 +17,7 @@ const Search = ({
   const { results, loading } = useSearch(searchTerm);
 
   return (
-    <PopoverContent side="right" className="p-0 w-80">
+    <PopoverContent side="right" className="p-0 w-96">
       <div className="grid gap-4">
         <div className="w-full px-4 pt-4">
           <Input

@@ -1,8 +1,16 @@
-import { app, BrowserWindow, ipcMain, shell } from "electron";
+import {
+  app,
+  BrowserWindow,
+  ipcMain,
+  net,
+  protocol,
+  screen,
+  shell,
+} from "electron";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
+import url, { fileURLToPath } from "node:url";
 
-let win: BrowserWindow | null;
+export let win: BrowserWindow | null;
 
 // DEEP LINKING
 const deepLinkName = "falkor";
@@ -33,6 +41,10 @@ if (!gotTheLock) {
 
   app.whenReady().then(async () => {
     createWindow();
+    protocol.handle("local", (request) => {
+      const filePath = request.url.slice("local:".length);
+      return net.fetch(url.pathToFileURL(decodeURI(filePath)).toString());
+    });
 
     await import("./handlers/events");
 
@@ -72,28 +84,28 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
  */
 
 function createWindow() {
-  // TODO: find better way of disabling cors
+  const { width: screenWidth, height: screenHeight } =
+    screen.getPrimaryDisplay().workAreaSize;
+
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload: path.join(__dirname, "preload.mjs"),
     },
     autoHideMenuBar: true,
-    minWidth: 1280,
-    minHeight: 800,
-    height: 800,
-    width: 1280,
+    minWidth: 1000,
+    minHeight: 600,
+
+    // Set the initial width and height based on available screen size
+    width: Math.min(screenWidth * 0.8, 1000), // 80% of screen width, max 1000
+    height: Math.min(screenHeight * 0.8, 600), // 80% of screen height, max 600
+
+    resizable: true,
   });
 
-  ipcMain.handle("request", async (_e, url: string, options?: RequestInit) => {
-    try {
-      const response = await fetch(url, options);
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      return { success: false, error: (error as Error).message };
-    }
-  });
+  // if (!isDev()) {
+  //   win.removeMenu();
+  // }
 
   ipcMain.handle("openExternal", async (_e, url: string) => {
     await shell.openExternal(url);

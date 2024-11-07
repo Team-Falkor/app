@@ -15,7 +15,7 @@ export class BaseApi {
     try {
       const data = await window.ipcRenderer.invoke("request", url, options);
 
-      return data as T;
+      return data?.data as T;
     } catch (error) {
       console.error(error);
       throw new Error(`Failed to fetch ${url}: ${(error as Error).message}`);
