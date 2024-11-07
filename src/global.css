@@ -82,4 +82,8 @@
   ::-webkit-scrollbar-thumb:hover {
     @apply bg-muted-foreground transition-all;
   }
+
+  #titlebar {
+    -webkit-app-region: drag;
+  }
 }

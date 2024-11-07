@@ -95,6 +95,7 @@ function createWindow() {
     autoHideMenuBar: true,
     minWidth: 1000,
     minHeight: 600,
+    frame: false,
 
     // Set the initial width and height based on available screen size
     width: Math.min(screenWidth * 0.8, 1000), // 80% of screen width, max 1000

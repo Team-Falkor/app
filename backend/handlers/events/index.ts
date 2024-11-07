@@ -1,3 +1,4 @@
+import "./app";
 import "./db";
 import "./download";
 import "./generic";
@@ -7,3 +8,4 @@ import "./plugins";
 import "./settings";
 import "./themes";
 import "./torrent";
+import "./updater";
