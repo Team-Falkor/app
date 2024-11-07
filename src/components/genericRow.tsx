@@ -1,6 +1,6 @@
 import { igdb } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
-import { useCallback, useMemo } from "react";
+import { useMemo } from "react";
 import DefaultCard from "./cards/defaultCard";
 import GenericRowSkeleton from "./skeletons/genericRow";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
@@ -19,13 +19,13 @@ const GenericRow = ({
   id,
 }: GenericRowProps) => {
   // Memoize the fetcher function to prevent unnecessary re-creations
-  const fetcher = useCallback(async () => {
+  const fetcher = async () => {
     const data = await igdb[dataToFetch]();
     return data;
-  }, [dataToFetch]);
+  };
 
   const { data, isPending, error } = useQuery({
-    queryKey: fetchKey,
+    queryKey: ["igdb", ...fetchKey],
     queryFn: fetcher,
   });
 

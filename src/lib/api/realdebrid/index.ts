@@ -72,7 +72,7 @@ class RealDebridClient {
     // Select files if necessary
     if (torrentInfo.status === "waiting_files_selection") {
       await this.torrents.selectFiles(torrentId, fileSelection);
-      torrentInfo = await this.torrents.info(torrentId); // Refresh info after selection
+      torrentInfo = await this.torrents.info(torrentId);
     }
 
     // Check download status
