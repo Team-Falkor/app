@@ -1,13 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Form, FormField } from "@/components/ui/form";
+import { useLanguageContext } from "@/contexts/I18N";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderOpen, Shuffle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGames } from "../../hooks/useGames";
 import NewGameSetting from "./setting";
-import { useLanguageContext } from "@/contexts/I18N";
 
 const formSchema = z.object({
   gameName: z.string().min(1, { message: "Required" }),
@@ -41,7 +41,7 @@ const NewGameForm = () => {
       "generic:open-dialog",
       {
         properties: ["openFile"],
-        filters: [{ name: "Executable", extensions: ["exe"] }],
+        filters: [{ name: "Executable", extensions: ["exe", "sh"] }],
       }
     );
 
