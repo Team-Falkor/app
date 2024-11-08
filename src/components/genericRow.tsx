@@ -18,7 +18,6 @@ const GenericRow = ({
   className,
   id,
 }: GenericRowProps) => {
-  // Memoize the fetcher function to prevent unnecessary re-creations
   const fetcher = async () => {
     const data = await igdb[dataToFetch]();
     return data;

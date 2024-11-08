@@ -7,6 +7,7 @@ export type IGDBImageSize =
   | "cover_small"
   | "screenshot_med"
   | "cover_big"
+  | "cover_med"
   | "logo_med"
   | "screenshot_big"
   | "screenshot_huge"

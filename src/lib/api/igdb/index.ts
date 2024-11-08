@@ -124,26 +124,41 @@ class IGDB extends BaseApi {
     return returnData;
   }
 
-  async mostAnticipated(): Promise<IGDBReturnDataType[]> {
+  async mostAnticipated(
+    limit?: number,
+    offset?: number
+  ): Promise<IGDBReturnDataType[]> {
     const DateNow = (new Date().getTime() / 1000).toFixed();
     return await this.request<IGDBReturnDataType[]>("games", {
       sort: "hypes desc",
       where: `platforms.abbreviation = "PC" & hypes != n & first_release_date > ${DateNow} & category = 0`,
+      limit: limit?.toString() ?? undefined,
+      offset: offset?.toString() ?? undefined,
     });
   }
 
-  async newReleases(): Promise<IGDBReturnDataType[]> {
+  async newReleases(
+    limit?: number,
+    offset?: number
+  ): Promise<IGDBReturnDataType[]> {
     const DateNow = (new Date().getTime() / 1000).toFixed();
     return await this.request<IGDBReturnDataType[]>("games", {
       sort: "first_release_date desc",
       where: `platforms.abbreviation = "PC" & hypes != n & first_release_date < ${DateNow} & category = 0 & version_parent = null`,
+      limit: limit?.toString() ?? undefined,
+      offset: offset?.toString() ?? undefined,
     });
   }
 
-  async topRated(): Promise<IGDBReturnDataType[]> {
+  async topRated(
+    limit?: number,
+    offset?: number
+  ): Promise<IGDBReturnDataType[]> {
     return await this.request<IGDBReturnDataType[]>("games", {
       sort: "total_rating desc",
       where: `platforms.abbreviation = "PC" & total_rating != n & total_rating > 85 & hypes > 2 & rating_count > 5 & version_parent = null & category = 0`,
+      limit: limit?.toString() ?? undefined,
+      offset: offset?.toString() ?? undefined,
     });
   }
 
@@ -175,6 +190,9 @@ class IGDB extends BaseApi {
       }
       if (options.limit) {
         requestBody += ` limit ${options.limit};`;
+      }
+      if (options.offset) {
+        requestBody += ` offset ${options.offset};`;
       }
       if (options.search) {
         requestBody += ` search "${options.search}";`;

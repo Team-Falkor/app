@@ -28,6 +28,7 @@ const DefaultCard = ({
           <div className="relative overflow-hidden rounded-t-lg group focus:outline-none dark:ring-offset-gray-900">
             <IGDBImage
               imageId={cover?.image_id ?? ""}
+              imageSize="cover_med"
               alt={name}
               className="object-cover w-full transition duration-300 ease-out h-72 group-focus-within:scale-105 group-hover:scale-105 group-focus:scale-105"
             />

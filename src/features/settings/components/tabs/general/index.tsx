@@ -30,7 +30,7 @@ const GeneralSetting = () => {
             />
             <Label
               htmlFor="check-for-plugin-updates-on-startup"
-              className="text-gray-800 dark:text-gray-200 text-lg"
+              className="text-lg"
             >
               {t("settings.settings.check-for-plugin-updates-on-startup")}
             </Label>
@@ -49,7 +49,7 @@ const GeneralSetting = () => {
             />
             <Label
               htmlFor="check-for-app-updates-on-startup"
-              className="text-gray-800 dark:text-gray-200 text-lg"
+              className="text-lg"
             >
               {t("settings.settings.check-for-app-updates-on-startup")}
             </Label>
