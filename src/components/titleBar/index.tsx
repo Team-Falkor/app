@@ -1,13 +1,15 @@
+import { useLanguageContext } from "@/contexts/I18N";
 import TitleBarControl from "./control";
 
 const TitleBar = () => {
+  const { t } = useLanguageContext();
   return (
     <div className="fixed top-0 z-50 w-full h-8 bg-background border-b border-muted shadow-md flex items-center">
       <div className="flex flex-row w-full justify-between items-center">
         {/* Title */}
         <div id="titlebar" className="flex-1 h-full flex items-center pl-3">
           <h1 className="font-semibold text-lg text-foreground pointer-events-none select-none">
-            Falkor
+            {t("falkor")}
           </h1>
         </div>
         {/* Control Buttons */}

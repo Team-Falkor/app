@@ -16,8 +16,7 @@ const GeneralSetting = () => {
       <SettingTitle>{t("settings.titles.general")}</SettingTitle>
 
       <SettingsContainer>
-        {/* Plugin Update Switch */}
-        <SettingsSection>
+        <SettingsSection title="update_settings">
           <div className="flex items-center space-x-4">
             <Switch
               id="check-for-plugin-updates-on-startup"
@@ -36,9 +35,27 @@ const GeneralSetting = () => {
               {t("settings.settings.check-for-plugin-updates-on-startup")}
             </Label>
           </div>
+
+          <div className="flex items-center space-x-4">
+            <Switch
+              id="check-for-app-updates-on-startup"
+              checked={settings.checkForUpdatesOnStartup}
+              onCheckedChange={() =>
+                updateSetting(
+                  "checkForUpdatesOnStartup",
+                  !settings.checkForUpdatesOnStartup
+                )
+              }
+            />
+            <Label
+              htmlFor="check-for-app-updates-on-startup"
+              className="text-gray-800 dark:text-gray-200 text-lg"
+            >
+              {t("settings.settings.check-for-app-updates-on-startup")}
+            </Label>
+          </div>
         </SettingsSection>
 
-        {/* Language Selection */}
         <SettingsSection title="change_language">
           <div className="w-56">
             <LanguageDropdown />

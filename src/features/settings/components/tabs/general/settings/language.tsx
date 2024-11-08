@@ -13,7 +13,7 @@ import { useMemo } from "react";
 
 const LanguageDropdown = () => {
   const { languages, i18n } = useLanguageContext();
-  const { settings } = useSettings();
+  const { settings, updateSetting } = useSettings();
 
   const currentLanguage = useMemo(() => {
     return Object.entries(languages).find(([key, _value]) => {
@@ -38,8 +38,8 @@ const LanguageDropdown = () => {
             key={key}
             checked={currentLanguage?.[0] === key}
             onCheckedChange={() => {
-              console.log(key);
               i18n.changeLanguage(key);
+              updateSetting("language", key);
             }}
           >
             {value.nativeName} ({key})

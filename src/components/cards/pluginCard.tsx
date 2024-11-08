@@ -58,8 +58,13 @@ const PluginCard = ({
           />
 
           <div className="flex flex-col items-start justify-end">
-            <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
-              {id} - V{version}
+            <p className="text-xs font-medium flex items-center gap-1 text-gray-500 dark:text-gray-400">
+              {needsUpdate && (
+                <span className="text-red-500 font-bold">
+                  [Update available]
+                </span>
+              )}
+              {id} - V{version}{" "}
             </p>
 
             <h3 className="text-sm font-semibold truncate">{name}</h3>

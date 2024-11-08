@@ -1,4 +1,5 @@
 import { AppInfo, LinkItemType } from "@/@types";
+import { useLanguageContext } from "@/contexts/I18N";
 import { invoke } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
 import { ReactElement } from "react";
@@ -32,6 +33,8 @@ const SettingsSidebar = ({
 }: {
   settingsTabs: ReactElement[];
 }) => {
+  const { t } = useLanguageContext();
+
   const { data, isPending, isError } = useQuery({
     queryKey: ["settings", "version"],
     queryFn: async () => {
@@ -43,15 +46,17 @@ const SettingsSidebar = ({
   return (
     <div className="fixed inset-y-0 top-8 flex flex-col w-full md:w-80 bg-background h-[calc(100vh-2rem)]">
       <div className="p-4">
-        <h1 className="text-lg md:text-xl font-bold">Settings</h1>
+        <h1 className="text-lg md:text-xl font-bold">
+          {t("sections.settings")}
+        </h1>
       </div>
       <nav className="flex-1 space-y-2 md:space-y-3">{settingsTabs}</nav>
       <div className="flex flex-col gap-2 p-3 px-4 mt-auto">
         {!isPending && !isError && (
           <div className="flex flex-col">
-            <h1 className="text-lg font-bold capitalize">{data?.app_name}</h1>
+            <h1 className="text-lg font-bold capitalize">{t("falkor")}</h1>
             <span className="text-sm text-muted-foreground">
-              Version: {data?.app_version}
+              {t("version")}: {data?.app_version}
             </span>
           </div>
         )}

@@ -22,14 +22,16 @@
       "use-accounts-to-download": "Use Accounts To Download",
       "change_language": "Change Language",
       "check-for-plugin-updates-on-startup": "Check for plugin updates on startup",
+      "check-for-app-updates-on-startup": "Check for app updates on startup",
+      "update_settings": "Update Settings",
       "enable_developer_console": "Enable Developer Console"
     }
   },
   "view_more": "View More",
   "trailer": "Trailer",
   "more_info": "More Info",
-  "enable": "enable",
-  "disable": "disable",
+  "enable": "Enable",
+  "disable": "Disable",
   "install": "Install",
   "about_this_game": "About This Game",
   "media": "Media",
