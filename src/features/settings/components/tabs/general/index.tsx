@@ -39,14 +39,9 @@ const GeneralSetting = () => {
         </SettingsSection>
 
         {/* Language Selection */}
-        <SettingsSection>
-          <div className="flex items-start flex-col gap-4">
-            <h2 className="text-xl font-semibold ">
-              <span>{t("settings.settings.change_language")}</span>
-            </h2>
-            <div className="w-56">
-              <LanguageDropdown />
-            </div>
+        <SettingsSection title="change_language">
+          <div className="w-56">
+            <LanguageDropdown />
           </div>
         </SettingsSection>
       </SettingsContainer>
