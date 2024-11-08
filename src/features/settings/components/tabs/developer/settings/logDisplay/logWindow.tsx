@@ -14,7 +14,8 @@ const LogWindow = ({ enabled }: LogWindowProps) => {
     <div>
       <ScrollArea
         className={cn("rounded-lg transition-all ease-in-out size-full h-0", {
-          "h-96 ring-1 ring-muted w-full": enabled,
+          "h-96 ring-1 ring-muted w-full mt-4": enabled,
+          "": !enabled,
         })}
       >
         <div className="flex flex-col items-start justify-start gap-2 py-2 size-full">

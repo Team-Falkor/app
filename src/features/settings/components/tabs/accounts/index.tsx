@@ -3,6 +3,7 @@ import { Switch } from "@/components/ui/switch";
 import { useLanguageContext } from "@/contexts/I18N";
 import AccountsTable from "@/features/accounts/components/table";
 import { useSettings } from "@/hooks";
+import { SettingsSection } from "../../section";
 import SettingTitle from "../../title";
 import SettingsContainer from "../container";
 import AddAccountButton from "./addAccountButton";
@@ -16,26 +17,30 @@ const AccountSettings = () => {
       <SettingTitle>{t("settings.titles.accounts")}</SettingTitle>
 
       <SettingsContainer>
-        <div className="flex gap-4">
-          <AddAccountButton />
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="use-accounts-for-downloads"
-              checked={settings.useAccountsForDownloads}
-              onCheckedChange={() =>
-                updateSetting(
-                  "useAccountsForDownloads",
-                  !settings.useAccountsForDownloads
-                )
-              }
-            />
-            <Label htmlFor="use-accounts-for-downloads">
-              {t("settings.settings.accounts_use_for_downloads")}
-            </Label>
+        <SettingsSection>
+          <div className="flex gap-4">
+            <AddAccountButton />
+            <div className="flex items-center space-x-2">
+              <Switch
+                id="use-accounts-for-downloads"
+                checked={settings.useAccountsForDownloads}
+                onCheckedChange={() =>
+                  updateSetting(
+                    "useAccountsForDownloads",
+                    !settings.useAccountsForDownloads
+                  )
+                }
+              />
+              <Label htmlFor="use-accounts-for-downloads">
+                {t("settings.settings.use-accounts-to-download")}
+              </Label>
+            </div>
           </div>
-        </div>
+        </SettingsSection>
 
-        <AccountsTable />
+        <SettingsSection>
+          <AccountsTable />
+        </SettingsSection>
       </SettingsContainer>
     </div>
   );

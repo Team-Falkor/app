@@ -4,6 +4,7 @@ import { useLanguageContext } from "@/contexts/I18N";
 import { useSettings } from "@/hooks";
 import { Folder } from "lucide-react";
 import { useEffect, useState } from "react";
+import { SettingsSection } from "../section";
 import SettingTitle from "../title";
 import SettingsContainer from "./container";
 
@@ -45,34 +46,36 @@ const TorrentSettings = () => {
       <SettingTitle>{t("settings.titles.download")}</SettingTitle>
 
       <SettingsContainer>
-        <div className="flex flex-col gap-2">
-          <div className="flex justify-between">
-            <Input
-              placeholder={t("settings.settings.downloads_path")}
-              type="text"
-              value={downloadPath}
-              onChange={(e) => setDownloadPath(e.target.value)}
-              aria-label="Downloads Path"
-            />
+        <SettingsSection title="downloads_path">
+          <div className="flex flex-col gap-2">
+            <div className="flex justify-between">
+              <Input
+                placeholder={t("settings.settings.downloads_path")}
+                type="text"
+                value={downloadPath}
+                onChange={(e) => setDownloadPath(e.target.value)}
+                aria-label="Downloads Path"
+              />
+
+              <Button
+                variant="secondary"
+                size="icon"
+                onClick={openDialog}
+                aria-label="Select Folder"
+              >
+                <Folder />
+              </Button>
+            </div>
 
             <Button
               variant="secondary"
-              size="icon"
-              onClick={openDialog}
-              aria-label="Select Folder"
+              onClick={handleSave}
+              disabled={!downloadPath.trim()}
             >
-              <Folder />
+              Save
             </Button>
           </div>
-
-          <Button
-            variant="secondary"
-            onClick={handleSave}
-            disabled={!downloadPath.trim()}
-          >
-            Save
-          </Button>
-        </div>
+        </SettingsSection>
       </SettingsContainer>
     </div>
   );

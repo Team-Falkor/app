@@ -24,8 +24,8 @@ const LanguageDropdown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger>
-        <Button variant="outline" className="bg-none w-56">
+      <DropdownMenuTrigger asChild>
+        <Button variant="outline" className="w-full">
           {currentLanguage?.[1].nativeName}
         </Button>
       </DropdownMenuTrigger>

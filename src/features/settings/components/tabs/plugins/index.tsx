@@ -9,6 +9,7 @@ import {
 import { useLanguageContext } from "@/contexts/I18N";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { SettingsSection } from "../../section";
 import SettingTitle from "../../title";
 import SettingsContainer from "../container";
 import AddPluginModal from "./addPluginModal";
@@ -31,50 +32,54 @@ const PluginSettings = () => {
       <SettingTitle>{t("settings.titles.plugins")}</SettingTitle>
 
       <SettingsContainer>
-        <div className="flex justify-between">
-          <div className="flex w-full gap-2">
-            <div className="w-1/2">
-              <Input
-                placeholder={t("what_plugin_are_you_looking_for")}
-                type="text"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
+        <SettingsSection>
+          <div className="flex justify-between">
+            <div className="flex w-full gap-2">
+              <div className="w-1/2">
+                <Input
+                  placeholder={t("what_plugin_are_you_looking_for")}
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
 
-            <div className="flex gap-2">
-              <Dialog open={open} onOpenChange={setOpen}>
-                <DialogTrigger>
-                  <Tooltip>
-                    <TooltipTrigger>
-                      <Button variant={"ghost"} size={"icon"}>
-                        <Plus />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>{t("add_local_plugin")}</TooltipContent>
-                  </Tooltip>
-                </DialogTrigger>
-                <AddPluginModal setOpen={setOpen} open={open} />
-              </Dialog>
+              <div className="flex gap-2">
+                <Dialog open={open} onOpenChange={setOpen}>
+                  <DialogTrigger>
+                    <Tooltip>
+                      <TooltipTrigger>
+                        <Button variant={"ghost"} size={"icon"}>
+                          <Plus />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>{t("add_local_plugin")}</TooltipContent>
+                    </Tooltip>
+                  </DialogTrigger>
+                  <AddPluginModal setOpen={setOpen} open={open} />
+                </Dialog>
+              </div>
             </div>
+            <PluginsSort
+              showRows={showRows}
+              setShowRows={setShowRows}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              setShowEnabledOnly={setShowEnabledOnly}
+              showEnabledOnly={showEnabledOnly}
+            />
           </div>
-          <PluginsSort
+        </SettingsSection>
+
+        <SettingsSection>
+          <PluginDisplay
             showRows={showRows}
             setShowRows={setShowRows}
             sortBy={sortBy}
-            setSortBy={setSortBy}
-            setShowEnabledOnly={setShowEnabledOnly}
             showEnabledOnly={showEnabledOnly}
+            search={search}
           />
-        </div>
-
-        <PluginDisplay
-          showRows={showRows}
-          setShowRows={setShowRows}
-          sortBy={sortBy}
-          showEnabledOnly={showEnabledOnly}
-          search={search}
-        />
+        </SettingsSection>
       </SettingsContainer>
     </div>
   );
