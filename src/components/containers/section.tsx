@@ -79,7 +79,7 @@ export const Section = ({ title, dataToFetch }: Props) => {
         {data?.map((game) => <DefaultCard key={game.id} {...game} />)}
       </div>
 
-      <div className="flex flex-1 justify-between">
+      <div className="flex flex-1 justify-between mt-4">
         <Button
           variant={"ghost"}
           onClick={handlePrevPage}
@@ -88,6 +88,8 @@ export const Section = ({ title, dataToFetch }: Props) => {
         >
           <ChevronLeft />
         </Button>
+
+        <span className="text-muted-foreground text-lg">Page {page}</span>
 
         <Button variant={"ghost"} onClick={handleNextPage} size={"icon"}>
           <ChevronRight />
