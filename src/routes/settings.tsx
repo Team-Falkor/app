@@ -30,12 +30,10 @@ function RouteComponent() {
   );
 
   return (
-    <div className="flex flex-col md:flex-row justify-between w-full h-screen animate-slide-in">
-      {/* Sidebar with tabs and links */}
+    <div className="flex w-full relative min-h-full">
       <SettingsSidebar settingsTabs={settingsTabs} />
 
-      {/* Content area */}
-      <div className="flex flex-col w-full h-full overflow-hidden">
+      <div className="flex-grow flex flex-col md:pl-80 w-full h-full overflow-y-auto">
         <Suspense
           fallback={
             <div className="size-full flex items-center justify-center">

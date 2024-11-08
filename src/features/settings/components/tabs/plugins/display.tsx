@@ -70,7 +70,7 @@ const PluginDisplay = ({
   if (!data) return null;
 
   return (
-    <ScrollArea className="w-full h-[calc(100vh-10rem)] ">
+    <ScrollArea className="w-full">
       <div
         className={cn([
           {

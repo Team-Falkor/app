@@ -22,7 +22,7 @@ const LINKS: Array<LinkItemType> = [
 const LINKS_RIGHT: Array<LinkItemType> = [
   {
     icon: <SiKofi />,
-    title: "Support me on Ko-fi",
+    title: "support_me_on_kofi",
     url: "https://ko-fi.com/prostarz",
   },
 ];
@@ -41,7 +41,7 @@ const SettingsSidebar = ({
   });
 
   return (
-    <div className="flex flex-col h-auto md:h-screen w-full md:w-80 bg-background">
+    <div className="fixed inset-y-0 top-8 flex flex-col w-full md:w-80 bg-background h-[calc(100vh-2rem)]">
       <div className="p-4">
         <h1 className="text-lg md:text-xl font-bold">Settings</h1>
       </div>

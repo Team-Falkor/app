@@ -14,12 +14,20 @@ function Root() {
 
   return (
     <TooltipProvider>
-      <TitleBar />
-      <Updater />
-      <div className="flex min-h-screen w-full flex-col bg-muted/40 relative">
-        <NavBar />
-        <div className="flex flex-col sm:gap-4 sm:pl-16 pt-5">
-          <Outlet />
+      <div className="flex flex-col min-h-screen overflow-hidden">
+        {/* TitleBar positioned at the top */}
+        <TitleBar />
+
+        {/* Wrapper for Updater and main content */}
+        <Updater />
+        <div className="flex min-h-screen w-full bg-muted/40 pt-8 relative">
+          {/* Sidebar navigation */}
+          <NavBar />
+
+          {/* Main content area */}
+          <div className="flex-grow flex flex-col sm:pl-16 w-full h-full overflow-y-auto">
+            <Outlet />
+          </div>
         </div>
       </div>
     </TooltipProvider>

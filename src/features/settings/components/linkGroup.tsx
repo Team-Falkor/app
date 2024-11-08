@@ -25,7 +25,7 @@ const SettingsLinkGroup = ({ links }: { links: Array<LinkItemType> }) => {
               {icon}
             </Button>
           </TooltipTrigger>
-          <TooltipContent>{t(title)}</TooltipContent>
+          <TooltipContent align="start">{t(title)}</TooltipContent>
         </Tooltip>
       ))}
     </div>

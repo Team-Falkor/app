@@ -156,3 +156,6 @@ dist
 
 /dist-electron
 /release
+
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

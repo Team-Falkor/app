@@ -81,5 +81,8 @@
   "add_game": "Add Game",
   "cancel": "Cancel",
   "no_downloads_in_progress": "No downloads in progress",
-  "open_downloads_folder": "Open downloads folder"
+  "open_downloads_folder": "Open downloads folder",
+  "star_us_on_github": "Star us on GitHub",
+  "join_the_discord": "Join the Discord",
+  "support_me_on_kofi": "Support me on Ko-fi"
 }
