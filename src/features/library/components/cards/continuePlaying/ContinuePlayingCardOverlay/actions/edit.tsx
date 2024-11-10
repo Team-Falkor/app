@@ -38,7 +38,6 @@ const UpdateDialog = ({ fetchGames, updateGame, game }: UpdateDialogProps) => {
             gameName: game.game_name,
             gamePath: game.game_path,
             gameIcon: game.game_icon ?? "",
-            gameId: game.game_id,
           }}
         />
       </DialogContent>
