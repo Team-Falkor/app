@@ -6,11 +6,19 @@ import GamesContainer from "./containers/games";
 import NewGameModalContent from "./modals/modal";
 
 const ContinuePlaying = () => {
-  const { games } = useGames();
+  const { games, fetchGames, deleteGame, updateGame } = useGames();
 
   const games_count = useMemo(() => Object.values(games)?.length, [games]);
 
-  if (games_count) return <GamesContainer games={games} />;
+  if (games_count)
+    return (
+      <GamesContainer
+        games={games}
+        fetchGames={fetchGames}
+        deleteGame={deleteGame}
+        updateGame={updateGame}
+      />
+    );
 
   return (
     <Dialog>

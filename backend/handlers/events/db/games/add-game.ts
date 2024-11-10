@@ -1,16 +1,10 @@
+import { NewLibraryGame } from "@/@types/library/types";
 import { gamesDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
 const addGameToGames = async (
   _event: Electron.IpcMainInvokeEvent,
-  game: {
-    name: string;
-    path: string;
-    id: string;
-    icon?: string;
-    args?: string;
-    command?: string;
-  }
+  game: NewLibraryGame
 ) => {
   try {
     return await gamesDB.addGame(game);

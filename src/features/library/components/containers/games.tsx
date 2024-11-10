@@ -1,3 +1,4 @@
+import { LibraryGameUpdate } from "@/@types/library/types";
 import {
   Carousel,
   CarouselContent,
@@ -8,27 +9,47 @@ import ContinuePlayingCard from "../cards/continuePlaying";
 import { NewGameCard } from "../cards/newGame";
 import NewGameModalContent from "../modals/modal";
 
-const GamesContainer = ({ games }: { games: Record<string, any> }) => {
+interface GamesContainerProps {
+  games: Record<string, any>;
+  fetchGames: () => void;
+  deleteGame: (gameId: string) => void;
+  updateGame: (gameId: string, updates: LibraryGameUpdate) => void;
+}
+
+const GamesContainer = ({
+  games,
+  fetchGames,
+  deleteGame,
+  updateGame,
+}: GamesContainerProps) => {
   return (
     <div className="flex gap-2 overflow-hidden">
       <Dialog>
-        <DialogTrigger className="w-[200px] h-full">
+        <DialogTrigger className="w-[200px] h-full flex-shrink-0 flex-grow-0">
           <NewGameCard />
         </DialogTrigger>
 
         <NewGameModalContent />
       </Dialog>
 
-      <div className="flex-1">
-        <Carousel>
+      <div className="flex-1 w-full">
+        <Carousel
+          opts={{
+            align: "center",
+            skipSnaps: true,
+            loop: true,
+          }}
+        >
           <CarouselContent>
             {Object.values(games).map((game) => (
               <CarouselItem className="basis-auto">
                 <ContinuePlayingCard
                   key={game.id}
-                  game_name={game.game_name}
                   bg_image={game.game_icon}
-                  game_path={game.game_path}
+                  game={game}
+                  fetchGames={fetchGames}
+                  deleteGame={deleteGame}
+                  updateGame={updateGame}
                 />
               </CarouselItem>
             ))}

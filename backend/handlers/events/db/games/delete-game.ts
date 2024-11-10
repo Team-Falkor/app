@@ -6,6 +6,7 @@ const deleteGame = async (
   gameId: string
 ) => {
   try {
+    console.log("deleteGame", gameId);
     return await gamesDB.deleteGame(gameId);
   } catch (error) {
     console.error(error);

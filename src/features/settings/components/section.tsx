@@ -12,7 +12,7 @@ export const SettingsSection = ({
   const { t } = useLanguageContext();
 
   return (
-    <div className="p-4 bg-white dark:bg-card/40 rounded-lg shadow-md space-y-4">
+    <div className="p-4 space-y-5 bg-white rounded-lg shadow-md dark:bg-card/40">
       {!!title && (
         <h2 className="text-xl font-semibold ">
           <span>{t("settings.settings." + title)}</span>

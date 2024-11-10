@@ -86,5 +86,15 @@
   "open_downloads_folder": "Open downloads folder",
   "star_us_on_github": "Star us on GitHub",
   "join_the_discord": "Join the Discord",
+  "update_game": "Update Game",
+  "update": "Update",
+  "updating": "Updating",
+  "delete": "Delete",
+  "delete_game": "Delete Game",
+  "are_you_absolutely_sure": "Are you absolutely sure?",
+  "confirm": "Confirm",
+  "actions": "Actions",
+  "stop_playing": "Stop Playing",
+  "continue_playing": "Continue Playing",
   "support_me_on_kofi": "Support me on Ko-fi"
 }

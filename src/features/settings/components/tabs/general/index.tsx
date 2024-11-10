@@ -17,7 +17,7 @@ const GeneralSetting = () => {
 
       <SettingsContainer>
         <SettingsSection title="update_settings">
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Switch
               id="check-for-plugin-updates-on-startup"
               checked={settings.checkForPluginUpdatesOnStartup}
@@ -28,15 +28,12 @@ const GeneralSetting = () => {
                 )
               }
             />
-            <Label
-              htmlFor="check-for-plugin-updates-on-startup"
-              className="text-lg"
-            >
+            <Label htmlFor="check-for-plugin-updates-on-startup">
               {t("settings.settings.check-for-plugin-updates-on-startup")}
             </Label>
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center gap-4">
             <Switch
               id="check-for-app-updates-on-startup"
               checked={settings.checkForUpdatesOnStartup}
@@ -47,10 +44,7 @@ const GeneralSetting = () => {
                 )
               }
             />
-            <Label
-              htmlFor="check-for-app-updates-on-startup"
-              className="text-lg"
-            >
+            <Label htmlFor="check-for-app-updates-on-startup">
               {t("settings.settings.check-for-app-updates-on-startup")}
             </Label>
           </div>

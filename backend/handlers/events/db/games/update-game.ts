@@ -1,16 +1,11 @@
+import { LibraryGameUpdate } from "@/@types/library/types";
 import { gamesDB } from "../../../../sql";
 import { registerEvent } from "../../utils/registerEvent";
 
 const updateGame = async (
   _event: Electron.IpcMainInvokeEvent,
   gameId: string,
-  updates: {
-    name?: string;
-    path?: string;
-    icon?: string;
-    args?: string;
-    command?: string;
-  }
+  updates: LibraryGameUpdate
 ) => {
   try {
     return await gamesDB.updateGame(gameId, updates);

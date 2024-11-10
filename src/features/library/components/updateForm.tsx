@@ -3,16 +3,15 @@ import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Form, FormField } from "@/components/ui/form";
 import { useLanguageContext } from "@/contexts/I18N";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { FolderOpen, Shuffle } from "lucide-react";
+import { FolderOpen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useGames } from "../../hooks/useGames";
-import NewGameSetting from "./setting";
+import { useGames } from "../hooks/useGames";
+import NewGameSetting from "./modals/setting";
 
 const formSchema = z.object({
   gameName: z.string().min(1, { message: "Required" }),
   gamePath: z.string().min(1, { message: "Required" }),
-  gameId: z.string().min(1, { message: "Required" }),
   gameIcon: z.string().min(1, { message: "Required" }),
   gameArgs: z.string().optional(),
   gameCommand: z
@@ -21,20 +20,25 @@ const formSchema = z.object({
     .refine((s) => !s?.includes(" "), "No Spaces!"),
 });
 
-const NewGameForm = () => {
+interface UpdateGameFormProps {
+  defaultValues: z.infer<typeof formSchema>;
+  onSubmit: (values: z.infer<typeof formSchema>) => Promise<void> | void;
+}
+
+const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
   const { t } = useLanguageContext();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      gameName: "",
-      gamePath: "",
-      gameArgs: "",
-      gameIcon: "",
-      gameId: "",
+      gameArgs: defaultValues.gameArgs ?? "",
+      gameCommand: defaultValues.gameCommand ?? "",
+      gameIcon: defaultValues.gameIcon ?? "",
+      gameName: defaultValues.gameName ?? "",
+      gamePath: defaultValues.gamePath ?? "",
     },
   });
 
-  const { addGame, loading, error } = useGames(); // Use the hook
+  const { loading, error } = useGames();
 
   const handlePathButton = async () => {
     const selected: any = await window.ipcRenderer.invoke(
@@ -49,7 +53,6 @@ const NewGameForm = () => {
     if (!selected.filePaths.length) return;
 
     const selectedPath = selected.filePaths[0];
-
     form.setValue("gamePath", selectedPath.replace(/\\/g, "//"));
   };
 
@@ -71,48 +74,12 @@ const NewGameForm = () => {
     form.setValue("gameIcon", selectedPath.replace(/\\/g, "//"));
   };
 
-  const handleShuffleButton = () => {
-    const currentGameId = form.getValues("gameId");
-
-    if (currentGameId || currentGameId.trim() !== "") return;
-
-    const gameName = form.getValues("gameName");
-
-    if (gameName.length < 1)
-      form.setValue("gameId", Math.random().toString(36).substring(2, 15)); // Random string
-    else
-      form.setValue(
-        "gameId",
-        gameName.split(" ").join("-").toLowerCase() // Slugified string
-      );
-  };
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const { gameName, gamePath, gameId, gameIcon, gameArgs, gameCommand } =
-      values;
-
-    try {
-      await addGame({
-        game_name: gameName,
-        game_path: gamePath,
-        game_id: gameId, // Passed as a string
-        game_icon: gameIcon,
-        game_args: gameArgs,
-        game_command: gameCommand,
-      });
-
-      form.reset();
-    } catch (err) {
-      console.error("Failed to add game:", err); // More detailed error logging
-    }
-  }
-
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
-        autoComplete={"off"}
+        autoComplete="off"
       >
         <FormField
           control={form.control}
@@ -131,51 +98,18 @@ const NewGameForm = () => {
         <FormField
           control={form.control}
           name="gamePath"
-          rules={{
-            required: {
-              value: true,
-              message: "Required",
-            },
-          }}
           render={({ field }) => (
             <NewGameSetting
               text={t("path")}
               description={t("the_path_to_the_game")}
               type="search"
               Button={
-                <Button
-                  size={"icon"}
-                  variant={"ghost"}
-                  onClick={handlePathButton}
-                >
+                <Button size="icon" variant="ghost" onClick={handlePathButton}>
                   <FolderOpen />
                 </Button>
               }
               required
               field={field}
-            />
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="gameId"
-          render={({ field }) => (
-            <NewGameSetting
-              text={t("id")}
-              description={t("game_id")}
-              required
-              field={field}
-              type="search"
-              Button={
-                <Button
-                  size={"icon"}
-                  variant={"ghost"}
-                  onClick={handleShuffleButton}
-                >
-                  <Shuffle />
-                </Button>
-              }
             />
           )}
         />
@@ -190,11 +124,7 @@ const NewGameForm = () => {
               type="search"
               required
               Button={
-                <Button
-                  size={"icon"}
-                  variant={"ghost"}
-                  onClick={handleIconButton}
-                >
+                <Button size="icon" variant="ghost" onClick={handleIconButton}>
                   <FolderOpen />
                 </Button>
               }
@@ -207,11 +137,18 @@ const NewGameForm = () => {
           control={form.control}
           name="gameArgs"
           render={({ field }) => (
-            <NewGameSetting
-              text={t("arguments")}
-              description={t("the_arguments_to_pass_to_the_game")}
-              field={field}
-            />
+            <>
+              <NewGameSetting
+                text={t("arguments")}
+                description={t("the_arguments_to_pass_to_the_game")}
+                field={field}
+              />
+              {form.formState.errors.gameArgs && (
+                <p className="w-full text-right text-red-500">
+                  {form.formState.errors.gameArgs.message}
+                </p>
+              )}
+            </>
           )}
         />
 
@@ -230,14 +167,14 @@ const NewGameForm = () => {
 
       <DialogFooter className="pt-2">
         <DialogClose>
-          <Button variant={"destructive"}>{t("cancel")}</Button>
+          <Button variant="destructive">{t("cancel")}</Button>
         </DialogClose>
         <Button
           variant="secondary"
           onClick={form.handleSubmit(onSubmit)}
           disabled={loading}
         >
-          {loading ? `${t("adding")}...` : t("add_game")}
+          {loading ? `${t("updating")}...` : t("update_game")}
         </Button>
       </DialogFooter>
       {error && <p className="w-full text-right text-red-500">{error}</p>}
@@ -245,4 +182,4 @@ const NewGameForm = () => {
   );
 };
 
-export default NewGameForm;
+export default UpdateGameForm;
