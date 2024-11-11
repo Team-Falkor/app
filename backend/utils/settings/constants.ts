@@ -12,4 +12,5 @@ export const defaultSettings: SettingsConfig = {
   checkForPluginUpdatesOnStartup: true,
   minimizeToTray: true,
   useAccountsForDownloads: false,
+  titleBarStyle: "icons",
 };

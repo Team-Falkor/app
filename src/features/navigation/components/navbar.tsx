@@ -1,12 +1,25 @@
+import { useSettings } from "@/hooks";
+import { cn } from "@/lib";
 import NavBarBottom from "./containers/bottom";
 import NavBarTop from "./containers/top";
 
 const NavBar = () => {
+  const { settings } = useSettings();
+
+  const titleBarStyle = settings?.titleBarStyle;
+
   return (
-    <aside className="fixed inset-y-0 top-8 left-0 z-10 w-16 flex flex-col border-r bg-background">
-      <nav className="flex flex-col items-center gap-4 px-2 py-4 h-full">
+    <aside
+      className={cn(
+        "fixed inset-y-0  left-0 z-10 w-16 flex flex-col border-r bg-background",
+        {
+          "top-8": !["none", "native"].includes(titleBarStyle),
+        }
+      )}
+    >
+      <nav className="flex flex-col items-center h-full gap-4 px-2 py-4">
         <NavBarTop />
-        <div className="flex flex-col flex-1 gap-3 border-t border-b w-full"></div>
+        <div className="flex flex-col flex-1 w-full gap-3 border-t border-b"></div>
         <NavBarBottom />
       </nav>
     </aside>

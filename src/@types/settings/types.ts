@@ -1,5 +1,5 @@
 export interface SettingsConfig {
-  theme: "system" | "light" | "dark";
+  theme: SettingsTheme;
   language: string;
   downloadsPath: string;
   autoUpdate: boolean;
@@ -9,4 +9,13 @@ export interface SettingsConfig {
   checkForPluginUpdatesOnStartup: boolean;
   minimizeToTray: boolean;
   useAccountsForDownloads: boolean;
+  titleBarStyle: SettingsTitleBarStyle;
 }
+
+export type SettingsTheme = "system" | "light" | "dark";
+
+export type SettingsTitleBarStyle =
+  | "icons"
+  | "traffic-lights"
+  | "native"
+  | "none";

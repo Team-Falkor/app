@@ -12,7 +12,7 @@ const TitleBarControl = ({
 }: TitleBarControlProps) => {
   return (
     <button
-      className="titlebar-button group cursor-pointer p-1 rounded-full outline-none transition-transform transform hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-muted-foreground"
+      className="p-1 transition-transform transform rounded-full outline-none cursor-pointer titlebar-button group hover:scale-110 focus-visible:ring-2 focus-visible:ring-offset-1 focus-visible:ring-muted-foreground"
       onClick={() => invoke(`app:${type}`)}
       aria-label={type}
     >

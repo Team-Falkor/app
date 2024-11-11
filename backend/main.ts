@@ -1,15 +1,9 @@
-import {
-  app,
-  BrowserWindow,
-  ipcMain,
-  net,
-  protocol,
-  screen,
-  shell,
-} from "electron";
+import { app, BrowserWindow, net, protocol } from "electron";
 import path from "node:path";
 import url, { fileURLToPath } from "node:url";
+import window from "./utils/window";
 
+export const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export let win: BrowserWindow | null;
 
 // DEEP LINKING
@@ -40,7 +34,7 @@ if (!gotTheLock) {
   });
 
   app.whenReady().then(async () => {
-    createWindow();
+    win = window.createWindow();
     protocol.handle("local", (request) => {
       const filePath = request.url.slice("local:".length);
       return net.fetch(url.pathToFileURL(decodeURI(filePath)).toString());
@@ -60,11 +54,8 @@ if (!gotTheLock) {
   });
 }
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 process.env.APP_ROOT = path.join(__dirname, "..");
 
-// 🚧 Use ['ENV_NAME'] avoid vite:define plugin - Vite@2.x
 export const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
 export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
 export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
@@ -72,52 +63,6 @@ export const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
 process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   ? path.join(process.env.APP_ROOT, "public")
   : RENDERER_DIST;
-
-/**
- * Updates an existing key-value pair in an object, or inserts a new pair
- * if the key does not already exist.
- *
- * @param {Record<string, unknown>} obj
- * @param {string} keyToChange
- * @param {*} value
- * @returns {void}
- */
-
-function createWindow() {
-  const { width: screenWidth, height: screenHeight } =
-    screen.getPrimaryDisplay().workAreaSize;
-
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
-    webPreferences: {
-      preload: path.join(__dirname, "preload.mjs"),
-    },
-    autoHideMenuBar: true,
-    minWidth: 1000,
-    minHeight: 600,
-    frame: false,
-
-    // Set the initial width and height based on available screen size
-    width: Math.min(screenWidth * 0.8, 1000), // 80% of screen width, max 1000
-    height: Math.min(screenHeight * 0.8, 600), // 80% of screen height, max 600
-
-    resizable: true,
-  });
-
-  // if (!isDev()) {
-  //   win.removeMenu();
-  // }
-
-  ipcMain.handle("openExternal", async (_e, url: string) => {
-    await shell.openExternal(url);
-  });
-
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-  }
-}
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits
@@ -130,9 +75,6 @@ app.on("window-all-closed", () => {
 });
 
 app.on("activate", () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+  if (BrowserWindow.getAllWindows().length <= 0) return;
+  win = window.createWindow();
 });

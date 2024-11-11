@@ -2,7 +2,8 @@ import TitleBar from "@/components/titleBar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NavBar from "@/features/navigation/components/navbar";
 import Updater from "@/features/updater/components/updater";
-import { useAppStartup } from "@/hooks";
+import { useAppStartup, useSettings } from "@/hooks";
+import { cn } from "@/lib";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
@@ -10,22 +11,29 @@ export const Route = createRootRoute({
 });
 
 function Root() {
+  const { settings } = useSettings();
   useAppStartup();
+
+  const titleBarStyle = settings?.titleBarStyle;
 
   return (
     <TooltipProvider>
-      <div className="flex flex-col min-h-screen overflow-hidden">
+      <div className={cn("flex flex-col min-h-screen overflow-hidden")}>
         {/* TitleBar positioned at the top */}
         <TitleBar />
 
         {/* Wrapper for Updater and main content */}
         <Updater />
-        <div className="flex min-h-screen w-full bg-muted/40 pt-8 relative">
+        <div
+          className={cn("relative flex w-full min-h-screen bg-muted/40", {
+            "pt-8": !["none", "native"].includes(titleBarStyle),
+          })}
+        >
           {/* Sidebar navigation */}
           <NavBar />
 
           {/* Main content area */}
-          <div className="flex-grow flex flex-col sm:pl-16 w-full h-full overflow-y-auto">
+          <div className="flex flex-col flex-grow w-full h-full overflow-y-auto sm:pl-16">
             <Outlet />
           </div>
         </div>
