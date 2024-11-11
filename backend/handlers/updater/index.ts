@@ -1,8 +1,13 @@
-import { app } from "electron";
 import electronUpdater from "electron-updater";
 import { settings } from "../../utils/settings/settings";
 
 const { autoUpdater } = electronUpdater;
+
+autoUpdater.setFeedURL({
+  provider: "github",
+  owner: "team-falkor",
+  repo: "app",
+});
 
 class Updater {
   private settings = settings;
@@ -15,7 +20,7 @@ class Updater {
     if (!check) return false;
 
     // Return true if update is available
-    if (check.updateInfo.version === app.getVersion()) return false;
+    if (!check?.updateInfo?.version) return false;
 
     this.updateAvailable = true;
     return true;

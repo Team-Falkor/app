@@ -8,7 +8,7 @@ const BackgroundImage: React.FC<BackgroundImageProps> = ({
   className,
 }) => {
   const isRemoteImage = /^https?:\/\//i.test(bgImage);
-  const realImagePath = isRemoteImage ? bgImage : `local:${bgImage}`;
+  const realImagePath = isRemoteImage ? bgImage : `local:${encodeURI(bgImage)}`;
 
   return (
     <div

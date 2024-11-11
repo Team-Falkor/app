@@ -6,6 +6,7 @@ import { SettingsSection } from "../../section";
 import SettingTitle from "../../title";
 import SettingsContainer from "../container";
 import LanguageDropdown from "./settings/language";
+import TitleBarDropdown from "./settings/title-bar";
 
 const GeneralSetting = () => {
   const { t } = useLanguageContext();
@@ -50,8 +51,17 @@ const GeneralSetting = () => {
           </div>
         </SettingsSection>
 
+        <SettingsSection
+          title="change-title-bar-style"
+          description="change_title_bar_style_description"
+        >
+          <div className="w-64">
+            <TitleBarDropdown />
+          </div>
+        </SettingsSection>
+
         <SettingsSection title="change_language">
-          <div className="w-56">
+          <div className="w-64">
             <LanguageDropdown />
           </div>
         </SettingsSection>
