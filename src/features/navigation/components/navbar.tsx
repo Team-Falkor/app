@@ -1,5 +1,5 @@
 import { useSettings } from "@/hooks";
-import { cn } from "@/lib";
+import { cn, shouldHideTitleBar } from "@/lib";
 import NavBarBottom from "./containers/bottom";
 import NavBarTop from "./containers/top";
 
@@ -13,7 +13,7 @@ const NavBar = () => {
       className={cn(
         "fixed inset-y-0  left-0 z-10 w-16 flex flex-col border-r bg-background",
         {
-          "top-8": !["none", "native"].includes(titleBarStyle),
+          "top-8": !shouldHideTitleBar(titleBarStyle),
         }
       )}
     >

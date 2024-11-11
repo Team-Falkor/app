@@ -1,3 +1,4 @@
+import { SettingsTitleBarStyle } from "@/@types";
 import { Website } from "../api/igdb/types";
 
 export const getSteamIdFromUrl = (url: string) =>
@@ -18,4 +19,8 @@ export const createSlug = (str: string) => {
     .toLowerCase()
     .replace(/[^\w ]+/g, "")
     .replace(/ +/g, "-");
+};
+
+export const shouldHideTitleBar = (titleBarStyle: SettingsTitleBarStyle) => {
+  return ["none", "native"].includes(titleBarStyle);
 };

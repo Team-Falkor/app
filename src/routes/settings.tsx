@@ -30,13 +30,13 @@ function RouteComponent() {
   );
 
   return (
-    <div className="flex w-full relative min-h-full">
+    <div className="relative flex w-full min-h-full">
       <SettingsSidebar settingsTabs={settingsTabs} />
 
-      <div className="flex-grow flex flex-col md:pl-80 w-full h-full overflow-y-auto">
+      <div className="flex flex-col flex-grow w-full h-full overflow-y-auto md:pl-80">
         <Suspense
           fallback={
-            <div className="size-full flex items-center justify-center">
+            <div className="flex items-center justify-center size-full">
               <Spinner size={23} />
             </div>
           }

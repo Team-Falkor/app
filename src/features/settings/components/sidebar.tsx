@@ -1,6 +1,7 @@
 import { AppInfo, LinkItemType } from "@/@types";
 import { useLanguageContext } from "@/contexts/I18N";
-import { invoke } from "@/lib";
+import { useSettings } from "@/hooks";
+import { cn, invoke, shouldHideTitleBar } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
 import { ReactElement } from "react";
 import { FaDiscord, FaGithub } from "react-icons/fa6";
@@ -34,6 +35,7 @@ const SettingsSidebar = ({
   settingsTabs: ReactElement[];
 }) => {
   const { t } = useLanguageContext();
+  const { settings } = useSettings();
 
   const { data, isPending, isError } = useQuery({
     queryKey: ["settings", "version"],
@@ -44,9 +46,16 @@ const SettingsSidebar = ({
   });
 
   return (
-    <div className="fixed inset-y-0 top-8 flex flex-col w-full md:w-80 bg-background h-[calc(100vh-2rem)]">
+    <div
+      className={cn(
+        "fixed inset-y-0 top-0 flex flex-col w-full md:w-80 bg-background h-[calc(100vh-2rem)]",
+        {
+          "top-8": !shouldHideTitleBar(settings?.titleBarStyle),
+        }
+      )}
+    >
       <div className="p-4">
-        <h1 className="text-lg md:text-xl font-bold">
+        <h1 className="text-lg font-bold md:text-xl">
           {t("sections.settings")}
         </h1>
       </div>

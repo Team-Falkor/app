@@ -3,7 +3,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import NavBar from "@/features/navigation/components/navbar";
 import Updater from "@/features/updater/components/updater";
 import { useAppStartup, useSettings } from "@/hooks";
-import { cn } from "@/lib";
+import { cn, shouldHideTitleBar } from "@/lib";
 import { createRootRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createRootRoute({
@@ -26,7 +26,7 @@ function Root() {
         <Updater />
         <div
           className={cn("relative flex w-full min-h-screen bg-muted/40", {
-            "pt-8": !["none", "native"].includes(titleBarStyle),
+            "pt-8": !shouldHideTitleBar(titleBarStyle),
           })}
         >
           {/* Sidebar navigation */}
