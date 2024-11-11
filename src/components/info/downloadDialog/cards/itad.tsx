@@ -12,7 +12,7 @@ const ITADDownloadCard = (deal: Deal) => {
 
   return (
     <Tooltip delayDuration={1500}>
-      <TooltipTrigger>
+      <TooltipTrigger disabled={!deal?.url}>
         <button
           key={deal.url}
           className="flex flex-col items-start justify-center w-full gap-2 text-sm cursor-pointer group text-start hover:opacity-60"
@@ -20,7 +20,7 @@ const ITADDownloadCard = (deal: Deal) => {
             openLink(deal.url);
           }}
         >
-          {deal.shop.name}
+          {deal?.shop?.name ?? "Unknown"}
 
           <div className="flex flex-row items-center justify-start w-full gap-3">
             <div className="flex items-center gap-1 text-xs text-slate-300">
@@ -30,18 +30,19 @@ const ITADDownloadCard = (deal: Deal) => {
 
             <div className="flex items-center gap-1 text-xs text-slate-300">
               <Coins className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-              {deal.price.amount} {deal.price.currency}
+              {deal?.price?.amount ?? "??"} {deal?.price?.currency ?? "??"}
             </div>
 
             <div className="flex items-center gap-1 text-xs text-slate-300">
               <StarIcon className="w-3 h-3 stroke-primary group-hover:stroke-foreground" />
-              {deal.historyLow.amount} {deal.historyLow.currency}
+              {deal?.historyLow?.amount ?? "??"}{" "}
+              {deal?.historyLow?.currency ?? "??"}
             </div>
           </div>
         </button>
       </TooltipTrigger>
       <TooltipContent asChild side="bottom">
-        <div className="">{deal.url}</div>
+        <div className="">{deal?.url ?? "Unknown"}</div>
       </TooltipContent>
     </Tooltip>
   );
