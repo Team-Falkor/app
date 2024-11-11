@@ -18,10 +18,15 @@ const DownloadDialogProviders = ({
   setSelectedProvider,
 }: DownloadDialogProvidersProps) => {
   return (
-    <Carousel>
+    <Carousel
+      opts={{
+        skipSnaps: true,
+        dragFree: true,
+      }}
+    >
       <CarouselContent>
         {providers.map((provider, i) => (
-          <CarouselItem className="basis-auto relative" key={i}>
+          <CarouselItem className="relative basis-auto" key={i}>
             <button
               className={cn(
                 "flex items-center gap-2 px-5 py-3 text-sm bg-muted/50 rounded-lg hover:bg-muted",

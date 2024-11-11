@@ -35,9 +35,8 @@ const GamesContainer = ({
       <div className="flex-1 w-full">
         <Carousel
           opts={{
-            align: "center",
             skipSnaps: true,
-            loop: true,
+            dragFree: true,
           }}
         >
           <CarouselContent>

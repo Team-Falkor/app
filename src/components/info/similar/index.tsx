@@ -25,7 +25,8 @@ const SimilarGames = ({ data }: SimilarGamesProps) => {
     <div>
       <Carousel
         opts={{
-          align: "start",
+          skipSnaps: true,
+          dragFree: true,
         }}
         className="w-full"
       >
@@ -41,12 +42,7 @@ const SimilarGames = ({ data }: SimilarGamesProps) => {
 
         <CarouselContent>
           {items.map((game) => (
-            <CarouselItem
-              key={game.id}
-              className="
-              basis-auto
-              px-2"
-            >
+            <CarouselItem key={game.id} className="px-2 basis-auto">
               <DefaultCard key={game.id} {...game} />
             </CarouselItem>
           ))}

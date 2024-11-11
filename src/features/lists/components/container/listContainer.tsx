@@ -38,10 +38,10 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
         </h3>
 
         {/* Action Bar */}
-        <div className="w-2/6 flex items-center gap-2 justify-end opacity-0 group-hover/list:opacity-100 group-focus-within/list:opacity-100 transition-all">
+        <div className="flex items-center justify-end w-2/6 gap-2 transition-all opacity-0 group-hover/list:opacity-100 group-focus-within/list:opacity-100">
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" className="size-8 p-2">
+              <Button variant="ghost" className="p-2 size-8">
                 <Pen className="size-5" />
               </Button>
             </TooltipTrigger>
@@ -52,8 +52,8 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
 
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" className="size-8 p-2">
-                <TrashIcon className="size-5 text-red-500" />
+              <Button variant="ghost" className="p-2 size-8">
+                <TrashIcon className="text-red-500 size-5" />
               </Button>
             </TooltipTrigger>
             <TooltipContent>
@@ -65,7 +65,12 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
 
       {/* Carousel or No Games Fallback */}
       {data?.length ? (
-        <Carousel>
+        <Carousel
+          opts={{
+            skipSnaps: true,
+            dragFree: true,
+          }}
+        >
           <CarouselContent>
             {data.map((game) => (
               <CarouselItem className="basis-auto" key={game.game_id}>
@@ -76,7 +81,7 @@ const ListContainer = ({ list_id, list_name }: ListContainerProps) => {
         </Carousel>
       ) : (
         <div className="flex items-start justify-start">
-          <h3 className="text-center text-lg mt-1">
+          <h3 className="mt-1 text-lg text-center">
             No games found in this list.
           </h3>
         </div>

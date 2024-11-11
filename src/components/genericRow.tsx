@@ -42,6 +42,7 @@ const GenericRow = ({
       id={id}
       opts={{
         skipSnaps: true,
+        dragFree: true,
       }}
     >
       <CarouselContent className="px-3">
@@ -49,10 +50,7 @@ const GenericRow = ({
           data?.map((game) => (
             <CarouselItem
               key={game.id}
-              className="
-              basis-auto
-              px-2
-            "
+              className="px-2  basis-auto"
               id={`carousel-item`}
             >
               <DefaultCard
