@@ -1,9 +1,12 @@
 import fs from "fs";
 import https from "https";
 import { logger } from "../../handlers/logging";
-import { win } from "../../main";
+
+import window from "../../utils/window";
 import download_events from "./events";
 import item from "./item";
+
+const win = window?.window;
 
 class HttpDownloader {
   item: item;

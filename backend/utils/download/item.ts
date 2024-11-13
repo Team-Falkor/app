@@ -2,10 +2,12 @@ import { AddDownloadData, DownloadData, DownloadStatus } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
 import { createWriteStream, WriteStream } from "node:fs";
 import path from "node:path";
-import { win } from "../../main";
+import window from "../../utils/window";
 import { constants } from "../constants";
 import { settings } from "../settings/settings";
 import download_events from "./events";
+
+const win = window?.window;
 
 class DownloadItem {
   id: string;

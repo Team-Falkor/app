@@ -4,7 +4,7 @@ import url, { fileURLToPath } from "node:url";
 import window from "./utils/window";
 
 export const __dirname = path.dirname(fileURLToPath(import.meta.url));
-export let win: BrowserWindow | null;
+export let win: BrowserWindow | null = window.window;
 
 // DEEP LINKING
 const deepLinkName = "falkor";
@@ -68,10 +68,9 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
 // for applications and their menu bar to stay active until the user quits
 // explicitly with Cmd + Q.
 app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-    win = null;
-  }
+  if (process.platform === "darwin") return;
+  app.quit();
+  win = null;
 });
 
 app.on("activate", () => {

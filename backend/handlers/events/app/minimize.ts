@@ -1,10 +1,10 @@
-import { win } from "../../../main";
+import window from "../../../utils/window";
 import { registerEvent } from "../utils/registerEvent";
 
 const minimize = async (_event: Electron.IpcMainInvokeEvent) => {
   try {
-    if (!win) return;
-    win.minimize();
+    if (!window?.window) return;
+    window?.window?.minimize();
   } catch (error) {
     console.error(error);
     return false;

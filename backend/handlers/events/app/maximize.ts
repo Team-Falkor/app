@@ -1,14 +1,14 @@
-import { win } from "../../../main";
+import window from "../../../utils/window";
 import { registerEvent } from "../utils/registerEvent";
 
 const maximize = async (_event: Electron.IpcMainInvokeEvent) => {
   try {
-    if (!win) return;
+    if (!window?.window) return;
 
-    if (win?.isMaximized()) {
-      win?.unmaximize();
+    if (window?.window.isMaximized()) {
+      window?.window?.unmaximize();
     } else {
-      win?.maximize();
+      window?.window?.maximize();
     }
   } catch (error) {
     console.error(error);

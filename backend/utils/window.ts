@@ -1,9 +1,11 @@
-import { BrowserWindow, screen } from "electron";
+import { app, BrowserWindow, Menu, nativeImage, screen, Tray } from "electron";
 import path from "node:path";
-import { RENDERER_DIST, VITE_DEV_SERVER_URL, __dirname } from "../main";
+import { __dirname, RENDERER_DIST, VITE_DEV_SERVER_URL } from "../main";
 import { settings } from "./settings/settings";
 
 class Window {
+  window: BrowserWindow | null = null;
+  tray: Tray | null = null;
   screenWidth: number = 0;
   screenHeight: number = 0;
 
@@ -33,7 +35,46 @@ class Window {
       VITE_DEV_SERVER_URL || path.join(RENDERER_DIST, "index.html");
     win.loadURL(loadURL);
 
+    if (!this.tray) {
+      if (settings.get("closeToTray")) {
+        this.createTray();
+      }
+    }
+
+    this.window = win;
     return win;
+  }
+
+  createTray() {
+    const trayIconPath = path.join(process.env.VITE_PUBLIC, "icon.png");
+    const tray = new Tray(nativeImage.createFromPath(trayIconPath));
+    tray.setToolTip("Falkor");
+
+    tray.setContextMenu(this.createContextMenu());
+
+    this.tray = tray;
+  }
+
+  private createContextMenu() {
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        type: "normal",
+        label: "Open Falkor",
+        click: () => {
+          if (!this.window) this.createWindow();
+          this.window?.show();
+        },
+      },
+      {
+        type: "normal",
+        label: "Quit Falkor",
+        click: () => {
+          app.quit();
+        },
+      },
+    ]);
+
+    return contextMenu;
   }
 }
 

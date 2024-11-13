@@ -1,8 +1,10 @@
 import { ChildProcess, spawn } from "child_process";
 import ms from "ms";
-import { win } from "../../main";
 import { gamesDB } from "../../sql";
+import windoww from "../../utils/window";
 import { gamesLaunched } from "./games_launched";
+
+const win = windoww?.window;
 
 class GameProcessLauncher {
   private gamePath: string;
