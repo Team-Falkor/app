@@ -7,7 +7,9 @@ export interface SettingsConfig {
   autoCheckForUpdates: boolean;
   checkForUpdatesOnStartup: boolean;
   checkForPluginUpdatesOnStartup: boolean;
+  launchOnStartup: launchOnStartupType;
   minimizeToTray: boolean;
+  closeToTray: boolean;
   useAccountsForDownloads: boolean;
   titleBarStyle: SettingsTitleBarStyle;
 }
@@ -19,3 +21,5 @@ export type SettingsTitleBarStyle =
   | "traffic-lights"
   | "native"
   | "none";
+
+export type launchOnStartupType = true | false | "minimized";

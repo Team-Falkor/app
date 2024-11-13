@@ -131,3 +131,8 @@ export type SourceProvider = {
   label: string;
   value: string;
 };
+
+export interface AutoLaunchOptions {
+  enabled: boolean;
+  isHidden: boolean;
+}

@@ -13,4 +13,6 @@ export const defaultSettings: SettingsConfig = {
   minimizeToTray: true,
   useAccountsForDownloads: false,
   titleBarStyle: "icons",
+  launchOnStartup: false,
+  closeToTray: false,
 };
