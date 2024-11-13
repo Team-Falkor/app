@@ -1,9 +1,9 @@
 import { LibraryGame, LibraryGameUpdate } from "@/@types/library/types";
-import { cn } from "@/lib";
+import { useLanguageContext } from "@/contexts/I18N";
+import { cn, timeSince } from "@/lib";
 import Playtime from "../../../playtime";
 import PlayStopButton from "../PlayStopButton";
 import ContinuePlayingCardActions from "./actions";
-import { useLanguageContext } from "@/contexts/I18N";
 
 interface ContinuePlayingCardOverlayProps {
   game: LibraryGame;
@@ -25,6 +25,8 @@ const ContinuePlayingCardOverlay: React.FC<ContinuePlayingCardOverlayProps> = ({
   fetchGames,
 }) => {
   const { t } = useLanguageContext();
+
+  console.log(game);
 
   return (
     <div className="relative flex flex-col items-start justify-between p-2 size-full">
@@ -60,6 +62,13 @@ const ContinuePlayingCardOverlay: React.FC<ContinuePlayingCardOverlayProps> = ({
         <h2 className="-mt-1 text-lg font-bold text-white capitalize line-clamp-1">
           {game.game_name}
         </h2>
+        {!!game?.game_last_played && (
+          <div className="flex items-center gap-1">
+            <h3 className="text-sm capitalize text-primary/90">
+              {timeSince(game.game_last_played)}
+            </h3>
+          </div>
+        )}
       </div>
     </div>
   );

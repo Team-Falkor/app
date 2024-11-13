@@ -10,12 +10,16 @@ export interface LibraryGame {
   game_args?: string;
   game_command?: string;
   game_playtime: number;
+  game_last_played?: number;
 }
 
 /**
  * Type for adding a new game.
  */
-export type NewLibraryGame = Omit<LibraryGame, "id" | "game_playtime">;
+export type NewLibraryGame = Omit<
+  LibraryGame,
+  "id" | "game_playtime" | "game_last_played"
+>;
 
 /**
  * Type for updating game fields.

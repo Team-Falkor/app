@@ -71,6 +71,7 @@ class GameProcessLauncher {
   public updatePlaytime() {
     if (!this.gameId) return;
     this.gamesDB.updateGamePlaytime(this.gameId, this.playtime);
+    this.gamesDB.updateGameLastPlayed(this.gameId, new Date());
     console.log(`Game playtime: ${ms(this.playtime)}`);
   }
 

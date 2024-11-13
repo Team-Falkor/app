@@ -41,8 +41,19 @@ class GamesDatabase {
             table.string("game_args");
             table.string("game_command");
             table.integer("game_playtime").defaultTo(0);
+            table.dateTime("game_last_played").defaultTo(null);
           });
         }
+
+        await db.schema
+          .hasColumn("library_games", "game_last_played")
+          .then(async (exists) => {
+            if (!exists) {
+              await db.schema.table("library_games", (table) => {
+                table.dateTime("game_last_played").defaultTo(null);
+              });
+            }
+          });
 
         await db.schema
           .hasColumn("library_games", "game_playtime")
@@ -127,7 +138,7 @@ class GamesDatabase {
    * @param {string} [updates.path] - The new path of the game.
    * @param {string} [updates.icon] - The new icon of the game.
    * @param {string} [updates.args] - The new arguments to pass to the game when launching it.
-   * @param {string} [updates.command] - The new command to use when launching the game.
+   * @param {string} [updates.command] - The new command to use when launching the game..
    *
    * @returns {Promise<void>}
    */
@@ -202,6 +213,15 @@ class GamesDatabase {
     return db("library_games")
       .where({ game_id: gameId })
       .update({ game_playtime: playtime });
+  }
+
+  async updateGameLastPlayed(gameId: string, lastPlayed: Date): Promise<void> {
+    await this.init();
+    if (!this.initialized) throw new Error("Database not initialized");
+
+    return db("library_games")
+      .where({ game_id: gameId })
+      .update({ game_last_played: lastPlayed });
   }
 }
 

@@ -32,7 +32,7 @@ const ContinuePlayingCard: React.FC<ContinuePlayingCardProps> = ({
       })}
     >
       <BackgroundImage bgImage={bg_image} className="w-full h-full" />
-      <div className="absolute inset-0 z-10 w-full h-full bg-black/50">
+      <div className="absolute inset-0 z-20 w-full h-full bg-black/50">
         <ContinuePlayingCardOverlay
           isPlaying={gameRunning}
           playGame={playGame}

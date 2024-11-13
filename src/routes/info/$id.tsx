@@ -54,7 +54,7 @@ function Info() {
 
   return (
     <div className="relative w-full h-full pb-20 overflow-x-hidden max-w-[100vw]">
-      <div className="absolute top-0 left-0 z-10 mx-10 mt-3 flex w-full">
+      <div className="absolute top-0 left-0 z-10 flex w-full mx-10 mt-3">
         <Button variant="ghost" size="icon" onClick={() => goBack()}>
           <ChevronLeft />
         </Button>

@@ -39,7 +39,7 @@ const QuickInfo = (props: QuickInfoProps) => {
   const { genres, aggregated_rating } = data;
 
   return (
-    <section className="overflow-hidden text-sm whitespace-normal text-ellipsis text-slate-400 mt-1">
+    <section className="mt-1 overflow-hidden text-sm whitespace-normal text-ellipsis text-slate-400">
       <ul className="flex flex-col justify-center gap-2 -mt-1 border-gray-200 divide-gray-200 rounded-lg dark:divide-gray-700 dark:border-gray-700 dark:text-gray-100">
         <QuickInfoItem
           title={t("genres")}
