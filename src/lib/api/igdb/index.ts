@@ -98,7 +98,7 @@ class IGDB extends BaseApi {
 
     const data = await this.request<IGDBReturnDataType[]>("games", {
       search: realQuery,
-      where: `platforms.abbreviation = "PC" & category = 0 & version_parent = null`,
+      where: `platforms.abbreviation = "PC" & version_parent = null`,
     });
 
     return data;
