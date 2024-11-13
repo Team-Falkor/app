@@ -27,8 +27,8 @@
       "enable_developer_console": "Enable Developer Console",
       "change-title-bar-style": "Change Title Bar Style",
       "change_title_bar_style_description": "Some options require a restart to take effect",
-      "launch-on-startup": "Launch Falkor on startup",
-      "launch-on-startup-minimized": "Launch Falkor on startup minimized",
+      "launch-on-startup": "Launch Falkor on system startup",
+      "launch-on-startup-minimized": "Launch Falkor on system startup minimized",
       "app-settings": "App Settings",
       "close-to-tray": "Minimize Falkor to the system tray instead of fully exiting the application"
     }

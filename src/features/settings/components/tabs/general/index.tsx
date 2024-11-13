@@ -87,7 +87,7 @@ const GeneralSetting = () => {
                 {t("settings.settings.launch-on-startup")}
               </Label>
             </div>
-            <div className="flex items-center gap-4 ml-4">
+            <div className="flex items-center gap-4 ml-5">
               <Switch
                 disabled={!settings?.launchOnStartup}
                 id="launch-on-startup-minimized"
