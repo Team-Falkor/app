@@ -2,13 +2,10 @@ export interface SettingsConfig {
   theme: SettingsTheme;
   language: string;
   downloadsPath: string;
-  autoUpdate: boolean;
-  autoUpdateInterval: number;
   autoCheckForUpdates: boolean;
   checkForUpdatesOnStartup: boolean;
   checkForPluginUpdatesOnStartup: boolean;
   launchOnStartup: launchOnStartupType;
-  minimizeToTray: boolean;
   closeToTray: boolean;
   useAccountsForDownloads: boolean;
   titleBarStyle: SettingsTitleBarStyle;
