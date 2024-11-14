@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderOpen, Shuffle } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useGames } from "../../hooks/useGames";
+import { useGames } from "../../../hooks/useGames";
 import NewGameSetting from "./setting";
 
 const formSchema = z.object({

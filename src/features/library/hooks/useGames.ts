@@ -1,7 +1,7 @@
 import { useGamesStore } from "@/stores/games";
 import { useEffect } from "react";
 
-export const useGames = () => {
+export const useGames = (fetch: boolean = true) => {
   const {
     games,
     loading,
@@ -14,8 +14,8 @@ export const useGames = () => {
   } = useGamesStore();
 
   useEffect(() => {
-    fetchGames();
-  }, [fetchGames]);
+    if (fetch) fetchGames();
+  }, [fetch, fetchGames]);
 
   return {
     fetchGames,

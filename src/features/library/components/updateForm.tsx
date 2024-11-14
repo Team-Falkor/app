@@ -7,7 +7,7 @@ import { FolderOpen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGames } from "../hooks/useGames";
-import NewGameSetting from "./modals/setting";
+import NewGameSetting from "./modals/newGame/setting";
 
 const formSchema = z.object({
   gameName: z.string().min(1, { message: "Required" }),

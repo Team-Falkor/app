@@ -7,7 +7,7 @@ import {
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import ContinuePlayingCard from "../cards/continuePlaying";
 import { NewGameCard } from "../cards/newGame";
-import NewGameModalContent from "../modals/modal";
+import NewGameModalContent from "../modals/newGame/modal";
 
 interface GamesContainerProps {
   games: Record<string, any>;

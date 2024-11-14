@@ -4,8 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import NewGameForm from "./form";
 import { useLanguageContext } from "@/contexts/I18N";
+import NewGameForm from "./form";
 
 const NewGameModalContent = () => {
   const { t } = useLanguageContext();

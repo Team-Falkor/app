@@ -136,3 +136,8 @@ export interface AutoLaunchOptions {
   enabled: boolean;
   isHidden: boolean;
 }
+
+export interface Tab {
+  name: string;
+  component: JSX.Element;
+}

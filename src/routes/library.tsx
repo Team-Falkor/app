@@ -1,8 +1,10 @@
-import MainContainer from "@/components/containers/mainContainer";
+import { Tab } from "@/@types";
 import { useLanguageContext } from "@/contexts/I18N";
-import ContinuePlaying from "@/features/library/components/continuePlaying";
-import ListsContainer from "@/features/lists/components/container/listsContainer";
+import ActiveLibrary from "@/features/library/components/activeLibrary";
+import LibraryTabs from "@/features/library/components/containers/tabs";
+import { useLists } from "@/features/lists/hooks/useLists";
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useMemo, useState } from "react";
 
 export const Route = createFileRoute("/library")({
   component: Library,
@@ -10,20 +12,51 @@ export const Route = createFileRoute("/library")({
 
 function Library() {
   const { t } = useLanguageContext();
+  const { lists } = useLists();
+
+  const tabs = useMemo((): Tab[] => {
+    const listsTabs: Tab[] = lists.map((list) => {
+      return {
+        name: `${list.name}`,
+        component: (
+          <ActiveLibrary
+            type="list"
+            listId={list.id}
+            title={list.name}
+            key={list.id}
+          />
+        ),
+      };
+    });
+
+    return [
+      {
+        name: t("sections.continue_playing"),
+        component: (
+          <ActiveLibrary type="game" title={t("sections.continue_playing")} />
+        ),
+      },
+      ...listsTabs,
+    ];
+  }, [lists, t]);
+
+  // Only set activeTab after tabs is ready to avoid undefined issues.
+  const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs[0]);
+
+  useEffect(() => {
+    if (tabs.length > 0 && !activeTab) {
+      setActiveTab(tabs[0]);
+    }
+  }, [tabs, activeTab]);
 
   return (
-    <MainContainer>
-      <div className="flex flex-col w-full h-full gap-10">
-        <div className="flex flex-col w-full gap-4">
-          <h3 className="pb-2 font-mono text-lg font-medium leading-6">
-            {t("sections.continue_playing")}
-          </h3>
-
-          <ContinuePlaying />
-        </div>
-
-        <ListsContainer />
-      </div>
-    </MainContainer>
+    <div className="p-0 py-0">
+      <LibraryTabs
+        tabs={tabs}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+      />
+      <div className="mt-4">{activeTab && activeTab.component}</div>
+    </div>
   );
 }

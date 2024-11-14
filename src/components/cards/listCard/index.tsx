@@ -12,7 +12,7 @@ const ListCard: React.FC<ListCardProps> = ({ game_id, title, image }) => {
     : "";
 
   return (
-    <Card className="group relative m-0 mt-3 w-[200px] rounded-t-lg p-0 overflow-hidden">
+    <Card className="group relative m-0 w-[200px] rounded-t-lg p-0 overflow-hidden">
       <CardContent className="p-0 m-0">
         <Link to={`/info/$id`} params={{ id: game_id.toString() }}>
           <ListCardImage imageId={imageId} alt={title} />
