@@ -1,5 +1,11 @@
 import { LibraryGame, LibraryGameUpdate } from "@/@types/library/types";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { useLanguageContext } from "@/contexts/I18N";
 import UpdateGameForm from "@/features/library/components/updateForm";
@@ -20,6 +26,9 @@ const UpdateDialog = ({ fetchGames, updateGame, game }: UpdateDialogProps) => {
         </DropdownMenuItem>
       </DialogTrigger>
       <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t("update_game")}</DialogTitle>
+        </DialogHeader>
         <UpdateGameForm
           onSubmit={(values) => {
             updateGame(game.game_id, {
