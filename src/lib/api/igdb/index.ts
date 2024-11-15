@@ -89,7 +89,7 @@ class IGDB extends BaseApi {
     }
   }
 
-  async search(query: string): Promise<IGDBReturnDataType[]> {
+  async search(query: string, limit?: number): Promise<IGDBReturnDataType[]> {
     const realQuery = query;
     // const findEasterEgg = searchEasterEggs.find(
     //   (egg) => egg.name === query.toLowerCase()
@@ -99,6 +99,7 @@ class IGDB extends BaseApi {
     const data = await this.request<IGDBReturnDataType[]>("games", {
       search: realQuery,
       where: `platforms.abbreviation = "PC" & version_parent = null`,
+      limit: limit?.toString() ?? undefined,
     });
 
     return data;

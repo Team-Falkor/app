@@ -5,18 +5,31 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
+import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguageContext } from "@/contexts/I18N";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import NewGameMetadataForm from "./forms/metadata";
 import NewGameSettingsForm from "./forms/settings";
+import NewGameImport from "./import";
 import { NewGameFormSchema, newGameFormSchema } from "./schema";
 
 const NewGameModal = () => {
+  const [popoverOpen, setPopoverOpen] = useState(false);
   const { t } = useLanguageContext();
   const form = useForm<NewGameFormSchema>({
     resolver: zodResolver(newGameFormSchema),
+    defaultValues: {
+      gameArgs: "",
+      gameCommand: "",
+      gameIcon: "",
+      gameId: "",
+      gameName: "",
+      gamePath: "",
+      igdbId: "",
+    },
   });
 
   const onSubmit = (data: NewGameFormSchema) => {
@@ -55,7 +68,12 @@ const NewGameModal = () => {
         </Form>
       </Tabs>
       <div className="flex items-end justify-between flex-1 mt-4">
-        <Button variant={"secondary"}>Import from igdb</Button>
+        <Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+          <PopoverTrigger>
+            <Button variant={"secondary"}>Import from igdb</Button>
+          </PopoverTrigger>
+          <NewGameImport form={form} setPopoverOpen={setPopoverOpen} />
+        </Popover>
         <Button
           type="submit"
           variant="secondary"

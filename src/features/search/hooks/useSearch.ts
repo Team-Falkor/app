@@ -10,7 +10,7 @@ interface UseSearchResult {
 }
 
 // Create the custom hook
-function useSearch(query: string): UseSearchResult {
+function useSearch(query: string, limit?: number): UseSearchResult {
   const [results, setResults] = useState<IGDBReturnDataType[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +35,7 @@ function useSearch(query: string): UseSearchResult {
         setError(null);
 
         try {
-          const searchResults = await igdb.search(searchQuery);
+          const searchResults = await igdb.search(searchQuery, limit);
           setResults(searchResults);
         } catch (err) {
           setError("Failed to fetch search results.");

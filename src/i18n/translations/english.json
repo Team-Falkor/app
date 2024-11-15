@@ -102,5 +102,6 @@
   "actions": "Actions",
   "stop_playing": "Stop Playing",
   "continue_playing": "Continue Playing",
+  "igdb_id": "IGDB ID",
   "support_me_on_kofi": "Support me on Ko-fi"
 }
