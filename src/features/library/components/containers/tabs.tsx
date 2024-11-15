@@ -1,8 +1,10 @@
 import { Tab } from "@/@types";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { cn } from "@/lib";
 import { Plus } from "lucide-react";
 import { Dispatch, SetStateAction } from "react";
+import NewGameModal from "../modals/newGame";
 
 interface LibraryTabsProps {
   tabs: Array<Tab>;
@@ -14,14 +16,18 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
   return (
     <div className="flex gap-2.5 p-4 bg-background">
       {/* New Game Button */}
-      <Button
-        variant="secondary"
-        className="mr-1 text-white bg-gradient-to-tr from-blue-400 to-purple-400 rounded-xl gap-1.5"
-      >
-        <Plus strokeWidth={3} />
-        <span className="font-bold">New Game</span>
-      </Button>
-
+      <Dialog>
+        <DialogTrigger>
+          <Button
+            variant="secondary"
+            className="mr-1 text-white bg-gradient-to-tr from-blue-400 to-purple-400 rounded-xl gap-1.5"
+          >
+            <Plus strokeWidth={3} />
+            <span className="font-bold">New Game</span>
+          </Button>
+        </DialogTrigger>
+        <NewGameModal />
+      </Dialog>
       {/* Tabs */}
       {tabs.map((tab, i) => (
         <Button

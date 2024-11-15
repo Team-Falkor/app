@@ -1,15 +1,17 @@
+import { cn } from "@/lib";
 import { Video } from "@/lib/api/igdb/types";
 
 interface MediaTrailerProps {
   videos: Video[] | undefined;
+  className?: string;
 }
 
-const MediaTrailer = ({ videos }: MediaTrailerProps) => {
+const MediaTrailer = ({ videos, className }: MediaTrailerProps) => {
   if (!videos?.length) return null;
 
   return (
     <iframe
-      className="aspect-video h-[500px] w-full rounded-lg"
+      className={cn("aspect-video h-[500px] w-full rounded-lg", className)}
       src={`https://www.youtube.com/embed/${videos?.[0].video_id}`}
       title="YouTube video player"
       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

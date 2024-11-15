@@ -3,6 +3,7 @@ import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { Link } from "@tanstack/react-router";
 import { useMemo } from "react";
 import IGDBImage from "../IGDBImage";
+import TrailerButton from "../trailer";
 import { buttonVariants } from "../ui/button";
 
 const BannerCard = ({
@@ -12,6 +13,7 @@ const BannerCard = ({
   summary,
   storyline,
   id,
+  videos,
 }: IGDBReturnDataType) => {
   const { t } = useLanguageContext();
 
@@ -57,9 +59,7 @@ const BannerCard = ({
             </div>
 
             <div className="flex flex-row gap-3">
-              <Link className={buttonVariants({ variant: "secondary" })}>
-                {t("trailer")}
-              </Link>
+              <TrailerButton name={name} videos={videos} />
               <Link
                 className={buttonVariants({ variant: "secondary" })}
                 to="/info/$id"
