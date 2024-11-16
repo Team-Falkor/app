@@ -10,7 +10,8 @@ export interface LibraryGame {
   game_args?: string;
   game_command?: string;
   game_playtime: number;
-  game_last_played?: number;
+  game_last_played?: Date | null;
+  igdb_id?: number | null;
 }
 
 /**
@@ -24,4 +25,4 @@ export type NewLibraryGame = Omit<
 /**
  * Type for updating game fields.
  */
-export type LibraryGameUpdate = Partial<Omit<NewLibraryGame, "game_id">>;
+export type LibraryGameUpdate = Partial<Omit<LibraryGame, "game_id" | "id">>;

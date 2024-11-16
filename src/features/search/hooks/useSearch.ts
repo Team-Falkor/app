@@ -44,7 +44,7 @@ function useSearch(query: string, limit?: number): UseSearchResult {
         }
       }, debounceDelay);
     },
-    [debounceDelay]
+    [limit]
   );
 
   useEffect(() => {

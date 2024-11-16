@@ -40,11 +40,7 @@ class Window {
       win.setMenu(null);
     }
 
-    if (!this.tray) {
-      if (settings.get("closeToTray")) {
-        this.createTray();
-      }
-    }
+    if (!this.tray) this.createTray();
 
     this.window = win;
     return win;

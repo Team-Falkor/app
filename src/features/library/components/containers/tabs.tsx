@@ -1,9 +1,10 @@
 import { Tab } from "@/@types";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
+import NewListDialogContent from "@/features/lists/components/newListDialogContent";
 import { cn } from "@/lib";
 import { Plus } from "lucide-react";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import NewGameModal from "../modals/newGame";
 
 interface LibraryTabsProps {
@@ -13,6 +14,7 @@ interface LibraryTabsProps {
 }
 
 const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
+  const [open, setOpen] = useState(false);
   return (
     <div className="flex gap-2.5 p-4 bg-background">
       {/* New Game Button */}
@@ -28,6 +30,7 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
         </DialogTrigger>
         <NewGameModal />
       </Dialog>
+
       {/* Tabs */}
       {tabs.map((tab, i) => (
         <Button
@@ -47,10 +50,15 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
       ))}
 
       {/* New List Button */}
-      <Button variant="secondary" className="rounded-xl gap-1.5 ml-1">
-        <Plus strokeWidth={3} />
-        <span className="font-bold">New List</span>
-      </Button>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger>
+          <Button variant="secondary" className="rounded-xl gap-1.5 ml-1">
+            <Plus strokeWidth={3} />
+            <span className="font-bold">New List</span>
+          </Button>
+        </DialogTrigger>
+        <NewListDialogContent open={open} setOpen={setOpen} />
+      </Dialog>
     </div>
   );
 };

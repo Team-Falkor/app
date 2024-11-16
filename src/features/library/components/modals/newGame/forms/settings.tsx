@@ -1,13 +1,7 @@
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { FormField } from "@/components/ui/form";
 import { useLanguageContext } from "@/contexts/I18N";
 import { UseFormReturn } from "react-hook-form";
+import GameFormInput from "../../../gameFormInput";
 import { NewGameFormSchema } from "../schema";
 
 interface NewGameMetadataFormProps {
@@ -23,16 +17,11 @@ const NewGameSettingsForm = ({ form }: NewGameMetadataFormProps) => {
         control={form.control}
         name="gameArgs"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t("arguments")}</FormLabel>
-            <FormControl>
-              <Input
-                placeholder={t("the_arguments_to_pass_to_the_game")}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <GameFormInput
+            text={t("arguments")}
+            description={t("the_arguments_to_pass_to_the_game")}
+            field={field}
+          />
         )}
       />
 
@@ -40,16 +29,11 @@ const NewGameSettingsForm = ({ form }: NewGameMetadataFormProps) => {
         control={form.control}
         name="gameCommand"
         render={({ field }) => (
-          <FormItem>
-            <FormLabel>{t("command")}</FormLabel>
-            <FormControl>
-              <Input
-                placeholder={t("the_command_to_run_the_game_e_g_wine")}
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
+          <GameFormInput
+            text={t("command")}
+            description={t("the_command_to_run_the_game_e_g_wine")}
+            field={field}
+          />
         )}
       />
     </div>

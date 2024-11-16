@@ -1,6 +1,5 @@
 import { igdb } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
 import DefaultCard from "./cards/defaultCard";
 import GenericRowSkeleton from "./skeletons/genericRow";
 import { Carousel, CarouselContent, CarouselItem } from "./ui/carousel";
@@ -28,11 +27,6 @@ const GenericRow = ({
     queryFn: fetcher,
   });
 
-  const wantCountdown = useMemo(
-    () => dataToFetch === "mostAnticipated",
-    [dataToFetch]
-  );
-
   if (isPending) return <GenericRowSkeleton />;
   if (error) return null;
 
@@ -50,14 +44,10 @@ const GenericRow = ({
           data?.map((game) => (
             <CarouselItem
               key={game.id}
-              className="px-2  basis-auto"
+              className="px-2 basis-auto"
               id={`carousel-item`}
             >
-              <DefaultCard
-                key={game.id}
-                wantCountdown={wantCountdown}
-                {...game}
-              />
+              <DefaultCard key={game.id} {...game} />
             </CarouselItem>
           ))}
       </CarouselContent>

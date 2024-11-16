@@ -4,7 +4,6 @@ import { Link } from "@tanstack/react-router";
 import { HTMLAttributes } from "react";
 import GenericRow from "../genericRow";
 import { buttonVariants } from "../ui/button";
-import { Separator } from "../ui/separator";
 
 interface RowContainerProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -27,6 +26,7 @@ const RowContainer = ({
         <h3 className="pb-2 font-mono text-lg font-medium leading-6">
           {title}
         </h3>
+
         <Link
           to={`/sections/${dataToFetch}`}
           className={cn(
@@ -40,9 +40,16 @@ const RowContainer = ({
         </Link>
       </div>
 
-      <Separator orientation="horizontal" className="mb-1.5 bg-primary/80" />
+      {/* <Separator
+        orientation="horizontal"
+        className="mb-3.5 bg-muted-foreground/25"
+      /> */}
 
-      <GenericRow dataToFetch={dataToFetch} fetchKey={[dataToFetch]} />
+      <GenericRow
+        className="mt-2"
+        dataToFetch={dataToFetch}
+        fetchKey={[dataToFetch]}
+      />
     </div>
   );
 };

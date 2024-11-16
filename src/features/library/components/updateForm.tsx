@@ -7,7 +7,7 @@ import { FolderOpen } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useGames } from "../hooks/useGames";
-import NewGameSetting from "./modals/newGame.old/setting";
+import GameFormInput from "./gameFormInput";
 
 const formSchema = z.object({
   gameName: z.string().min(1, { message: "Required" }),
@@ -18,6 +18,7 @@ const formSchema = z.object({
     .string()
     .optional()
     .refine((s) => !s?.includes(" "), "No Spaces!"),
+  igdbId: z.string().optional(),
 });
 
 interface UpdateGameFormProps {
@@ -35,6 +36,7 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
       gameIcon: defaultValues.gameIcon ?? "",
       gameName: defaultValues.gameName ?? "",
       gamePath: defaultValues.gamePath ?? "",
+      igdbId: defaultValues.igdbId ?? "",
     },
   });
 
@@ -85,11 +87,10 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
           control={form.control}
           name="gameName"
           render={({ field }) => (
-            <NewGameSetting
+            <GameFormInput
               text={t("name")}
               description={t("the_name_of_the_game")}
               field={field}
-              type="search"
               required
             />
           )}
@@ -99,12 +100,15 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
           control={form.control}
           name="gamePath"
           render={({ field }) => (
-            <NewGameSetting
+            <GameFormInput
               text={t("path")}
               description={t("the_path_to_the_game")}
-              type="search"
               Button={
-                <Button size="icon" variant="ghost" onClick={handlePathButton}>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={handlePathButton}
+                >
                   <FolderOpen />
                 </Button>
               }
@@ -118,13 +122,16 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
           control={form.control}
           name="gameIcon"
           render={({ field }) => (
-            <NewGameSetting
+            <GameFormInput
               text={t("icon")}
               description={t("the_path_or_url_of_the_icon")}
-              type="search"
               required
               Button={
-                <Button size="icon" variant="ghost" onClick={handleIconButton}>
+                <Button
+                  size="icon"
+                  variant="secondary"
+                  onClick={handleIconButton}
+                >
                   <FolderOpen />
                 </Button>
               }
@@ -138,7 +145,7 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
           name="gameArgs"
           render={({ field }) => (
             <>
-              <NewGameSetting
+              <GameFormInput
                 text={t("arguments")}
                 description={t("the_arguments_to_pass_to_the_game")}
                 field={field}
@@ -156,9 +163,21 @@ const UpdateGameForm = ({ defaultValues, onSubmit }: UpdateGameFormProps) => {
           control={form.control}
           name="gameCommand"
           render={({ field }) => (
-            <NewGameSetting
+            <GameFormInput
               text={t("command")}
               description={t("the_command_to_run_the_game_e_g_wine")}
+              field={field}
+            />
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="igdbId"
+          render={({ field }) => (
+            <GameFormInput
+              text={t("igdb_id")}
+              description={t("igdb_id")}
               field={field}
             />
           )}

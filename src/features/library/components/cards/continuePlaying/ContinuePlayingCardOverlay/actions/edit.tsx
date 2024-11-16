@@ -37,6 +37,7 @@ const UpdateDialog = ({ fetchGames, updateGame, game }: UpdateDialogProps) => {
               game_icon: values.gameIcon,
               game_name: values.gameName,
               game_path: values.gamePath,
+              igdb_id: values.igdbId ? Number(values.igdbId) : undefined,
             });
             fetchGames();
             return;
@@ -47,6 +48,7 @@ const UpdateDialog = ({ fetchGames, updateGame, game }: UpdateDialogProps) => {
             gameName: game.game_name,
             gamePath: game.game_path,
             gameIcon: game.game_icon ?? "",
+            igdbId: game.igdb_id?.toString() ?? "",
           }}
         />
       </DialogContent>

@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLanguageContext } from "@/contexts/I18N";
 import { Dispatch, SetStateAction, useRef } from "react";
 import { toast } from "sonner";
 import { useLists } from "../hooks/useLists";
@@ -19,12 +20,14 @@ interface NewListDialogContentProps {
 }
 
 const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
-  const { createList, loading } = useLists(); // Using Zustand's `useLists` hook
-  const ref = useRef<HTMLInputElement>(null);
+  const { t } = useLanguageContext();
+  const { createList, loading } = useLists();
+  const listNameRef = useRef<HTMLInputElement>(null);
+  const listDescriptionRef = useRef<HTMLInputElement>(null);
 
   const onSubmit = async () => {
     if (!open) return;
-    const name = ref.current?.value.trim();
+    const name = listNameRef.current?.value.trim();
 
     if (!name) {
       toast.error("List name cannot be empty", {
@@ -34,7 +37,7 @@ const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
     }
 
     try {
-      await createList(name);
+      await createList(name, listDescriptionRef.current?.value);
       setOpen(false);
       toast.success("List created successfully!");
     } catch (error) {
@@ -48,24 +51,39 @@ const NewListDialogContent = ({ open, setOpen }: NewListDialogContentProps) => {
   return (
     <DialogContent className="max-w-[425px]">
       <DialogHeader>
-        <DialogTitle>Create New List</DialogTitle>
+        <DialogTitle>{t("create_new_list")}</DialogTitle>
         <DialogDescription>
-          Fill in the information below to create a new list.
+          {t("fill_in_the_information_below_to_create_a_new_list")}
         </DialogDescription>
       </DialogHeader>
 
-      <div className="grid gap-3 py-2">
+      <div className="grid gap-3 pt-2">
         <Label htmlFor="collectionName">Name</Label>
         <Input
-          ref={ref}
+          ref={listNameRef}
           id="listName"
-          placeholder="Enter list name"
+          placeholder={t("enter_list_name")}
           type="text"
           className="w-full"
           minLength={1}
           maxLength={64}
           autoComplete={"off"}
-          disabled={loading} // Disable input while loading
+          disabled={loading}
+        />
+      </div>
+
+      <div className="grid gap-3 pt-1 pb-3">
+        <Label htmlFor="collectionDescription">{t("description")}</Label>
+        <Input
+          ref={listDescriptionRef}
+          id="listDescription"
+          placeholder={t("enter_list_description")}
+          type="text"
+          className="w-full"
+          minLength={1}
+          maxLength={64}
+          autoComplete={"off"}
+          disabled={loading}
         />
       </div>
 

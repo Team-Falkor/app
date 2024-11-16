@@ -42,6 +42,7 @@ class GamesDatabase {
             table.string("game_command");
             table.integer("game_playtime").defaultTo(0);
             table.dateTime("game_last_played").defaultTo(null);
+            table.integer("igdb_id").defaultTo(null);
           });
         }
 
@@ -61,6 +62,16 @@ class GamesDatabase {
             if (!exists) {
               await db.schema.table("library_games", (table) => {
                 table.integer("game_playtime").defaultTo(0);
+              });
+            }
+          });
+
+        await db.schema
+          .hasColumn("library_games", "igdb_id")
+          .then(async (exists) => {
+            if (!exists) {
+              await db.schema.table("library_games", (table) => {
+                table.integer("igdb_id").defaultTo(null);
               });
             }
           });
@@ -89,14 +100,17 @@ class GamesDatabase {
     await this.init();
     if (!this.initialized) throw new Error("Database not initialized");
 
-    const newGame = await db("library_games").insert<LibraryGame>({
-      game_name: game.game_name,
-      game_path: game.game_path,
-      game_id: game.game_id,
-      game_icon: game.game_icon || null,
-      game_args: game.game_args || null,
-      game_command: game.game_command || null,
-    });
+    const newData: NewLibraryGame = {
+      game_name: game.game_name || "",
+      game_path: game.game_path || "",
+      game_id: game.game_id || "",
+      game_icon: game.game_icon || undefined,
+      game_args: game.game_args || undefined,
+      game_command: game.game_command || undefined,
+      igdb_id: game.igdb_id || null,
+    };
+
+    const newGame = await db("library_games").insert<LibraryGame>(newData);
 
     return newGame;
   }
@@ -149,15 +163,19 @@ class GamesDatabase {
     const currentGame = await this.getGameById(gameId);
     if (!currentGame) throw new Error("Game not found");
 
-    await db("library_games")
-      .where({ game_id: gameId })
-      .update({
-        game_name: updates.game_name || currentGame.game_name,
-        game_path: updates.game_path || currentGame.game_path,
-        game_icon: updates.game_icon || currentGame.game_icon,
-        game_args: updates.game_args || currentGame.game_args,
-        game_command: updates.game_command || currentGame.game_command,
-      });
+    const newData: LibraryGameUpdate = {
+      game_name: updates.game_name || currentGame.game_name,
+      game_path: updates.game_path || currentGame.game_path,
+      game_icon: updates.game_icon || currentGame.game_icon,
+      game_args: updates.game_args || currentGame.game_args,
+      game_command: updates.game_command || currentGame.game_command,
+      igdb_id: updates.igdb_id || currentGame.igdb_id,
+      game_last_played:
+        updates.game_last_played || currentGame.game_last_played,
+      game_playtime: updates.game_playtime || currentGame.game_playtime,
+    };
+
+    await db("library_games").where({ game_id: gameId }).update(newData);
   }
 
   /**
@@ -196,32 +214,6 @@ class GamesDatabase {
       console.error("Error deleting game:", error);
       throw error;
     }
-  }
-
-  /**
-   * Updates the playtime of a game in the library.
-   *
-   * @param {string} gameId - The ID of the game to update.
-   * @param {number} playtime - The new playtime of the game in milliseconds.
-   *
-   * @returns {Promise<void>}
-   */
-  async updateGamePlaytime(gameId: string, playtime: number): Promise<void> {
-    await this.init();
-    if (!this.initialized) throw new Error("Database not initialized");
-
-    return db("library_games")
-      .where({ game_id: gameId })
-      .update({ game_playtime: playtime });
-  }
-
-  async updateGameLastPlayed(gameId: string, lastPlayed: Date): Promise<void> {
-    await this.init();
-    if (!this.initialized) throw new Error("Database not initialized");
-
-    return db("library_games")
-      .where({ game_id: gameId })
-      .update({ game_last_played: lastPlayed });
   }
 }
 
