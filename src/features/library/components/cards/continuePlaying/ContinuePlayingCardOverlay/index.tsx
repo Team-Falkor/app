@@ -65,7 +65,7 @@ const ContinuePlayingCardOverlay: React.FC<ContinuePlayingCardOverlayProps> = ({
         {!!game?.game_last_played && (
           <div className="flex items-center gap-1">
             <h3 className="text-sm capitalize text-primary/90">
-              {timeSince(game.game_last_played)}
+              {timeSince(Number(game.game_last_played))}
             </h3>
           </div>
         )}

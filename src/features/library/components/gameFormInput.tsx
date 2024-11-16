@@ -6,9 +6,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { InputHTMLAttributes } from "react";
-import { ControllerRenderProps } from "react-hook-form";
+import { ControllerRenderProps, FieldValues } from "react-hook-form";
 
-interface GameFormInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
+interface GameFormInputProps<T extends FieldValues>
+  extends InputHTMLAttributes<HTMLInputElement> {
   text: string;
   description: string;
   required?: boolean;
@@ -16,7 +17,7 @@ interface GameFormInputProps<T> extends InputHTMLAttributes<HTMLInputElement> {
   Button?: JSX.Element;
 }
 
-const GameFormInput = <T,>({
+const GameFormInput = <T extends FieldValues>({
   description,
   required,
   field,
