@@ -11,30 +11,10 @@ class Settings {
     this.jsonFileEditor = new JsonFileEditor<SettingsConfig>({
       filePath: constants.settingsPath,
       defaultContent: defaultSettings,
-      validate: this.validateSettings,
     });
 
     // Load settings from JSON file or defaults
     this.settingsCache = this.jsonFileEditor.read() || defaultSettings;
-  }
-
-  private validateSettings(data: unknown): data is SettingsConfig {
-    const isValid =
-      typeof data === "object" &&
-      data !== null &&
-      typeof (data as SettingsConfig).theme === "string" &&
-      typeof (data as SettingsConfig).language === "string" &&
-      typeof (data as SettingsConfig).downloadsPath === "string" &&
-      typeof (data as SettingsConfig).autoCheckForUpdates === "boolean" &&
-      typeof (data as SettingsConfig).checkForUpdatesOnStartup === "boolean" &&
-      typeof (data as SettingsConfig).checkForPluginUpdatesOnStartup ===
-        "boolean" &&
-      typeof (data as SettingsConfig).useAccountsForDownloads === "boolean" &&
-      typeof (data as SettingsConfig).titleBarStyle === "string" &&
-      typeof (data as SettingsConfig).launchOnStartup === "boolean" &&
-      typeof (data as SettingsConfig).closeToTray === "boolean";
-
-    return isValid;
   }
 
   // Get a setting by key
