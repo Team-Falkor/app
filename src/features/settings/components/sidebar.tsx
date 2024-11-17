@@ -12,12 +12,12 @@ const LINKS: Array<LinkItemType> = [
   {
     icon: <FaDiscord />,
     title: "join_the_discord",
-    url: "https://discord.gg/team-falkor",
+    url: "https://falkor.com/discord",
   },
   {
     icon: <FaGithub />,
     title: "star_us_on_github",
-    url: "https://github.com/team-falkor/falkor",
+    url: "https://github.com/team-falkor/app",
   },
 ];
 
