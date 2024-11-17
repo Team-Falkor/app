@@ -44,8 +44,6 @@ class Window {
       resizable: true,
     });
 
-    win.webContents.openDevTools();
-
     const loadURL =
       VITE_DEV_SERVER_URL || `file://${path.join(RENDERER_DIST, "index.html")}`;
     win.loadURL(loadURL);
