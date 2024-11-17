@@ -8,6 +8,7 @@ import { Form } from "@/components/ui/form";
 import { Popover, PopoverTrigger } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguageContext } from "@/contexts/I18N";
+import { useGames } from "@/features/library/hooks/useGames";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -17,6 +18,8 @@ import NewGameImport from "./import";
 import { NewGameFormSchema, newGameFormSchema } from "./schema";
 
 const NewGameModal = () => {
+  const { addGame } = useGames();
+
   const [popoverOpen, setPopoverOpen] = useState(false);
   const { t } = useLanguageContext();
   const form = useForm<NewGameFormSchema>({
@@ -32,9 +35,33 @@ const NewGameModal = () => {
     },
   });
 
-  const onSubmit = (data: NewGameFormSchema) => {
-    console.log(data);
-  };
+  async function onSubmit(values: NewGameFormSchema) {
+    const {
+      gameName,
+      gamePath,
+      gameId,
+      igdbId,
+      gameIcon,
+      gameArgs,
+      gameCommand,
+    } = values;
+
+    try {
+      await addGame({
+        game_name: gameName,
+        game_path: gamePath,
+        game_id: gameId,
+        game_icon: gameIcon,
+        game_args: gameArgs,
+        game_command: gameCommand,
+        igdb_id: igdbId ? Number(igdbId) : null,
+      });
+
+      form.reset();
+    } catch (err) {
+      console.error("Failed to add game:", err);
+    }
+  }
 
   return (
     <DialogContent className="min-w-52 min-h-[30rem]">

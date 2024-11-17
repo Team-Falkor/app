@@ -24,7 +24,6 @@ class JsonFileEditor<T extends object> {
   // Method to read JSON data
   public read(): T | null {
     try {
-      if (!this.validate) return null;
       const data = fs.readFileSync(this.filePath, "utf-8");
       const parsedData = JSON.parse(data);
 
@@ -50,6 +49,7 @@ class JsonFileEditor<T extends object> {
 
     try {
       fs.writeFileSync(this.filePath, JSON.stringify(data, null, 2), "utf-8");
+      console.log("JSON file written successfully.", data);
     } catch (error) {
       console.error("Error writing JSON file:", error);
     }

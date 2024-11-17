@@ -27,7 +27,6 @@ const PluginSettings = () => {
   const [showEnabledOnly, setShowEnabledOnly] = useState<boolean>(false);
   const [search, setSearch] = useState("");
 
-  // Get localStorage values and set state
   useEffect(() => {
     setShowRows(localStorage?.getItem("showRows") === "true");
     setSortBy((localStorage?.getItem("sortBy") as SortBy) || "alphabetic-asc");

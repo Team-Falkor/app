@@ -95,7 +95,7 @@ const NewGameForm = () => {
       await addGame({
         game_name: gameName,
         game_path: gamePath,
-        game_id: gameId, // Passed as a string
+        game_id: gameId,
         game_icon: gameIcon,
         game_args: gameArgs,
         game_command: gameCommand,
@@ -103,7 +103,7 @@ const NewGameForm = () => {
 
       form.reset();
     } catch (err) {
-      console.error("Failed to add game:", err); // More detailed error logging
+      console.error("Failed to add game:", err);
     }
   }
 

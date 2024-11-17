@@ -58,6 +58,9 @@ export const useSettingsStore = create<SettingsStoreState>((set) => ({
         key,
         value
       );
+
+      console.log("Success:", success);
+
       if (success !== null) {
         set((state) => ({
           settings: { ...state.settings, [key]: value },
