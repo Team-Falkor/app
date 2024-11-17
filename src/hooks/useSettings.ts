@@ -5,10 +5,10 @@ export const useSettings = () => {
   const store = useSettingsStore();
 
   useEffect(() => {
-    if (store.hasDoneFirstFetch) return;
+    if (store?.hasDoneFirstFetch) return;
 
-    store.fetchSettings();
-    store.setHasDoneFirstFetch();
+    store?.fetchSettings();
+    store?.setHasDoneFirstFetch();
   }, [store]);
 
   return {

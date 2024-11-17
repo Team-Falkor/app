@@ -1,7 +1,19 @@
 import { app, BrowserWindow, Menu, nativeImage, screen, Tray } from "electron";
 import path from "node:path";
-import { __dirname, RENDERER_DIST, VITE_DEV_SERVER_URL } from "../main";
-import { settings } from "./settings/settings";
+import { fileURLToPath } from "node:url";
+import { settings } from "../utils/settings/settings";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+process.env.APP_ROOT = path.join(__dirname, "..");
+
+const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
+export const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
+const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
+
+process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
+  ? path.join(process.env.APP_ROOT, "public")
+  : RENDERER_DIST;
 
 class Window {
   window: BrowserWindow | null = null;
@@ -23,7 +35,7 @@ class Window {
         preload: path.join(__dirname, "preload.mjs"),
         devTools: !app.isPackaged,
       },
-      autoHideMenuBar: true,
+      autoHideMenuBar: false,
       minWidth: 1000,
       minHeight: 600,
       frame,
@@ -32,23 +44,26 @@ class Window {
       resizable: true,
     });
 
+    win.webContents.openDevTools();
+
     const loadURL =
-      VITE_DEV_SERVER_URL || path.join(RENDERER_DIST, "index.html");
+      VITE_DEV_SERVER_URL || `file://${path.join(RENDERER_DIST, "index.html")}`;
     win.loadURL(loadURL);
 
     if (app.isPackaged) {
       win.setMenu(null);
     }
 
-    if (!this.tray) this.createTray();
+    if (!this?.tray) this.createTray();
 
     this.window = win;
     return win;
   }
 
   createTray() {
-    const trayIconPath = path.join(process.env.VITE_PUBLIC, "icon.png");
-    const tray = new Tray(nativeImage.createFromPath(trayIconPath));
+    const tray = new Tray(
+      nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "icon.png"))
+    );
     tray.setToolTip("Falkor");
 
     tray.setContextMenu(this.createContextMenu());
@@ -76,6 +91,13 @@ class Window {
     ]);
 
     return contextMenu;
+  }
+
+  destroy() {
+    this.window?.destroy();
+    this.window = null;
+    this.tray?.destroy();
+    this.tray = null;
   }
 }
 
