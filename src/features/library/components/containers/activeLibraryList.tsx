@@ -21,18 +21,16 @@ const ActiveLibraryList = ({ listId }: ActiveLibraryListProps) => {
 
   if (isPending) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <p className="text-lg font-semibold text-muted-foreground">
-          Loading...
-        </p>
+      <div className="flex items-center justify-center">
+        <p className="text-lg font-semibold">Loading...</p>
       </div>
     );
   }
 
   if (isError) {
     return (
-      <div className="flex items-center justify-center h-40">
-        <p className="text-lg font-semibold text-error-foreground">
+      <div className="flex items-center justify-center">
+        <p className="text-lg font-semibold">
           Something went wrong. Please try again later.
         </p>
       </div>
