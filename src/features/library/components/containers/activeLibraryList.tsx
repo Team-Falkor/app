@@ -1,6 +1,7 @@
 import ListCard from "@/components/cards/listCard";
 import { useLists } from "@/features/lists/hooks/useLists";
 import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 interface ActiveLibraryListProps {
   listId: number;
@@ -16,20 +17,37 @@ const ActiveLibraryList = ({ listId }: ActiveLibraryListProps) => {
     },
   });
 
-  if (isPending) return <div>Loading...</div>;
-  if (isError) return <div>Error: {isError}</div>;
+  const listCount = useMemo(() => data?.length, [data]);
 
-  return listId && data && data.length > 0 ? (
+  if (isPending) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-lg font-semibold text-muted-foreground">
+          Loading...
+        </p>
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex items-center justify-center h-40">
+        <p className="text-lg font-semibold text-error-foreground">
+          Something went wrong. Please try again later.
+        </p>
+      </div>
+    );
+  }
+
+  return listCount ? (
     <div className="flex flex-wrap gap-4">
-      {data?.length ? (
-        data.map((game) => <ListCard key={game.game_id} {...game} />)
-      ) : (
-        <div className="text-lg font-bold text-center">
-          No games in this list
-        </div>
-      )}
+      {data.map((game) => (
+        <ListCard key={game.game_id} {...game} />
+      ))}
     </div>
-  ) : null;
+  ) : (
+    <p className="text-lg font-semibold">No games in this list.</p>
+  );
 };
 
 export default ActiveLibraryList;

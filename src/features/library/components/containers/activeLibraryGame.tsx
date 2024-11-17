@@ -7,25 +7,23 @@ const ActiveLibraryGame = () => {
 
   const gamesCount = useMemo(() => Object.values(games)?.length, [games]);
 
-  return (
+  return gamesCount ? (
     <div className="flex flex-wrap gap-4">
-      {gamesCount ? (
-        Object.values(games).map((game) => (
-          <ContinuePlayingCard
-            key={game.id}
-            bg_image={game.game_icon ?? ""}
-            game={game}
-            fetchGames={fetchGames}
-            deleteGame={deleteGame}
-            updateGame={updateGame}
-          />
-        ))
-      ) : (
-        <div className="text-lg font-bold text-center">
-          You have not added any games to continue playing
-        </div>
-      )}
+      {Object.values(games).map((game) => (
+        <ContinuePlayingCard
+          key={game.id}
+          bg_image={game.game_icon ?? ""}
+          game={game}
+          fetchGames={fetchGames}
+          deleteGame={deleteGame}
+          updateGame={updateGame}
+        />
+      ))}
     </div>
+  ) : (
+    <p className="text-lg font-semibold">
+      You have not added any games to continue playing.
+    </p>
   );
 };
 
