@@ -1,9 +1,10 @@
 import { useUpdaterStore } from "@/stores/updater";
-import { useSettings } from "./useSettings";
 import { useEffect } from "react";
+import { useSettings } from "./useSettings";
 
 export const useUpdater = () => {
-  const { updateAvailable, checkForUpdates, installUpdate } = useUpdaterStore();
+  const { updateAvailable, checkForUpdates, installUpdate, progress } =
+    useUpdaterStore();
   const { settings } = useSettings();
 
   useEffect(() => {
@@ -16,5 +17,6 @@ export const useUpdater = () => {
     updateAvailable,
     checkForUpdates,
     installUpdate,
+    progress,
   };
 };

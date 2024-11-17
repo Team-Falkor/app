@@ -159,3 +159,4 @@ dist
 
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+dev-app-update.yml

@@ -21,7 +21,7 @@ class Window {
       icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
       webPreferences: {
         preload: path.join(__dirname, "preload.mjs"),
-        devTools: !app.isPackaged,
+        // devTools: !app.isPackaged,
       },
       autoHideMenuBar: true,
       minWidth: 1000,
@@ -36,9 +36,9 @@ class Window {
       VITE_DEV_SERVER_URL || path.join(RENDERER_DIST, "index.html");
     win.loadURL(loadURL);
 
-    if (app.isPackaged) {
-      win.setMenu(null);
-    }
+    // if (app.isPackaged) {
+    //   win.setMenu(null);
+    // }
 
     if (!this.tray) this.createTray();
 

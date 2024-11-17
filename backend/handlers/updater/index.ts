@@ -1,5 +1,7 @@
+import { app } from "electron";
 import electronUpdater from "electron-updater";
 import { settings } from "../../utils/settings/settings";
+import window from "../../utils/window";
 
 const { autoUpdater } = electronUpdater;
 
@@ -9,9 +11,50 @@ autoUpdater.setFeedURL({
   repo: "app",
 });
 
+autoUpdater.allowDowngrade = true;
+autoUpdater.autoInstallOnAppQuit = false;
+autoUpdater.autoDownload = false;
+autoUpdater.forceDevUpdateConfig = true;
+
 class Updater {
   private settings = settings;
-  private updateAvailable = false;
+  public updateAvailable = false;
+
+  constructor() {
+    autoUpdater.on("update-available", () => {
+      this.updateAvailable = true;
+    });
+    autoUpdater.on("update-not-available", () => {
+      this.updateAvailable = false;
+    });
+    autoUpdater.on("error", (error) => {
+      console.error("Error checking for updates: ", error);
+    });
+    autoUpdater.on("checking-for-update", () => {
+      console.log("Checking for updates...");
+    });
+    autoUpdater.on("update-downloaded", () => {
+      console.log("Update downloaded.");
+      this.updateAvailable = false;
+    });
+    autoUpdater.on("download-progress", (progressObj) => {
+      console.log("Download progress: ", progressObj);
+
+      if (!window.window) return;
+      window.window.webContents.send(
+        "updater:download-progress",
+        progressObj.percent
+      );
+    });
+
+    autoUpdater.on("update-downloaded", () => {
+      autoUpdater.quitAndInstall();
+    });
+
+    autoUpdater.on("error", (error) => {
+      window.window?.webContents.send("updater:error", error);
+    });
+  }
 
   public async checkForUpdates() {
     if (!this.settings.get("autoCheckForUpdates")) return null;
@@ -19,10 +62,11 @@ class Updater {
 
     if (!check) return false;
 
-    // Return true if update is available
-    if (!check?.updateInfo?.version) return false;
+    if (check?.updateInfo?.version <= app.getVersion()) return false;
 
-    this.updateAvailable = true;
+    console.log(`App version: ${app.getVersion()}`);
+    console.log(`Update version: ${check?.updateInfo?.version}`);
+
     return true;
   }
 
@@ -32,14 +76,16 @@ class Updater {
     return await autoUpdater.downloadUpdate();
   }
 
-  public quitAndInstall() {
-    if (!this.updateAvailable) return false;
-    return autoUpdater.quitAndInstall();
-  }
-
   public async update() {
-    await this.downloadUpdate();
-    return this.quitAndInstall();
+    try {
+      const check = await autoUpdater.checkForUpdatesAndNotify();
+      if (!check) return false;
+      if (check?.updateInfo?.version <= app.getVersion()) return false;
+
+      await autoUpdater.downloadUpdate();
+    } catch (error) {
+      console.error("Error updating app: ", error);
+    }
   }
 }
 
