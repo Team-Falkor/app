@@ -9,6 +9,7 @@ type ActiveLibraryProps =
     }
   | {
       title: string;
+      description?: string;
       type: "list";
       listId: number;
     };
@@ -19,13 +20,18 @@ const ActiveLibrary = (props: ActiveLibraryProps) => {
   return (
     <div className="flex flex-col gap-4 p-6 rounded-lg">
       {/* Header */}
-      <div className="flex items-center gap-3">
-        {type === "game" ? (
-          <Play size={36} className="text-primary fill-white" />
-        ) : (
-          <Book size={36} className="text-primary" />
+      <div className="flex flex-col gap-1.5">
+        <div className="flex items-center gap-3">
+          {type === "game" ? (
+            <Play size={36} className="text-primary fill-white" />
+          ) : (
+            <Book size={36} className="text-primary" />
+          )}
+          <h2 className="text-2xl font-bold capitalize">{title}</h2>
+        </div>
+        {type === "list" && props.description && (
+          <div className="text-muted-foreground">{props.description}</div>
         )}
-        <h2 className="text-2xl font-bold capitalize">{title}</h2>
       </div>
 
       {/* Content */}

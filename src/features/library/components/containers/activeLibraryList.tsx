@@ -21,9 +21,13 @@ const ActiveLibraryList = ({ listId }: ActiveLibraryListProps) => {
 
   return listId && data && data.length > 0 ? (
     <div className="flex flex-wrap gap-4">
-      {data.map((game) => (
-        <ListCard key={game.game_id} {...game} />
-      ))}
+      {data?.length ? (
+        data.map((game) => <ListCard key={game.game_id} {...game} />)
+      ) : (
+        <div className="text-lg font-bold text-center">
+          No games in this list
+        </div>
+      )}
     </div>
   ) : null;
 };

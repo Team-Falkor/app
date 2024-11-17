@@ -22,6 +22,7 @@ function Library() {
           <ActiveLibrary
             type="list"
             listId={list.id}
+            description={list.description}
             title={list.name}
             key={list.id}
           />
