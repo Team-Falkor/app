@@ -49,7 +49,11 @@ const Updater = () => {
           <DialogClose>
             <Button variant={"destructive"}>Later</Button>
           </DialogClose>
-          <Button variant={"secondary"} onClick={installUpdate}>
+          <Button
+            variant={"secondary"}
+            onClick={installUpdate}
+            disabled={!!progress}
+          >
             Update Now
           </Button>
         </DialogFooter>
