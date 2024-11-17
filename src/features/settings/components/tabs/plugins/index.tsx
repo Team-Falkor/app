@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/tooltip";
 import { useLanguageContext } from "@/contexts/I18N";
 import { Plus } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SettingsSection } from "../../section";
 import SettingTitle from "../../title";
 import SettingsContainer from "../container";
@@ -22,55 +22,65 @@ const PluginSettings = () => {
   const { t } = useLanguageContext();
   const [open, setOpen] = useState(false);
 
-  const [showRows, setShowRows] = useState(true);
+  const [showRows, setShowRows] = useState<boolean>(false);
   const [sortBy, setSortBy] = useState<SortBy>("alphabetic-asc");
-  const [showEnabledOnly, setShowEnabledOnly] = useState(false);
+  const [showEnabledOnly, setShowEnabledOnly] = useState<boolean>(false);
   const [search, setSearch] = useState("");
+
+  // Get localStorage values and set state
+  useEffect(() => {
+    setShowRows(localStorage?.getItem("showRows") === "true");
+    setSortBy((localStorage?.getItem("sortBy") as SortBy) || "alphabetic-asc");
+    setShowEnabledOnly(localStorage?.getItem("showEnabledOnly") === "true");
+  }, []);
 
   return (
     <div>
       <SettingTitle>{t("settings.titles.plugins")}</SettingTitle>
 
       <SettingsContainer>
+        {/* Search and Add Plugin Section */}
         <SettingsSection>
-          <div className="flex justify-between">
-            <div className="flex w-full gap-2">
-              <div className="w-1/2">
-                <Input
-                  placeholder={t("what_plugin_are_you_looking_for")}
-                  type="text"
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                />
-              </div>
+          <div className="flex items-center justify-between">
+            <div className="flex w-full gap-4">
+              {/* Search Input */}
+              <Input
+                className="w-1/2"
+                placeholder={t("what_plugin_are_you_looking_for")}
+                type="text"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
 
-              <div className="flex gap-2">
-                <Dialog open={open} onOpenChange={setOpen}>
-                  <DialogTrigger>
-                    <Tooltip>
-                      <TooltipTrigger>
-                        <Button variant={"ghost"} size={"icon"}>
-                          <Plus />
-                        </Button>
-                      </TooltipTrigger>
-                      <TooltipContent>{t("add_local_plugin")}</TooltipContent>
-                    </Tooltip>
-                  </DialogTrigger>
-                  <AddPluginModal setOpen={setOpen} open={open} />
-                </Dialog>
-              </div>
+              {/* Add Plugin Button */}
+              <Dialog open={open} onOpenChange={setOpen}>
+                <DialogTrigger>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <Button variant="ghost" size="icon">
+                        <Plus />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>{t("add_local_plugin")}</TooltipContent>
+                  </Tooltip>
+                </DialogTrigger>
+                <AddPluginModal setOpen={setOpen} open={open} />
+              </Dialog>
             </div>
+
+            {/* Sorting Options */}
             <PluginsSort
               showRows={showRows}
               setShowRows={setShowRows}
               sortBy={sortBy}
               setSortBy={setSortBy}
-              setShowEnabledOnly={setShowEnabledOnly}
               showEnabledOnly={showEnabledOnly}
+              setShowEnabledOnly={setShowEnabledOnly}
             />
           </div>
         </SettingsSection>
 
+        {/* Plugin Display Section */}
         <SettingsSection>
           <PluginDisplay
             showRows={showRows}

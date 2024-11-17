@@ -64,7 +64,7 @@ export const Section = ({ title, dataToFetch }: Props) => {
           <ChevronLeft className="size-8" />
         </Button>
 
-        <h2 className="scroll-m-20 text-4xl font-bold tracking-tight first:mt-0">
+        <h2 className="text-4xl font-bold tracking-tight scroll-m-20 first:mt-0">
           {title}
         </h2>
       </div>
@@ -79,7 +79,7 @@ export const Section = ({ title, dataToFetch }: Props) => {
         {data?.map((game) => <DefaultCard key={game.id} {...game} />)}
       </div>
 
-      <div className="flex flex-1 justify-between mt-4">
+      <div className="flex justify-between flex-1 mt-4">
         <Button
           variant={"ghost"}
           onClick={handlePrevPage}
@@ -89,7 +89,7 @@ export const Section = ({ title, dataToFetch }: Props) => {
           <ChevronLeft />
         </Button>
 
-        <span className="text-muted-foreground text-lg">Page {page}</span>
+        <span className="text-lg text-muted-foreground">Page {page}</span>
 
         <Button variant={"ghost"} onClick={handleNextPage} size={"icon"}>
           <ChevronRight />

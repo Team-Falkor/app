@@ -36,7 +36,10 @@ const PluginsSort = ({
           <Button
             variant={showEnabledOnly ? "secondary" : "ghost"}
             size={"icon"}
-            onClick={() => setShowEnabledOnly(!showEnabledOnly)}
+            onClick={() => {
+              localStorage.setItem("showEnabledOnly", String(!showEnabledOnly));
+              setShowEnabledOnly(!showEnabledOnly);
+            }}
           >
             <Check />
           </Button>
@@ -51,13 +54,14 @@ const PluginsSort = ({
           <Button
             variant={"ghost"}
             size={"icon"}
-            onClick={() =>
-              setSortBy(
+            onClick={() => {
+              const newSortBy =
                 sortBy === "alphabetic-asc"
                   ? "alphabetic-desc"
-                  : "alphabetic-asc"
-              )
-            }
+                  : "alphabetic-asc";
+              localStorage.setItem("sortBy", newSortBy);
+              setSortBy(newSortBy);
+            }}
           >
             {sortBy === "alphabetic-asc" ? <ArrowUpAZ /> : <ArrowDownAZ />}
           </Button>
@@ -74,7 +78,10 @@ const PluginsSort = ({
           <Button
             variant={"ghost"}
             size={"icon"}
-            onClick={() => setShowRows(!showRows)}
+            onClick={() => {
+              localStorage.setItem("showRows", String(!showRows));
+              setShowRows(!showRows);
+            }}
           >
             {showRows ? <Columns2 /> : <Rows3 />}
           </Button>
