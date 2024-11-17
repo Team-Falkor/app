@@ -1,6 +1,7 @@
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useLogger } from "@/hooks";
 import { cn } from "@/lib";
+import { useQuery } from "@tanstack/react-query";
 import LogSwitch from "./logSwitch";
 
 interface LogWindowProps {
@@ -8,7 +9,13 @@ interface LogWindowProps {
 }
 
 const LogWindow = ({ enabled }: LogWindowProps) => {
-  const { logs } = useLogger();
+  const { logs, retrieveLogs } = useLogger();
+
+  useQuery({
+    queryKey: ["logs"],
+    queryFn: retrieveLogs,
+    enabled: enabled,
+  });
 
   return (
     <div>
@@ -24,7 +31,7 @@ const LogWindow = ({ enabled }: LogWindowProps) => {
               return <LogSwitch {...log} key={i} />;
             })
           ) : (
-            <div className="size-full flex items-center justify-center">
+            <div className="flex items-center justify-center size-full">
               <p className="text-lg font-bold">No logs</p>
             </div>
           )}
