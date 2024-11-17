@@ -14,10 +14,10 @@ const Search = ({
 }) => {
   const { t } = useLanguageContext();
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const { results, loading } = useSearch(searchTerm);
+  const { results, loading } = useSearch(searchTerm, 8);
 
   return (
-    <PopoverContent side="right" className="p-0 w-96">
+    <PopoverContent side="right" className="p-0 mt-10 w-96">
       <div className="grid gap-4">
         <div className="w-full px-4 pt-4">
           <Input
