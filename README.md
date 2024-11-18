@@ -45,6 +45,35 @@ To get started with Falkor, follow these steps:
 
 - `VITE_RD_CLIENT_ID`: Open source app RD client ID found in the Real Debrid documentation (https://api.real-debrid.com/)
 
+### NixOS Flakes
+
+```nix
+# flake.nix
+
+{
+  inputs.falkor.url = "github:Team-Falkor/app";
+  # ...
+
+  outputs = {nixpkgs, falkor, ...} @ inputs: {
+    nixosConfigurations.HOSTNAME = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit inputs; }; # this is the important part
+      modules = [
+        ./configuration.nix
+      ];
+    };
+  }
+}
+
+# configuration.nix
+
+{inputs, pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    inputs.falkor.packages.${pkgs.system}.default
+    # ...
+  ];
+}
+```
+
 ## Contributing
 
 We welcome contributions to Falkor! If you are looking for ways to contribute, here are some options:
