@@ -1,15 +1,14 @@
-import { Log } from "@/@types";
+import { LogEntry } from "@/@types/logs";
 import { create } from "zustand";
 
 interface LoggerState {
-  logs: Log[];
+  logs: LogEntry[];
   loading: boolean;
   error: string | null;
   fetchLogs: () => Promise<void>;
   clear: () => Promise<void>;
-  deleteLog: (id: number) => Promise<void>;
-  log: (log: Log) => Promise<void>;
-  getLog: (id: number) => Promise<Log | null>;
+  log: (level: LogEntry["level"], message: string) => Promise<void>;
+  getLog: (timestamp: number) => Promise<LogEntry | null>;
 }
 
 export const useLoggerStore = create<LoggerState>((set) => ({
@@ -58,12 +57,15 @@ export const useLoggerStore = create<LoggerState>((set) => ({
     }
   },
 
-  log: async (log: Log) => {
+  log: async (level, message) => {
     set({ loading: true, error: null });
     try {
-      await window.ipcRenderer.invoke("logger:log", log);
+      const log = await window.ipcRenderer.invoke("logger:log", level, message);
+
+      if (!log) return;
+
       set((state) => ({
-        logs: [...state.logs, log], // Append new log
+        logs: [...state.logs, log],
       }));
     } catch (err) {
       set({ error: String(err) });

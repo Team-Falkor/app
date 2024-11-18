@@ -3,7 +3,7 @@ import { registerEvent } from "../utils/registerEvent";
 
 const getAllLogs = async (_event: Electron.IpcMainInvokeEvent) => {
   try {
-    return await logger.getLogs();
+    return logger.read();
   } catch (error) {
     console.error(error);
     return false;

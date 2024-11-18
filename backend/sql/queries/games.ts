@@ -3,6 +3,7 @@ import {
   LibraryGameUpdate,
   NewLibraryGame,
 } from "@/@types/library/types";
+import { logger } from "../../handlers/logging";
 import { db } from "../knex";
 
 /**
@@ -80,6 +81,10 @@ class GamesDatabase {
       this.initialized = true;
     } catch (error) {
       console.error("Error initializing database:", error);
+      logger.log(
+        "error",
+        `Error initializing database: ${(error as Error).message}`
+      );
     }
   }
 

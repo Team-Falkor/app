@@ -30,7 +30,6 @@ const appRouter = createRouter({
   defaultErrorComponent: (props) => <ErrorComponent {...props} />,
 });
 
-// Register the router instance for type safety
 declare module "@tanstack/react-router" {
   interface Register {
     router: typeof appRouter;
@@ -38,10 +37,7 @@ declare module "@tanstack/react-router" {
 }
 
 function App() {
-  // Initialize theming logic
   useThemes();
-
-  // Memoize queryClient and router to avoid recreating them on each render
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="ui-theme">

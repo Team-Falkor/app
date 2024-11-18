@@ -2,6 +2,7 @@ import { AddDownloadData, DownloadData, DownloadStatus } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
 import { createWriteStream, WriteStream } from "node:fs";
 import path from "node:path";
+import { logger } from "../../handlers/logging";
 import window from "../../utils/window";
 import { constants } from "../constants";
 import { settings } from "../settings/settings";
@@ -83,6 +84,12 @@ class DownloadItem {
         error
       );
       this.setError("Failed to create file stream.");
+
+      logger.log(
+        "error",
+        `Failed to create file stream for ${this.fullPath}: ${(error as Error).message}`
+      );
+
       return undefined;
     }
   }

@@ -4,10 +4,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib";
+import { format } from "date-fns";
 import { HTMLAttributes, PropsWithChildren } from "react";
 
 interface Props extends HTMLAttributes<HTMLDivElement> {
-  timestamp?: string;
+  timestamp?: number;
 }
 
 const BaseLog = ({
@@ -28,7 +29,11 @@ const BaseLog = ({
         </div>
       </TooltipTrigger>
 
-      {!!timestamp && <TooltipContent>{timestamp}</TooltipContent>}
+      {!!timestamp && (
+        <TooltipContent>
+          {format(new Date(timestamp), "yyyy-MM-dd HH:mm:ss")}
+        </TooltipContent>
+      )}
     </Tooltip>
   );
 };

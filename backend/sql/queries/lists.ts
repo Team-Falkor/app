@@ -1,4 +1,5 @@
 import { List, ListGame } from "@/@types";
+import { logger } from "../../handlers/logging";
 import { db } from "../knex";
 
 /**
@@ -64,6 +65,7 @@ class ListsDatabase {
       });
     } catch (error) {
       console.error("Error creating tables:", error);
+      logger.log("error", `Error creating tables: ${error}`);
       throw error;
     }
 

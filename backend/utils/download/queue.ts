@@ -1,4 +1,3 @@
-import { logger } from "../../handlers/logging";
 import HttpDownloader from "./http-downloader";
 import DownloadItem from "./item";
 
@@ -98,16 +97,6 @@ class DownloadQueue {
 
   private logError(message: string, error: unknown): void {
     console.error(`${message}:`, error);
-    logger.log({
-      id: this.getCurrentTimestamp(),
-      message: `${message}: ${error}`,
-      timestamp: new Date().toISOString(),
-      type: "error",
-    });
-  }
-
-  private getCurrentTimestamp(): number {
-    return Math.floor(Date.now() / 1000);
   }
 }
 

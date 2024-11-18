@@ -25,6 +25,7 @@ class JsonFileEditor<T extends object> {
   public read(): T | null {
     try {
       const data = fs.readFileSync(this.filePath, "utf-8");
+      if (!data) return null;
       const parsedData = JSON.parse(data);
 
       // Validate data if a validator is provided

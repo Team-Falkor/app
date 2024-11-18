@@ -1,8 +1,7 @@
-export interface Log {
-  id: number;
+export interface LogEntry {
+  level: LogLevel;
   message: string;
-  timestamp: string;
-  type: LogType;
+  timestamp: number;
 }
 
-export type LogType = "error" | "info" | "warn" | "success";
+export type LogLevel = "error" | "warn" | "info" | "debug" | "trace";

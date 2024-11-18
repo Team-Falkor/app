@@ -1,9 +1,12 @@
 import { logger } from "../../../handlers/logging";
 import { registerEvent } from "../utils/registerEvent";
 
-const deleteALog = async (_event: Electron.IpcMainInvokeEvent, id: number) => {
+const deleteALog = async (
+  _event: Electron.IpcMainInvokeEvent,
+  timestamp: number
+) => {
   try {
-    return await logger.deleteALog(id);
+    return logger.remove(timestamp);
   } catch (error) {
     console.error(error);
     return false;

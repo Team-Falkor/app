@@ -1,7 +1,6 @@
 import { ITorrent, ITorrentGameData } from "@/@types/torrent";
 import type { IpcMainInvokeEvent } from "electron";
 import { Torrent } from "webtorrent";
-import { logger } from "../../../handlers/logging";
 import {
   client,
   combineTorrentData,
@@ -118,13 +117,6 @@ const addTorrent = async (
         );
 
         torrent.on("error", (error) => {
-          logger.log({
-            id: Math.floor(Date.now() / 1000),
-            message: `Failed to download ${torrent.name}: ${error}`,
-            timestamp: new Date().toISOString(),
-            type: "error",
-          });
-
           return event.sender.send("torrent:error", {
             message: error,
             infoHash: torrent.infoHash,
@@ -165,13 +157,6 @@ const addTorrent = async (
     event.sender.send("torrent:error", {
       message: `Error adding torrent: ${torrentId}`,
       error: (error as Error).message,
-    });
-
-    logger.log({
-      id: Math.floor(Date.now() / 1000),
-      message: `Failed to add torrent: ${torrentId}`,
-      timestamp: new Date().toISOString(),
-      type: "error",
     });
   }
 };

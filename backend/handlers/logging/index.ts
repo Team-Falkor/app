@@ -1,105 +1,80 @@
-import { Log } from "@/@types";
-import fs from "fs";
+import { LogEntry } from "@/@types/logs";
 import { constants } from "../../utils";
+import JsonFileEditor from "../../utils/json/jsonFileEditor";
 
 class Logger {
   private logsPath = constants.logsPath;
-  private hasInitalized = false;
+  private jsonFileEditor: JsonFileEditor<Array<LogEntry>>;
+  private logs: Set<LogEntry>;
 
-  public init = (): void => {
-    if (this.hasInitalized) return;
+  constructor() {
+    this.jsonFileEditor = new JsonFileEditor<Array<LogEntry>>({
+      filePath: this.logsPath,
+      defaultContent: [],
+    });
 
+    this.logs = new Set(this.jsonFileEditor.read() || []);
+  }
+
+  public log(level: LogEntry["level"], message: string): LogEntry | null {
     try {
-      fs.writeFileSync(this.logsPath, "");
-      this.hasInitalized = true;
+      const timestamp = Date.now();
+      const log: LogEntry = { level, message, timestamp };
+      this.logs.add(log);
+      this.jsonFileEditor.write([...this.logs]);
+
+      return log;
     } catch (error) {
-      console.error("Failed to initialize the log file", error);
+      console.error("Error logging:", error);
+      return null;
     }
-  };
+  }
 
-  public log = (log: Log): void => {
+  public clear(): void {
     try {
-      this.init();
-
-      this.appendLog(log);
+      this.logs.clear();
+      this.jsonFileEditor.write([]);
     } catch (error) {
-      console.error("Failed to log to the log file", error);
+      console.error("Error clearing logs:", error);
     }
-  };
+  }
 
-  public clear = async (): Promise<boolean> => {
+  public read(): Array<LogEntry> {
     try {
-      this.init();
+      const logs = this.jsonFileEditor.read();
+      if (!logs?.length) return [];
 
-      await fs.promises.writeFile(this.logsPath, "");
-      return true;
+      this.logs = new Set(logs);
+      return logs;
     } catch (error) {
-      console.error("Failed to clear the log file", error);
-      return false;
-    }
-  };
-
-  public deleteALog = async (id: number): Promise<boolean> => {
-    try {
-      this.init();
-
-      const oldData = fs.readFileSync(this.logsPath, "utf8");
-      const newData = oldData
-        .split("\n")
-        .filter((log) => JSON.parse(log).id !== id)
-        .join("\n");
-
-      await fs.promises.writeFile(this.logsPath, newData);
-      return true;
-    } catch (error) {
-      console.error("Failed to delete a log", error);
-      return false;
-    }
-  };
-
-  public getLogs = async (): Promise<Log[]> => {
-    try {
-      this.init();
-
-      const data = fs.readFileSync(this.logsPath, "utf8");
-
-      if (!data?.length) return [];
-
-      return JSON.parse(data);
-    } catch (error) {
-      console.error("Failed to get logs", error);
+      console.error("Error reading logs:", error);
       return [];
     }
-  };
+  }
 
-  public getLogById = async (id: number): Promise<Log | undefined> => {
+  public remove(timestamp: number): void {
     try {
-      this.init();
+      const logs = this.jsonFileEditor.read();
+      if (!logs) return;
 
-      const logs = await this.getLogs();
-      return logs.find((log) => log.id === id);
+      const filteredLogs = logs.filter((log) => log.timestamp !== timestamp);
+      this.jsonFileEditor.write(filteredLogs);
     } catch (error) {
-      console.error("Failed to get log by id", error);
-      return undefined;
+      console.error("Error removing log:", error);
     }
-  };
+  }
 
-  private appendLog = async (log: Log): Promise<boolean> => {
-    if (!log) {
-      console.error("Tried to log a null or undefined log object");
-      return false;
-    }
+  get size(): number {
+    return this.logs.size;
+  }
 
-    try {
-      const oldData = fs.readFileSync(this.logsPath, "utf8");
-      const newData = JSON.stringify(log) + "\n";
-      await fs.promises.writeFile(this.logsPath, oldData + newData);
-      return true;
-    } catch (error) {
-      console.error("Failed to write to the log file", error);
-      return false;
-    }
-  };
+  get entries(): Array<LogEntry> {
+    return [...this.logs];
+  }
+
+  get lastEntry(): LogEntry | undefined {
+    return this.logs.size ? this.logs.values().next().value : undefined;
+  }
 }
 
 const logger = new Logger();

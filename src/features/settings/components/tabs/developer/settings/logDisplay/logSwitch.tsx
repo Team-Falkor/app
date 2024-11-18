@@ -1,16 +1,16 @@
-import { Log } from "@/@types";
+import { LogEntry } from "@/@types/logs";
 import {
   ConsoleErrorDisplay,
   ConsoleInfoDisplay,
   ConsoleWarningDisplay,
 } from "./logTypes";
 
-const LogSwitch = ({ id, message, timestamp, type }: Log) => {
-  switch (type) {
+const LogSwitch = ({ message, timestamp, level }: LogEntry) => {
+  switch (level) {
     case "error":
       return (
         <ConsoleErrorDisplay
-          key={id}
+          key={timestamp}
           description={message}
           timestamp={timestamp}
         />
@@ -18,7 +18,7 @@ const LogSwitch = ({ id, message, timestamp, type }: Log) => {
     case "warn":
       return (
         <ConsoleWarningDisplay
-          key={id}
+          key={timestamp}
           description={message}
           timestamp={timestamp}
         />
@@ -27,7 +27,7 @@ const LogSwitch = ({ id, message, timestamp, type }: Log) => {
     case "info":
       return (
         <ConsoleInfoDisplay
-          key={id}
+          key={timestamp}
           description={message}
           timestamp={timestamp}
         />
@@ -36,7 +36,7 @@ const LogSwitch = ({ id, message, timestamp, type }: Log) => {
     default:
       return (
         <ConsoleErrorDisplay
-          key={id}
+          key={timestamp}
           description={message}
           timestamp={timestamp}
         />

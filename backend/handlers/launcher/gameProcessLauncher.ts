@@ -2,6 +2,7 @@ import { ChildProcess, spawn } from "child_process";
 import ms from "ms";
 import { gamesDB } from "../../sql";
 import windoww from "../../utils/window";
+import { logger } from "../logging";
 import { gamesLaunched } from "./games_launched";
 
 const win = windoww?.window;
@@ -28,35 +29,40 @@ class GameProcessLauncher {
   public launchGame() {
     console.log("Launching game:", this.gamePath);
 
-    // Spawn the game process
-    this.gameProcess = spawn(this.gamePath, {
-      detached: true,
-    });
-    this.gameProcess.unref();
+    try {
+      // Spawn the game process
+      this.gameProcess = spawn(this.gamePath, {
+        detached: true,
+      });
+      this.gameProcess.unref();
 
-    this.gameProcess.on("exit", (code, signal) => {
-      console.log(`Game exited with code: ${code}, signal: ${signal}`);
+      this.gameProcess.on("exit", (code, signal) => {
+        console.log(`Game exited with code: ${code}, signal: ${signal}`);
 
-      this.trackPlayTime();
-      this.cleanup();
+        this.trackPlayTime();
+        this.cleanup();
 
-      if (this.interval) clearInterval(this.interval);
+        if (this.interval) clearInterval(this.interval);
 
-      this.updatePlaytime();
+        this.updatePlaytime();
+
+        // Send a message to the renderer process to update the status
+        if (!win) return;
+        win?.webContents.send("game:stopped", this.gameId);
+      });
+
+      this.startDate = new Date();
+      this.isPlaying = true;
+
+      this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
 
       // Send a message to the renderer process to update the status
       if (!win) return;
-      win?.webContents.send("game:stopped", this.gameId);
-    });
-
-    this.startDate = new Date();
-    this.isPlaying = true;
-
-    this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
-
-    // Send a message to the renderer process to update the status
-    if (!win) return;
-    win?.webContents.send("game:playing", this.gameId);
+      win?.webContents.send("game:playing", this.gameId);
+    } catch (error) {
+      console.error("Error launching game:", error);
+      logger.log("error", `Error launching game: ${(error as Error).message}`);
+    }
   }
 
   public trackPlayTime() {

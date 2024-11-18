@@ -4,6 +4,7 @@ import {
   ExternalRefreshTokenFunction,
   ExternalTokenUpdateInput,
 } from "@/@types/accounts";
+import { logger } from "../../handlers/logging";
 import { db } from "../knex";
 
 /**
@@ -37,6 +38,7 @@ class AccountsDB {
       this.initialized = true;
     } catch (error) {
       console.error("Error initializing database accounts:", error);
+      logger.log("error", `Error initializing database accounts: ${error}`);
     }
   }
 
@@ -65,6 +67,7 @@ class AccountsDB {
       });
     } catch (error) {
       console.error("Error adding account:", error);
+      logger.log("error", `Error adding account: ${error}`);
     }
   }
 
@@ -91,6 +94,7 @@ class AccountsDB {
       return await query.first();
     } catch (error) {
       console.error("Error fetching account:", error);
+      logger.log("error", `Error fetching account: ${error}`);
       return null;
     }
   }
@@ -108,6 +112,7 @@ class AccountsDB {
       return await query.select("*");
     } catch (error) {
       console.error("Error fetching accounts:", error);
+      logger.log("error", `Error fetching accounts: ${error}`);
       return [];
     }
   }
@@ -141,6 +146,7 @@ class AccountsDB {
       });
     } catch (error) {
       console.error("Error updating tokens:", error);
+      logger.log("error", `Error updating tokens: ${error}`);
     }
   }
 
@@ -164,6 +170,7 @@ class AccountsDB {
       await query.del();
     } catch (error) {
       console.error("Error deleting account:", error);
+      logger.log("error", `Error deleting account: ${error}`);
     }
   }
 
@@ -208,6 +215,7 @@ class AccountsDB {
         );
       } catch (error) {
         console.error("Error refreshing tokens:", error);
+        logger.log("error", `Error refreshing tokens: ${error}`);
       }
     }
   }

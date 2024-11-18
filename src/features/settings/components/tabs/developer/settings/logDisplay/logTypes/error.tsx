@@ -1,3 +1,4 @@
+import { LogEntry } from "@/@types/logs";
 import { Ban } from "lucide-react";
 import { BaseLog } from "./base";
 
@@ -5,7 +6,7 @@ interface ConsoleErrorDisplayProps {
   customIcon?: JSX.Element;
   // title: string;
   description: string;
-  timestamp?: string;
+  timestamp?: LogEntry["timestamp"];
 }
 
 const ConsoleErrorDisplay = ({

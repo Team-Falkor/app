@@ -2,6 +2,7 @@ import { PluginId, PluginSetupJSON, PluginSetupJSONDisabled } from "@/@types";
 import fs from "node:fs";
 import { join } from "node:path";
 import { constants } from "../../utils";
+import { logger } from "../logging";
 
 export class PluginHandler {
   private hasInitialized = false;
@@ -26,6 +27,7 @@ export class PluginHandler {
       this.hasInitialized = true;
     } catch (error) {
       console.error(`Error initializing plugin directory: ${error}`);
+      logger.log("error", `Error initializing plugin directory: ${error}`);
       throw new Error("Initialization failed");
     }
   }
@@ -65,6 +67,11 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to install plugin from URL (${url}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to install plugin from URL (${url}): ${error}`
+      );
+
       return false;
     }
   }
@@ -85,6 +92,11 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to delete plugin with ID (${pluginId}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to delete plugin with ID (${pluginId}): ${error}`
+      );
+
       return false;
     }
   }
@@ -109,6 +121,10 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to disable plugin with ID (${pluginId}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to disable plugin with ID (${pluginId}): ${error}`
+      );
       return false;
     }
   }
@@ -130,6 +146,10 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to enable plugin with ID (${pluginId}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to enable plugin with ID (${pluginId}): ${error}`
+      );
       return false;
     }
   }
@@ -151,6 +171,10 @@ export class PluginHandler {
       return JSON.parse(data);
     } catch (error) {
       console.error(`Failed to fetch plugin with ID (${pluginId}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to fetch plugin with ID (${pluginId}): ${error}`
+      );
       return null;
     }
   }
@@ -187,6 +211,7 @@ export class PluginHandler {
       return plugins;
     } catch (error) {
       console.error(`Failed to list plugins: ${error}`);
+      logger.log("error", `Failed to list plugins: ${error}`);
       return [];
     }
   }
@@ -211,6 +236,10 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to check for updates: ${error}`);
+      logger.log(
+        "error",
+        `[PLUGIN] Failed to check for updates: ${(error as Error).message}`
+      );
       return false;
     }
   }
@@ -227,13 +256,13 @@ export class PluginHandler {
         if (file.endsWith(".json")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json: PluginSetupJSON = JSON.parse(data);
+          const json: PluginSetupJSON = JSON?.parse(data) ?? {};
 
-          if (!json.api_url || !json.setup_path) continue;
+          if (!json?.api_url || !json?.setup_path) continue;
           const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
 
           const response = await fetch(url);
-          const latest = await response.json();
+          const latest = (await response?.json()) ?? {};
           if (latest.version === json.version) continue;
 
           plugins.push({
@@ -244,13 +273,13 @@ export class PluginHandler {
         if (file.endsWith(".disabled")) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
-          const json: PluginSetupJSON = JSON.parse(data);
-          if (!json.api_url || !json.setup_path) continue;
+          const json: PluginSetupJSON = JSON?.parse(data) ?? {};
+          if (!json?.api_url || !json?.setup_path) continue;
 
           const url = `${json.api_url}${json.setup_path.startsWith("/") ? json.setup_path : `/${json.setup_path}`}`;
           const response = await fetch(url);
-          const latest = await response.json();
-          if (latest.version === json.version) continue;
+          const latest = (await response?.json()) ?? {};
+          if (latest?.version === json?.version) continue;
 
           plugins.push({
             disabled: true,
@@ -261,6 +290,7 @@ export class PluginHandler {
       return plugins;
     } catch (error) {
       console.error(`Failed to check for updates: ${error}`);
+      logger.log("error", `Failed to check for updates: ${error}`);
       return [];
     }
   }
@@ -307,6 +337,10 @@ export class PluginHandler {
       return true;
     } catch (error) {
       console.error(`Failed to update plugin with ID (${pluginId}): ${error}`);
+      logger.log(
+        "error",
+        `Failed to update plugin with ID (${pluginId}): ${error}`
+      );
       return false;
     }
   }
@@ -393,6 +427,7 @@ export class PluginHandler {
       return plugins;
     } catch (error) {
       console.error(`Failed to update plugins: ${error}`);
+      logger.log("error", `Failed to update plugins: ${error}`);
       return [];
     }
   }

@@ -1,3 +1,4 @@
+import { LogEntry } from "@/@types/logs";
 import { Info } from "lucide-react";
 import { BaseLog } from "./base";
 
@@ -5,7 +6,7 @@ interface ConsoleInfoDisplayProps {
   customIcon?: JSX.Element;
   // title: string;
   description: string;
-  timestamp?: string;
+  timestamp?: LogEntry["timestamp"];
 }
 
 const ConsoleInfoDisplay = ({

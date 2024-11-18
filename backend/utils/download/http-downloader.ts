@@ -114,12 +114,7 @@ class HttpDownloader {
     this.item.updateStatus("error");
     this.stop();
 
-    logger.log({
-      id: Math.floor(Date.now() / 1000),
-      message: `Failed to download ${this.item.url}: ${message}`,
-      timestamp: new Date().toISOString(),
-      type: "error",
-    });
+    logger.log("error", `Failed to download ${this.item.url}: ${message}`);
 
     win?.webContents?.send(download_events.error, {
       error: message,
@@ -127,6 +122,9 @@ class HttpDownloader {
       game_data: this.item.game_data,
       status: "error",
     });
+
+    logger.log("error", `Failed to download ${this.item.url}: ${message}`);
+
     reject(new Error(message));
   }
 
