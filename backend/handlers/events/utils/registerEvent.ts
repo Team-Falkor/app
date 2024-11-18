@@ -1,4 +1,4 @@
-import { ipcMain } from "electron";
+import { app, ipcMain } from "electron";
 
 /**
  * Registers an event handler with IPC Main.
@@ -17,7 +17,9 @@ export function registerEvent<
     ...args: HandlerArgs
   ) => HandlerOutput | Promise<HandlerOutput>
 ): void {
-  console.log(`Registering event ${eventName}`);
+  if (!app.isPackaged) {
+    console.log(`[EVENT] registering: ${eventName}`);
+  }
   ipcMain.handle(
     eventName,
     async (
