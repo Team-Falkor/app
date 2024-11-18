@@ -244,7 +244,9 @@ export class PluginHandler {
     }
   }
 
-  async checkForUpdatesAll(): Promise<Array<PluginSetupJSONDisabled>> {
+  async checkForUpdatesAll(
+    checkForDisabled: boolean = false
+  ): Promise<Array<PluginSetupJSONDisabled>> {
     try {
       await this.init();
 
@@ -270,7 +272,7 @@ export class PluginHandler {
             ...json,
           });
         }
-        if (file.endsWith(".disabled")) {
+        if (file.endsWith(".disabled") && checkForDisabled) {
           const data = await fs.promises.readFile(filePath, "utf-8");
 
           const json: PluginSetupJSON = JSON?.parse(data) ?? {};
