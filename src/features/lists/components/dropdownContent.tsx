@@ -5,6 +5,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { useLanguageContext } from "@/contexts/I18N";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { useQuery } from "@tanstack/react-query";
 import { PlusIcon } from "lucide-react";
@@ -12,6 +13,7 @@ import { useLists } from "../hooks/useLists";
 import ListsDropdownItem from "./dropdownItem";
 
 const ListsDropdownContent = (props: IGDBReturnDataType) => {
+  const { t } = useLanguageContext();
   const { fetchLists, lists } = useLists();
 
   const { isLoading, error } = useQuery({
@@ -25,7 +27,7 @@ const ListsDropdownContent = (props: IGDBReturnDataType) => {
   return (
     <DropdownMenuContent className="max-w-sm">
       <DropdownMenuLabel className="w-full truncate">
-        Add to List
+        {t("add-to-list")}
       </DropdownMenuLabel>
 
       <DropdownMenuSeparator />
@@ -33,7 +35,7 @@ const ListsDropdownContent = (props: IGDBReturnDataType) => {
       <div className="overflow-y-auto max-h-24">
         {!lists?.length ? (
           <div className="flex items-center justify-center gap-2 p-2">
-            <p className="text-center">No lists found! Create a new one</p>
+            <p className="text-center">{t("create_new_list")}</p>
           </div>
         ) : (
           lists.map((list) => (

@@ -1,3 +1,4 @@
+import Confirmation from "@/components/confirmation";
 import { Button } from "@/components/ui/button";
 import { DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
@@ -22,6 +23,8 @@ const ListsDropdownItem = ({
     gamesInList,
     loading,
     removeGameFromList,
+    deleteList,
+    fetchLists,
   } = useLists();
 
   useEffect(() => {
@@ -51,17 +54,24 @@ const ListsDropdownItem = ({
 
       toast.success("Game added to list");
     }
-  }, [gamesInList, list_id, game, addGameToList]);
+  }, [
+    gamesInList,
+    list_id,
+    game,
+    removeGameFromList,
+    addGameToList,
+    fetchGamesInList,
+  ]);
 
   const games = gamesInList[list_id] || [];
 
   return (
-    <div className="flex flex-row gap-1 justify-between items-center">
+    <div className="flex flex-row items-center justify-between gap-1">
       <div className="flex-1">
         <DropdownMenuCheckboxItem
           checked={games.some((g) => g.game_id === game.id)}
           onSelect={handleSelect}
-          disabled={loading} // Disable while loading to prevent multiple clicks
+          disabled={loading}
         >
           <span className="truncate">{children || game.name}</span>
         </DropdownMenuCheckboxItem>
@@ -69,9 +79,17 @@ const ListsDropdownItem = ({
 
       {/* TODO: hook up button to delete list */}
       <div className="flex pr-1">
-        <Button size={"icon"} variant={"ghost"} className="size-5">
-          <TrashIcon className="size-5" />
-        </Button>
+        <Confirmation
+          onConfirm={async () => {
+            await deleteList(list_id);
+            await fetchLists();
+          }}
+          description="are_you_absolutely_sure_list_delete_description"
+        >
+          <Button size={"icon"} variant={"ghost"} className="size-5">
+            <TrashIcon className="size-5" />
+          </Button>
+        </Confirmation>
       </div>
     </div>
   );
