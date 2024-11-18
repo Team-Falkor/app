@@ -108,5 +108,7 @@
   "fill_in_the_information_below_to_create_a_new_list": "Fill in the information below to create a new list",
   "enter_list_name": "Enter A List Name",
   "description": "Description",
-  "enter_list_description": "Enter A List Description"
+  "enter_list_description": "Enter A List Description",
+  "last_played": "Last Played",
+  "playtime": "Playtime"
 }

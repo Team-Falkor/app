@@ -130,6 +130,14 @@ class GamesDatabase {
     return game;
   }
 
+  async getGameByIGDBId(gameId: string): Promise<LibraryGame | null> {
+    await this.init();
+    if (!this.initialized) throw new Error("Database not initialized");
+
+    const game = await db("library_games").where({ igdb_id: gameId }).first();
+    return game;
+  }
+
   /**
    * Gets all games from the library.
    *

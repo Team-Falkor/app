@@ -1,4 +1,6 @@
 import { InfoItadProps, InfoProps } from "@/@types";
+import { LibraryGame } from "@/@types/library/types";
+import Playtime from "@/features/library/components/playtime";
 import ListsDropdown from "@/features/lists/components/listsDropdown";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { getSteamIdFromWebsites } from "@/lib/helpers";
@@ -12,6 +14,8 @@ import QuickInfo from "./quickInfo";
 type InfoTopProps = InfoProps & {
   data: IGDBReturnDataType | undefined;
   isReleased: boolean;
+  playingData: LibraryGame | null | undefined;
+  playingPending: boolean;
 };
 
 type Props = InfoTopProps & InfoItadProps;
@@ -25,6 +29,8 @@ const InfoTop = (props: Props) => {
     itadData,
     itadError,
     itadPending,
+    playingData,
+    playingPending,
   } = props;
 
   const steam_id = useMemo(
@@ -38,7 +44,7 @@ const InfoTop = (props: Props) => {
     <div className="sm:-mt-28 sm:flex sm:items-start sm:space-x-5">
       <div className="relative flex">
         {!isPending ? (
-          <div className="rounded-lg h-80 relative overflow-hidden">
+          <div className="relative overflow-hidden rounded-lg h-80">
             <IGDBImage
               imageId={data!.cover?.image_id ?? ""}
               alt={data!.name}
@@ -47,9 +53,19 @@ const InfoTop = (props: Props) => {
             />
 
             <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
-              <div className="flex pt-5 justify-end items-start size-full">
-                <div className="rounded-l-lg overflow-hidden">
-                  {steam_id ? <ProtonDbBadge appId={steam_id} /> : null}
+              <div className="flex flex-col justify-between w-full h-full">
+                {/* ProtonDB badge */}
+                <div className="flex items-start justify-end pt-5 size-full">
+                  <div className="overflow-hidden rounded-l-lg">
+                    {steam_id ? <ProtonDbBadge appId={steam_id} /> : null}
+                  </div>
+                </div>
+
+                <div className="flex items-start justify-start p-2">
+                  {/* Playtime */}
+                  {!playingPending && !!playingData?.game_playtime && (
+                    <Playtime playtime={playingData.game_playtime} />
+                  )}
                 </div>
               </div>
             </div>

@@ -17,6 +17,7 @@ interface GamesState {
   fetchGames: () => Promise<void>;
   addGame: (game: NewLibraryGame) => Promise<void>;
   getGameById: (gameId: string) => Promise<LibraryGame | null>;
+  getGameByIGDBId: (gameId: string) => Promise<LibraryGame | null>;
   updateGame: (gameId: string, updates: LibraryGameUpdate) => Promise<void>;
   deleteGame: (gameId: string) => Promise<void>;
 }
@@ -77,6 +78,31 @@ export const useGamesStore = create<GamesState>((set, _get) => ({
         "get-game-by-id",
         gameId
       );
+      if (game) {
+        set((state) => ({
+          games: { ...state.games, [gameId]: game },
+        }));
+      }
+      return game;
+    } catch (error) {
+      console.error(error);
+      set({ error: "Failed to fetch game" });
+      return null;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  getGameByIGDBId: async (gameId) => {
+    set({ loading: true, error: null });
+    try {
+      const game = await gamesDB<LibraryGame | null, string>(
+        "get-game-by-igdb-id",
+        gameId
+      );
+
+      console.log({ game });
+
       if (game) {
         set((state) => ({
           games: { ...state.games, [gameId]: game },

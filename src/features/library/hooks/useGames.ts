@@ -11,6 +11,7 @@ export const useGames = (fetch: boolean = true) => {
     updateGame,
     deleteGame,
     fetchGames,
+    getGameByIGDBId,
   } = useGamesStore();
 
   useEffect(() => {
@@ -26,5 +27,6 @@ export const useGames = (fetch: boolean = true) => {
     getGameById,
     updateGame,
     deleteGame,
+    getGameByIGDBId,
   };
 };

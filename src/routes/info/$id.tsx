@@ -4,6 +4,7 @@ import InfoMiddle from "@/components/info/middle";
 import InfoTop from "@/components/info/top";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useGames } from "@/features/library/hooks/useGames";
 import { getUserCountry, igdb, itad } from "@/lib";
 import { goBack } from "@/lib/history";
 import { Mapping } from "@/lib/mapping";
@@ -17,6 +18,7 @@ export const Route = createFileRoute("/info/$id")({
 
 function Info() {
   const { id } = Route.useParams();
+  const { getGameByIGDBId } = useGames();
 
   const { isPending, error, data } = useQuery({
     queryKey: ["igdb", "info", id],
@@ -48,6 +50,13 @@ function Info() {
       }
     },
     enabled: !!id && isReleased,
+  });
+
+  const { data: playingData, isPending: isPlayingPending } = useQuery({
+    queryKey: ["games:get-game-by-igdb-id", id],
+    queryFn: async () => {
+      return (await getGameByIGDBId(id)) ?? null;
+    },
   });
 
   if (error) return null;
@@ -88,6 +97,8 @@ function Info() {
           itadData={itadQuery.data}
           itadError={itadQuery.error}
           itadPending={itadQuery.isPending}
+          playingData={playingData}
+          playingPending={isPlayingPending}
         />
 
         {!isPending && (
