@@ -1,10 +1,12 @@
 import { Data } from "@/components/info/specs";
+import { useLanguageContext } from "@/contexts/I18N";
 import { cn, scrapeOptions } from "@/lib";
 import { useMemo } from "react";
 
 type RequirementsRowProps = Data;
 
 const RequirementsRow = ({ type, data }: RequirementsRowProps) => {
+  const { t } = useLanguageContext();
   const specs = useMemo(() => !!data && scrapeOptions(data), [data]);
 
   const isSpecsEm = useMemo(() => Object.values(specs).length, [specs]);
@@ -19,7 +21,7 @@ const RequirementsRow = ({ type, data }: RequirementsRowProps) => {
       )}
     >
       <h3 className="p-4 pt-1 pb-2 text-lg font-bold leading-6 capitalize text-primary">
-        {type}
+        {t(type?.toLowerCase())}
       </h3>
 
       {Object.entries(specs).map(([key, value]) => (

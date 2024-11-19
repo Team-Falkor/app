@@ -60,7 +60,7 @@ const QuickInfo = (props: QuickInfoProps) => {
           data={`${releaseDate?.human} ${
             isReleased && releaseDate?.date
               ? `(${timeSince(releaseDate?.date * 1000)}) `
-              : ""
+              : "N/A"
           }`}
         />
         <QuickInfoItem
