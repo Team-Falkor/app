@@ -16,10 +16,11 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   : RENDERER_DIST;
 
 class Window {
-  private window: BrowserWindow | null = null;
-  private tray: Tray | null = null;
-  private screenWidth: number = 0;
-  private screenHeight: number = 0;
+  window: BrowserWindow | null = null;
+  tray: Tray | null = null;
+
+  screenWidth: number = 0;
+  screenHeight: number = 0;
 
   public createWindow() {
     if (this.window) return this.window; // Prevent re-creating the window
