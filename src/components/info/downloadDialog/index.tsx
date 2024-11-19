@@ -22,6 +22,7 @@ import DownloadDialogSources from "./sources";
 
 interface DownloadDialogProps extends InfoItadProps {
   title: string;
+  slug?: string;
   isReleased: boolean;
   websites: Website[];
   game_data: ITorrentGameData;
@@ -32,6 +33,7 @@ const DownloadDialog = ({
   itadData,
   itadPending,
   title,
+  slug,
   game_data,
 }: DownloadDialogProps) => {
   const { t } = useLanguageContext();
@@ -137,6 +139,7 @@ const DownloadDialog = ({
               ) : filteredSources.length > 0 ? (
                 <DownloadDialogSources
                   sources={filteredSources}
+                  slug={slug}
                   game_data={game_data}
                 />
               ) : (

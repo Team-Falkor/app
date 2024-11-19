@@ -2,7 +2,7 @@ import { SettingsTitleBarStyle } from "@/@types";
 import { Website } from "../api/igdb/types";
 
 export const getSteamIdFromUrl = (url: string) =>
-  url.match(/\/app\/(\d+)(\/|$)/)?.[1]; // Changed index to [1] to extract the appid
+  url.match(/\/app\/(\d+)(\/|$)/)?.[1];
 
 export const getSteamIdFromWebsites = (websites: Website[]) => {
   const find_steam_url = websites?.find((site) =>
@@ -16,9 +16,13 @@ export const getSteamIdFromWebsites = (websites: Website[]) => {
 
 export const createSlug = (str: string) => {
   return str
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/[^\w ]+/g, "")
-    .replace(/ +/g, "-");
+    .replace(/[^\w\s]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/^-+/, "")
+    .replace(/-+$/, "");
 };
 
 export const shouldHideTitleBar = (titleBarStyle: SettingsTitleBarStyle) => {

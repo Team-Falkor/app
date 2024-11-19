@@ -88,9 +88,10 @@ const InfoTop = (props: Props) => {
               <>
                 <ListsDropdown {...data} />
                 <DownloadDialog
-                  title={data!.name}
+                  title={data?.name}
                   isReleased={isReleased}
-                  websites={data!.websites}
+                  websites={data?.websites}
+                  slug={data?.slug}
                   itadData={itadData}
                   itadError={itadError}
                   itadPending={itadPending}

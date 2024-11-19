@@ -7,10 +7,11 @@ import ITADDownloadCard from "./cards/itad";
 interface DownloadDialogPopoverProps {
   sources: ItemDownload[];
   game_data: ITorrentGameData;
+  slug?: string;
 }
 
 const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
-  const { sources } = props;
+  const { sources, slug } = props;
 
   if (!sources?.length) return null;
 
@@ -33,6 +34,7 @@ const DownloadDialogSources = (props: DownloadDialogPopoverProps) => {
           pluginId={item.id}
           key={source.name}
           game_data={props.game_data}
+          slug={slug}
         />
       ));
     }
