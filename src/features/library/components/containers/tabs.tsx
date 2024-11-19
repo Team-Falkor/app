@@ -1,5 +1,10 @@
 import { Tab } from "@/@types";
 import { Button } from "@/components/ui/button";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import NewListDialogContent from "@/features/lists/components/newListDialogContent";
 import { cn } from "@/lib";
@@ -16,13 +21,13 @@ interface LibraryTabsProps {
 const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className="flex gap-2.5 p-4 bg-background">
+    <div className="flex p-4 bg-background">
       {/* New Game Button */}
       <Dialog>
         <DialogTrigger>
           <Button
             variant="secondary"
-            className="mr-1 text-white bg-gradient-to-tr from-blue-400 to-purple-400 rounded-xl gap-1.5"
+            className="text-white bg-gradient-to-tr from-blue-400 to-purple-400 rounded-xl gap-1.5"
           >
             <Plus strokeWidth={3} />
             <span className="font-bold">New Game</span>
@@ -32,22 +37,34 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
       </Dialog>
 
       {/* Tabs */}
-      {tabs.map((tab, i) => (
-        <Button
-          variant="secondary"
-          key={i}
-          className={cn(
-            "rounded-xl gap-1.5 font-semibold transition-all duration-75",
-            {
-              "ring-2 ring-purple-400 ring-opacity-65 bg-purple-400/20":
-                activeTab?.name === tab.name,
-            }
-          )}
-          onClick={() => setActiveTab(tab)}
-        >
-          {tab.name}
-        </Button>
-      ))}
+      <Carousel
+        className="flex-1 mx-3"
+        opts={{
+          skipSnaps: true,
+          dragFree: true,
+          loop: false,
+        }}
+      >
+        <CarouselContent>
+          {tabs.map((tab, i) => (
+            <CarouselItem key={i} className="basis-auto ">
+              <Button
+                variant="secondary"
+                key={i}
+                className={cn(
+                  "rounded-xl gap-1.5 font-semibold transition-all duration-75",
+                  {
+                    "bg-purple-400/20": activeTab?.name === tab.name,
+                  }
+                )}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab.name}
+              </Button>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
 
       {/* New List Button */}
       <Dialog open={open} onOpenChange={setOpen}>
