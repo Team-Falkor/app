@@ -11,7 +11,7 @@ autoUpdater.setFeedURL({
   repo: "app",
 });
 
-autoUpdater.allowDowngrade = true;
+autoUpdater.allowDowngrade = false;
 autoUpdater.autoInstallOnAppQuit = false;
 autoUpdater.autoDownload = false;
 autoUpdater.forceDevUpdateConfig = true;
@@ -21,8 +21,12 @@ class Updater {
   public updateAvailable = false;
 
   constructor() {
-    autoUpdater.on("update-available", () => {
+    autoUpdater.on("update-available", (info) => {
       this.updateAvailable = true;
+
+      if (info.version <= app.getVersion()) return;
+
+      window.window?.webContents.send("updater:update-available", info);
     });
     autoUpdater.on("update-not-available", () => {
       this.updateAvailable = false;

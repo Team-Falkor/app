@@ -1,22 +1,47 @@
 import { useUpdaterStore } from "@/stores/updater";
+import type { UpdateInfo } from "electron-updater";
 import { useEffect } from "react";
 import { useSettings } from "./useSettings";
 
-export const useUpdater = () => {
-  const { updateAvailable, checkForUpdates, installUpdate, progress } =
-    useUpdaterStore();
+export const useUpdater = (check: boolean = true) => {
+  const {
+    updateAvailable,
+    checkForUpdates,
+    installUpdate,
+    progress,
+    setUpdateAvailable,
+    setUpdateInfo,
+    updateInfo,
+  } = useUpdaterStore();
   const { settings } = useSettings();
 
   useEffect(() => {
-    if (settings.autoCheckForUpdates) {
+    if (settings.autoCheckForUpdates && check) {
       checkForUpdates();
     }
-  }, [checkForUpdates, settings.autoCheckForUpdates]);
+  }, [check, checkForUpdates, settings.autoCheckForUpdates]);
+
+  useEffect(() => {
+    window.ipcRenderer.once(
+      "updater:update-available",
+      (_event, info: UpdateInfo) => {
+        setUpdateAvailable(true);
+        setUpdateInfo(info);
+        window.ipcRenderer.removeAllListeners("updater:update-available");
+      }
+    );
+    return () => {
+      window.ipcRenderer.removeAllListeners("updater:update-available");
+    };
+  }, [setUpdateAvailable, setUpdateInfo]);
 
   return {
     updateAvailable,
     checkForUpdates,
     installUpdate,
     progress,
+    updateInfo,
+    setUpdateAvailable,
+    setUpdateInfo,
   };
 };

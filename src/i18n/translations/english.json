@@ -114,5 +114,7 @@
   "are_you_absolutely_sure_description": "This action cannot be undone. Are you absolutely sure?",
   "are_you_absolutely_sure_list_delete_description": "This action cannot be undone. Are you absolutely sure you want to delete this list?",
   "minimum": "Minimum",
-  "recommended": "Recommended"
+  "recommended": "Recommended",
+  "current_version": "Current Version",
+  "new_version": "New Version"
 }

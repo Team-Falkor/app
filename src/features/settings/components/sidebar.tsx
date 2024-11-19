@@ -1,9 +1,12 @@
 import { AppInfo, LinkItemType } from "@/@types";
+import { Button } from "@/components/ui/button";
 import { useLanguageContext } from "@/contexts/I18N";
 import { useSettings } from "@/hooks";
+import { useUpdater } from "@/hooks/useUpdater";
 import { cn, invoke, shouldHideTitleBar } from "@/lib";
 import { useQuery } from "@tanstack/react-query";
-import { ReactElement } from "react";
+import { DownloadCloud } from "lucide-react";
+import { ReactElement, useEffect } from "react";
 import { FaDiscord, FaGithub } from "react-icons/fa6";
 import { SiKofi } from "react-icons/si";
 import SettingsLinkGroup from "./linkGroup";
@@ -34,11 +37,17 @@ const SettingsSidebar = ({
 }: {
   settingsTabs: ReactElement[];
 }) => {
+  const { updateAvailable, installUpdate } = useUpdater(false);
   const { t } = useLanguageContext();
   const { settings } = useSettings();
 
+  useEffect(() => {
+    console.log({ updateAvailable });
+  }, [updateAvailable]);
+
   const { data, isPending, isError } = useQuery({
-    queryKey: ["settings", "version"],
+    queryKey: ["app", "info"],
+
     queryFn: async () => {
       const response = await invoke<AppInfo>("generic:get-app-info");
       return response;
@@ -62,8 +71,20 @@ const SettingsSidebar = ({
       <nav className="flex-1 space-y-2 md:space-y-3">{settingsTabs}</nav>
       <div className="flex flex-col gap-2 p-3 px-4 mt-auto">
         {!isPending && !isError && (
-          <div className="flex flex-col">
-            <h1 className="text-lg font-bold capitalize">{t("falkor")}</h1>
+          <div className="flex flex-col gap-0.5">
+            <div className="flex items-center gap-3">
+              <h1 className="text-lg font-bold capitalize">{t("falkor")}</h1>
+              {updateAvailable && (
+                <Button
+                  variant={"ghost"}
+                  size={"icon"}
+                  onClick={installUpdate}
+                  className="size-7"
+                >
+                  <DownloadCloud className="size-5" />
+                </Button>
+              )}
+            </div>
             <span className="text-sm text-muted-foreground">
               {t("version")}: {data?.app_version}
             </span>
