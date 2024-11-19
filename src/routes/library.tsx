@@ -45,7 +45,9 @@ function Library() {
   const [activeTab, setActiveTab] = useState<Tab | undefined>(tabs[0]);
 
   useEffect(() => {
-    if (tabs.length > 0 && !activeTab) {
+    if (tabs.length > 0 && !activeTab) setActiveTab(tabs[0]);
+
+    if (!tabs.find((tab) => tab.name === activeTab?.name)) {
       setActiveTab(tabs[0]);
     }
   }, [tabs, activeTab]);

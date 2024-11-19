@@ -29,7 +29,9 @@ const LibraryHeader = (props: Props) => {
         <h2 className="text-2xl font-bold capitalize flex=1 truncate">
           {title}
         </h2>
-        {type === "list" && <LibraryListActions listId={props.listId} />}
+        {type === "list" && (
+          <LibraryListActions listId={props.listId} key={props.listId} />
+        )}
       </div>
       {type === "list" && props.description && (
         <div className="text-muted-foreground">{props.description}</div>
