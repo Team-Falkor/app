@@ -16,12 +16,14 @@ process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL
   : RENDERER_DIST;
 
 class Window {
-  window: BrowserWindow | null = null;
-  tray: Tray | null = null;
-  screenWidth: number = 0;
-  screenHeight: number = 0;
+  private window: BrowserWindow | null = null;
+  private tray: Tray | null = null;
+  private screenWidth: number = 0;
+  private screenHeight: number = 0;
 
   public createWindow() {
+    if (this.window) return this.window; // Prevent re-creating the window
+
     const { width, height } = screen.getPrimaryDisplay().workAreaSize;
     this.screenWidth = width;
     this.screenHeight = height;
@@ -52,16 +54,21 @@ class Window {
       win.setMenu(null);
     }
 
-    if (!this?.tray) this.createTray();
+    // Initialize tray only when needed, and only once
+    if (!this.tray) this.createTray();
 
     this.window = win;
     return win;
   }
 
-  createTray() {
-    const tray = new Tray(
-      nativeImage.createFromPath(path.join(process.env.VITE_PUBLIC, "icon.png"))
-    );
+  private createTray() {
+    if (this.tray) return; // Prevent re-creating tray
+
+    const trayIconPath = path.join(process.env.VITE_PUBLIC, "icon.png");
+    if (!trayIconPath) return; // Guard against missing icon path
+
+    const trayImage = nativeImage.createFromPath(trayIconPath);
+    const tray = new Tray(trayImage);
     tray.setToolTip("Falkor");
 
     tray.setContextMenu(this.createContextMenu());
@@ -70,32 +77,39 @@ class Window {
   }
 
   private createContextMenu() {
-    const contextMenu = Menu.buildFromTemplate([
+    return Menu.buildFromTemplate([
       {
         type: "normal",
         label: "Open Falkor",
-        click: () => {
-          if (!this.window) this.createWindow();
-          this.window?.show();
-        },
+        click: () => this.showWindow(),
       },
       {
         type: "normal",
         label: "Quit Falkor",
-        click: () => {
-          app.quit();
-        },
+        click: () => app.quit(),
       },
     ]);
+  }
 
-    return contextMenu;
+  private showWindow() {
+    const win = this.window;
+    if (!win) return; // If window doesn't exist, nothing to do
+
+    if (win.isMinimized()) {
+      win.restore();
+    }
+    win.show();
   }
 
   destroy() {
-    this.window?.destroy();
-    this.window = null;
-    this.tray?.destroy();
-    this.tray = null;
+    if (this.window) {
+      this.window.destroy();
+      this.window = null;
+    }
+    if (this.tray) {
+      this.tray.destroy();
+      this.tray = null;
+    }
   }
 }
 
