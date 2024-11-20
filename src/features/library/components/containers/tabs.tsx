@@ -7,9 +7,17 @@ import {
 } from "@/components/ui/carousel";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import NewListDialogContent from "@/features/lists/components/newListDialogContent";
+import useGamepadButton from "@/hooks/useGamepadButton";
 import { cn } from "@/lib";
 import { Plus } from "lucide-react";
-import { Dispatch, SetStateAction, useState } from "react";
+import {
+  Dispatch,
+  SetStateAction,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
+import { toast } from "sonner";
 import NewGameModal from "../modals/newGame";
 
 interface LibraryTabsProps {
@@ -20,6 +28,31 @@ interface LibraryTabsProps {
 
 const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
   const [open, setOpen] = useState(false);
+
+  const activeTabIndex = useMemo(
+    () => tabs.findIndex((tab) => tab.name === activeTab?.name),
+    [tabs, activeTab]
+  );
+
+  const switchToNextTab = useCallback(() => {
+    if (!tabs.length) return;
+
+    const nextIndex = (activeTabIndex + 1) % tabs.length;
+    setActiveTab(tabs[nextIndex]);
+    toast.success(`Switched to next tab: ${tabs[nextIndex].name}`);
+  }, [tabs, activeTabIndex, setActiveTab]);
+
+  const switchToPreviousTab = useCallback(() => {
+    if (!tabs.length) return;
+
+    const previousIndex = (activeTabIndex - 1 + tabs.length) % tabs.length;
+    setActiveTab(tabs[previousIndex]);
+    toast.success(`Switched to previous tab: ${tabs[previousIndex].name}`);
+  }, [tabs, activeTabIndex, setActiveTab]);
+
+  useGamepadButton("LB", switchToNextTab);
+  useGamepadButton("RB", switchToPreviousTab);
+
   return (
     <div className="flex p-4 bg-background">
       {/* New Game Button */}
