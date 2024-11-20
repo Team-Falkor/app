@@ -1,6 +1,24 @@
 import { useEffect, useState } from "react";
 
-const gamepadMapping: Record<string, number> = {
+type GamepadButton =
+  | "A"
+  | "B"
+  | "X"
+  | "Y"
+  | "LB"
+  | "RB"
+  | "LT"
+  | "RT"
+  | "SELECT"
+  | "START"
+  | "LS"
+  | "RS"
+  | "UP"
+  | "DOWN"
+  | "LEFT"
+  | "RIGHT";
+
+const gamepadMapping: Record<GamepadButton, number> = {
   A: 0,
   B: 1,
   X: 2,
@@ -19,7 +37,10 @@ const gamepadMapping: Record<string, number> = {
   RIGHT: 15,
 };
 
-const useGamepadButton = (button: string | number, callback: () => void) => {
+const useGamepadButton = (
+  button: keyof typeof gamepadMapping | number,
+  callback: () => void
+) => {
   const [buttonPressed, setButtonPressed] = useState(false);
 
   useEffect(() => {

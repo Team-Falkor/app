@@ -26,8 +26,6 @@ const ContinuePlayingCardOverlay: React.FC<ContinuePlayingCardOverlayProps> = ({
 }) => {
   const { t } = useLanguageContext();
 
-  console.log(game);
-
   return (
     <div className="relative flex flex-col items-start justify-between p-2 size-full">
       <div className="mt-0.5 flex flex-row justify-between w-full h-6">

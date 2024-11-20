@@ -17,7 +17,6 @@ import {
   useMemo,
   useState,
 } from "react";
-import { toast } from "sonner";
 import NewGameModal from "../modals/newGame";
 
 interface LibraryTabsProps {
@@ -27,7 +26,8 @@ interface LibraryTabsProps {
 }
 
 const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
-  const [open, setOpen] = useState(false);
+  const [newListOpen, setNewListOpen] = useState(false);
+  const [newGameOpen, setNewGameOpen] = useState(false);
 
   const activeTabIndex = useMemo(
     () => tabs.findIndex((tab) => tab.name === activeTab?.name),
@@ -36,27 +36,55 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
 
   const switchToNextTab = useCallback(() => {
     if (!tabs.length) return;
+    if (newGameOpen || newListOpen) return;
+
+    // if last tab is active, open new list modal
+    if (activeTabIndex === 0) {
+      setNewGameOpen(true);
+      return;
+    }
 
     const nextIndex = (activeTabIndex + 1) % tabs.length;
+
     setActiveTab(tabs[nextIndex]);
-    toast.success(`Switched to next tab: ${tabs[nextIndex].name}`);
-  }, [tabs, activeTabIndex, setActiveTab]);
+  }, [tabs, newGameOpen, newListOpen, activeTabIndex, setActiveTab]);
 
   const switchToPreviousTab = useCallback(() => {
     if (!tabs.length) return;
+    if (newGameOpen || newListOpen) return;
 
     const previousIndex = (activeTabIndex - 1 + tabs.length) % tabs.length;
+
+    // if first tab is active, open new game modal
+    if (activeTabIndex === tabs.length - 1) {
+      setNewListOpen(true);
+      return;
+    }
+
     setActiveTab(tabs[previousIndex]);
-    toast.success(`Switched to previous tab: ${tabs[previousIndex].name}`);
-  }, [tabs, activeTabIndex, setActiveTab]);
+  }, [tabs, newGameOpen, newListOpen, activeTabIndex, setActiveTab]);
 
   useGamepadButton("LB", switchToNextTab);
   useGamepadButton("RB", switchToPreviousTab);
+  useGamepadButton(
+    "LS",
+    useCallback(() => {
+      if (newGameOpen || newListOpen) return;
+      setNewGameOpen(true);
+    }, [newGameOpen, newListOpen])
+  );
+  useGamepadButton(
+    "RS",
+    useCallback(() => {
+      if (newGameOpen || newListOpen) return;
+      setNewListOpen(true);
+    }, [newGameOpen, newListOpen])
+  );
 
   return (
     <div className="flex p-4 bg-background">
       {/* New Game Button */}
-      <Dialog>
+      <Dialog open={newGameOpen} onOpenChange={setNewGameOpen}>
         <DialogTrigger>
           <Button
             variant="secondary"
@@ -100,14 +128,14 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
       </Carousel>
 
       {/* New List Button */}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={newListOpen} onOpenChange={setNewListOpen}>
         <DialogTrigger>
           <Button variant="secondary" className="rounded-xl gap-1.5 ml-1">
             <Plus strokeWidth={3} />
             <span className="font-bold">New List</span>
           </Button>
         </DialogTrigger>
-        <NewListDialogContent open={open} setOpen={setOpen} />
+        <NewListDialogContent open={newListOpen} setOpen={setNewListOpen} />
       </Dialog>
     </div>
   );
