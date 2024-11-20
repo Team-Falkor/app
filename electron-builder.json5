@@ -47,22 +47,12 @@
     mimeTypes: ["x-scheme-handler/falkor"],
     publish: ["github"],
   },
-  publish: [
-    {
-      provider: "github",
-      repo: "app",
-      owner: "team-falkor",
-      private: false,
-      publishAutoUpdate: true,
-      releaseType: "prerelease",
-    },
-    {
-      provider: "github",
-      repo: "app",
-      owner: "team-falkor",
-      private: false,
-      publishAutoUpdate: true,
-      releaseType: "draft",
-    },
-  ],
+  publish: {
+    provider: "github",
+    repo: "app",
+    owner: "team-falkor",
+    private: false,
+    publishAutoUpdate: true,
+    releaseType: "draft",
+  },
 }
