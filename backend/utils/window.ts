@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, nativeImage, screen, Tray } from "electron";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { settings } from "../utils/settings/settings";
+import { client } from "./torrent";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -54,6 +55,8 @@ class Window {
     if (app.isPackaged) {
       win.setMenu(null);
     }
+
+    this.setupSettings();
 
     // Initialize tray only when needed, and only once
     if (!this.tray) this.createTray();
@@ -111,6 +114,14 @@ class Window {
       this.tray.destroy();
       this.tray = null;
     }
+  }
+
+  private setupSettings() {
+    const maxDownloadSpeed = settings.get("maxDownloadSpeed");
+    const maxUploadSpeed = settings.get("maxUploadSpeed");
+
+    if (maxDownloadSpeed > 0) client.throttleDownload(maxDownloadSpeed);
+    if (maxUploadSpeed > 0) client.throttleUpload(maxUploadSpeed);
   }
 }
 

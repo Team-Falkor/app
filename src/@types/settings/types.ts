@@ -9,6 +9,8 @@ export interface SettingsConfig {
   closeToTray: boolean;
   useAccountsForDownloads: boolean;
   titleBarStyle: SettingsTitleBarStyle;
+  maxDownloadSpeed: number;
+  maxUploadSpeed: number;
 }
 
 export type SettingsTheme = "system" | "light" | "dark";

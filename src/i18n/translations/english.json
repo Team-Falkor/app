@@ -30,7 +30,9 @@
       "launch-on-startup": "Launch Falkor on system startup",
       "launch-on-startup-minimized": "Launch Falkor on system startup minimized",
       "app-settings": "App Settings",
-      "close-to-tray": "Minimize Falkor to the system tray instead of fully exiting the application"
+      "close-to-tray": "Minimize Falkor to the system tray instead of fully exiting the application",
+      "max_speed": "Max Speed",
+      "max_speed_description": "The maximum speed for the downloads to be throttled to (-1 for unlimited)"
     }
   },
   "view_more": "View More",
@@ -116,5 +118,8 @@
   "minimum": "Minimum",
   "recommended": "Recommended",
   "current_version": "Current Version",
-  "new_version": "New Version"
+  "new_version": "New Version",
+  "torrent": "Torrent",
+  "max_download_speed": "Max Download Speed",
+  "max_upload_speed": "Max Upload Speed"
 }

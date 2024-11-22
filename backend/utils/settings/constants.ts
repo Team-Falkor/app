@@ -12,4 +12,6 @@ export const defaultSettings: SettingsConfig = {
   titleBarStyle: "icons",
   launchOnStartup: false,
   closeToTray: false,
+  maxDownloadSpeed: -1,
+  maxUploadSpeed: -1,
 };
