@@ -8,3 +8,4 @@ export * from "./useProtonDb";
 export * from "./useSetState";
 export * from "./useSettings";
 export * from "./useThemes";
+export * from "./useUpdater";
