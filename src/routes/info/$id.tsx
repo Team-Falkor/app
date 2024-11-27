@@ -2,6 +2,7 @@ import { InfoBar } from "@/components/info/infoBar";
 import SimilarGames from "@/components/info/similar";
 import InfoTop from "@/components/info/top";
 import { getUserCountry, igdb, itad, Mapping } from "@/lib";
+import { goBack } from "@/lib/history";
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo } from "react";
@@ -60,11 +61,12 @@ function Info() {
     <div className="relative w-full h-full pb-20 overflow-x-hidden max-w-[100vw]">
       {/* TOP BAR */}
       <InfoBar
+        data={data}
         titleText={data?.name ?? ""}
-        onBack={() => {}}
-        onAddToList={() => {}}
+        onBack={() => goBack()}
+        isPending={isPending}
       />
-      <div className="flex flex-col gap-12 px-10 mx-auto mt-4 overflow-hidden">
+      <div className="flex flex-col gap-12 px-5 mx-auto mt-4 overflow-hidden">
         <InfoTop
           data={data}
           isReleased={isReleased}

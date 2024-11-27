@@ -12,7 +12,11 @@ import { PlusIcon } from "lucide-react";
 import { useLists } from "../hooks/useLists";
 import ListsDropdownItem from "./dropdownItem";
 
-const ListsDropdownContent = (props: IGDBReturnDataType) => {
+type Props = IGDBReturnDataType & {
+  align?: "start" | "end" | "center" | undefined;
+};
+
+const ListsDropdownContent = (props: Props) => {
   const { t } = useLanguageContext();
   const { fetchLists, lists } = useLists();
 
@@ -25,7 +29,7 @@ const ListsDropdownContent = (props: IGDBReturnDataType) => {
   if (error) return null;
 
   return (
-    <DropdownMenuContent className="max-w-sm">
+    <DropdownMenuContent className="max-w-sm" align={props?.align ?? "start"}>
       <DropdownMenuLabel className="w-full truncate">
         {t("add-to-list")}
       </DropdownMenuLabel>
