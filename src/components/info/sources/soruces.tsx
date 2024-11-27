@@ -33,7 +33,7 @@ const SourceShowcase = (props: SourceShowcaseProps) => {
                 </div>
 
                 <p className="w-full text-sm truncate text-muted-foreground">
-                  {deal.url}
+                  {deal?.url}
                 </p>
 
                 <Button
@@ -42,7 +42,7 @@ const SourceShowcase = (props: SourceShowcaseProps) => {
                   onClick={() => openLink(deal.url)}
                 >
                   <ShoppingCart size={18} fill="currentColor" />
-                  {deal.price.currency} {deal.price.amount}
+                  {deal?.price?.currency} {deal?.price?.amount}
                 </Button>
               </div>
             </Card>

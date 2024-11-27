@@ -2,17 +2,17 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const InfoTopSkeleton = () => {
   return (
-    <div className="flex h-[29rem] overflow-hidden">
+    <div className="flex h-[32rem] overflow-hidden">
       {/* BACKGROUND */}
-      <div className="absolute w-full h-[35rem] z-0 bg-cover bg-center bg-no-repeat inset-0 overflow-hidden">
+      <div className="absolute w-full  h-[38rem] z-0 bg-cover bg-center bg-no-repeat inset-0 overflow-hidden">
         <Skeleton className="relative z-0 w-full h-full blur-md" />
         <span className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />
       </div>
 
       <div className="relative z-10 flex items-start justify-between w-full gap-6 mb-5">
         {/* CAROUSEL */}
-        <div className="w-2/6 h-full overflow-hidden rounded-2xl">
-          <Skeleton className="w-full h-full rounded-2xl" />
+        <div className="xl:w-[36%] w2/6 h-full overflow-hidden rounded-2xl">
+          <Skeleton className="size-full" />
         </div>
 
         {/* INFO SECTION (RIGHT) */}
@@ -35,8 +35,8 @@ const InfoTopSkeleton = () => {
 
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-1.5">
-                <Skeleton className="w-28 h-8 rounded-full" />
-                <Skeleton className="w-28 h-8 rounded-full" />
+                <Skeleton className="h-8 rounded-full w-28" />
+                <Skeleton className="h-8 rounded-full w-28" />
               </div>
               <div className="flex items-center gap-1.5">
                 <Skeleton className="w-20 h-8 rounded-full" />
