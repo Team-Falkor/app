@@ -8,7 +8,7 @@ interface MainMediaDisplayProps {
 
 export const MainMediaDisplay = ({ media }: MainMediaDisplayProps) => (
   <div className="relative">
-    <AspectRatio ratio={16 / 9} className="overflow-hidden rounded-lg">
+    <AspectRatio ratio={16 / 9} className="w-full overflow-hidden rounded-lg">
       <IGDBImage
         imageId={media.media.image_id}
         alt={media.alt}

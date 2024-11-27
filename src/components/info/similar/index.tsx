@@ -6,7 +6,6 @@ import {
   CarouselItem,
 } from "@/components/ui/carousel";
 import { useLanguageContext } from "@/contexts/I18N";
-import { FilterOutNonePcGames } from "@/lib";
 import { IGDBReturnDataType } from "@/lib/api/igdb/types";
 import { useMemo } from "react";
 
@@ -17,7 +16,7 @@ interface SimilarGamesProps {
 const SimilarGames = ({ data }: SimilarGamesProps) => {
   const { t } = useLanguageContext();
 
-  const items = useMemo(() => FilterOutNonePcGames(data), [data]);
+  const items = useMemo(() => data, [data]);
 
   if (!items?.length) return null;
 
