@@ -25,9 +25,7 @@ interface DownloadDialogProps extends InfoItadProps {
 const Sources = ({
   isReleased,
   itadData,
-  itadPending,
   title,
-  slug,
   game_data,
 }: DownloadDialogProps) => {
   const { t } = useLanguageContext();
@@ -36,18 +34,14 @@ const Sources = ({
     label: "All",
   });
 
-  const { searchAllPlugins, getPlugins } = UsePlugins();
+  const { searchAllPlugins } = UsePlugins();
 
   const itadSources: ItemDownload[] = useMemo(
     () => [{ id: "itad", name: "IsThereAnyDeal", sources: itadData ?? [] }],
     [itadData]
   );
 
-  const {
-    data: pluginSources,
-    isFetching: pluginLoading,
-    refetch,
-  } = useQuery<ItemDownload[]>({
+  const { data: pluginSources } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
       const plugins = await searchAllPlugins(formatName(title));
@@ -85,11 +79,11 @@ const Sources = ({
     );
   }, [allSources, selectedProvider]);
 
-  const isLoading = itadPending || pluginLoading;
-
   return (
     <div className="flex flex-col w-full gap-1">
-      <h1 className="text-sm font-medium text-secondary-foreground">Sources</h1>
+      <h1 className="text-sm font-medium text-secondary-foreground">
+        {t("sources")}
+      </h1>
 
       <div className="flex flex-col gap-2">
         <Carousel

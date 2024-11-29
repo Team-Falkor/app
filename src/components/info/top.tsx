@@ -1,10 +1,11 @@
 import { InfoItadProps, InfoProps } from "@/@types";
-import { cn } from "@/lib";
+import { cn, getSteamIdFromWebsites } from "@/lib";
 import { IGDBReturnDataType, ReleaseDate } from "@/lib/api/igdb/types";
 import { format } from "date-fns";
 import { Lightbulb } from "lucide-react";
 import { useMemo, useState } from "react";
 import IGDBImage from "../IGDBImage";
+import ProtonDbBadge from "../protonDbBadge";
 import InfoTopSkeleton from "../skeletons/info/top.skeleton";
 import Stars from "../starts";
 import { Button } from "../ui/button";
@@ -33,10 +34,10 @@ const InfoTop = (props: Props) => {
   } = props;
   const [activeTab, setActiveTab] = useState<number>(0);
 
-  // const steam_id = useMemo(
-  //   () => getSteamIdFromWebsites(data?.websites ?? []),
-  //   [data?.websites]
-  // );
+  const steam_id = useMemo(
+    () => getSteamIdFromWebsites(data?.websites ?? []),
+    [data?.websites]
+  );
 
   const genres = useMemo(
     () =>
@@ -85,9 +86,19 @@ const InfoTop = (props: Props) => {
       </div>
 
       <div className="relative z-10 flex items-start justify-between w-full gap-6 mb-5">
-        {/* CAROUSEL */}
         {/* LEFT */}
-        <div className="xl:w-[36%] w2/6 h-full overflow-hidden rounded-2xl">
+        <div className="xl:w-[36%] w2/6 h-full overflow-hidden rounded-2xl relative">
+          <div className="absolute inset-0 z-0 w-full h-full overflow-hidden">
+            <div className="flex flex-col justify-between w-full h-full">
+              {/* ProtonDB badge */}
+              <div className="flex items-start justify-end pt-5 size-full">
+                <div className="overflow-hidden rounded-l-lg">
+                  {steam_id ? <ProtonDbBadge appId={steam_id} /> : null}
+                </div>
+              </div>
+            </div>
+          </div>
+
           <IGDBImage
             imageId={data?.cover?.image_id ?? ""}
             alt={data?.name ?? ""}
