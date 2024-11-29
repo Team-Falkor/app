@@ -11,6 +11,7 @@ import UsePlugins from "@/hooks/usePlugins";
 import { cn, formatName } from "@/lib";
 import { Website } from "@/lib/api/igdb/types";
 import { useQuery } from "@tanstack/react-query";
+import { X } from "lucide-react";
 import { useMemo, useState } from "react";
 import SourceShowcase from "./soruces";
 
@@ -111,17 +112,24 @@ const Sources = ({
           </CarouselContent>
         </Carousel>
 
-        <Carousel
-          opts={{
-            skipSnaps: true,
-            dragFree: true,
-          }}
-          className="mt-2"
-        >
-          <CarouselContent>
-            <SourceShowcase game_data={game_data} sources={filteredSources} />
-          </CarouselContent>
-        </Carousel>
+        {filteredSources?.length ? (
+          <Carousel
+            opts={{
+              skipSnaps: true,
+              dragFree: true,
+            }}
+            className="mt-2"
+          >
+            <CarouselContent>
+              <SourceShowcase game_data={game_data} sources={filteredSources} />
+            </CarouselContent>
+          </Carousel>
+        ) : (
+          <div className="flex items-center justify-start gap-2.5 mt-2 font-bold text-sm">
+            <X className="size-7" />
+            <p>{t("no_sources_found")}</p>
+          </div>
+        )}
       </div>
     </div>
   );

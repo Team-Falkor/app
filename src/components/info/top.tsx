@@ -58,7 +58,7 @@ const InfoTop = (props: Props) => {
     [data]
   );
 
-  const isSameDevAndPublisher =
+  const isSameDevAndPublisherSame =
     !!developer && !!publisher
       ? developer?.company?.name.toLowerCase() ===
         publisher?.company?.name?.toLowerCase()
@@ -157,7 +157,7 @@ const InfoTop = (props: Props) => {
 
             <div className="flex items-start justify-between gap-2">
               <div className="flex items-center gap-1.5">
-                {isSameDevAndPublisher ? (
+                {isSameDevAndPublisherSame ? (
                   <div
                     key={publisher?.company?.id}
                     className="flex items-center gap-2 p-2.5 text-sm rounded-full bg-secondary/20 font-semibold truncate"
@@ -186,10 +186,10 @@ const InfoTop = (props: Props) => {
                 <div className="flex items-center gap-1.5">
                   {genres.map((genre) => (
                     <div
-                      key={genre.slug}
+                      key={genre?.slug}
                       className="flex items-center gap-2 p-2.5 text-sm rounded-full bg-secondary/20 font-semibold truncate"
                     >
-                      {genre.name}
+                      {genre?.name}
                     </div>
                   ))}
                 </div>
@@ -201,7 +201,7 @@ const InfoTop = (props: Props) => {
             </p>
           </div>
 
-          {!isPending && data && (
+          {!isPending && !!data && (
             <div className="">
               <Sources
                 title={data?.name}
