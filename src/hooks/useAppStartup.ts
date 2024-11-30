@@ -125,7 +125,6 @@ export const useAppStartup = () => {
           ? args.join("/")
           : `/${args.join("/")}`;
         if (!url) return;
-        alert(url);
         navigate({
           to: url,
           replace: false,
