@@ -56,7 +56,6 @@ class GameProcessLauncher {
 
       this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
 
-      // Send a message to the renderer process to update the status
       if (!win) return;
       win?.webContents.send("game:playing", this.gameId);
     } catch (error) {

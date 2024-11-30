@@ -88,7 +88,7 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
         <DialogTrigger>
           <Button
             variant="secondary"
-            className="text-white bg-gradient-to-tr from-blue-400 to-purple-400 rounded-xl gap-1.5"
+            className="text-white bg-gradient-to-tr from-blue-400 to-purple-400 gap-1.5 rounded-full"
           >
             <Plus strokeWidth={3} />
             <span className="font-bold">New Game</span>
@@ -113,7 +113,7 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
                 variant="secondary"
                 key={i}
                 className={cn(
-                  "rounded-xl gap-1.5 font-semibold transition-all duration-75",
+                  "gap-1.5 font-semibold transition-all duration-75 rounded-full",
                   {
                     "bg-purple-400/20": activeTab?.name === tab.name,
                   }
@@ -130,7 +130,7 @@ const LibraryTabs = ({ tabs, activeTab, setActiveTab }: LibraryTabsProps) => {
       {/* New List Button */}
       <Dialog open={newListOpen} onOpenChange={setNewListOpen}>
         <DialogTrigger>
-          <Button variant="secondary" className="rounded-xl gap-1.5 ml-1">
+          <Button variant="secondary" className="rounded-full gap-1.5 ml-1">
             <Plus strokeWidth={3} />
             <span className="font-bold">New List</span>
           </Button>
