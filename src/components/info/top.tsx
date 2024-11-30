@@ -201,7 +201,7 @@ const InfoTop = (props: Props) => {
             </p>
           </div>
 
-          {!isPending && !!data && (
+          {!!isReleased && !isPending && !!data && (
             <div className="">
               <Sources
                 title={data?.name}

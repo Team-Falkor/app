@@ -16,13 +16,15 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as SettingsImport } from './routes/settings'
 import { Route as LibraryImport } from './routes/library'
 import { Route as DownloadsImport } from './routes/downloads'
-import { Route as SectionsNewReleasesImport } from './routes/sections/newReleases'
-import { Route as SectionsMostAnticipatedImport } from './routes/sections/mostAnticipated'
 import { Route as InfoIdImport } from './routes/info/$id'
 
 // Create Virtual Routes
 
 const IndexLazyImport = createFileRoute('/')()
+const SectionsNewReleasesLazyImport = createFileRoute('/sections/newReleases')()
+const SectionsMostAnticipatedLazyImport = createFileRoute(
+  '/sections/mostAnticipated',
+)()
 
 // Create/Update Routes
 
@@ -50,17 +52,22 @@ const IndexLazyRoute = IndexLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
 
-const SectionsNewReleasesRoute = SectionsNewReleasesImport.update({
+const SectionsNewReleasesLazyRoute = SectionsNewReleasesLazyImport.update({
   id: '/sections/newReleases',
   path: '/sections/newReleases',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/sections/newReleases.lazy').then((d) => d.Route),
+)
 
-const SectionsMostAnticipatedRoute = SectionsMostAnticipatedImport.update({
-  id: '/sections/mostAnticipated',
-  path: '/sections/mostAnticipated',
-  getParentRoute: () => rootRoute,
-} as any)
+const SectionsMostAnticipatedLazyRoute =
+  SectionsMostAnticipatedLazyImport.update({
+    id: '/sections/mostAnticipated',
+    path: '/sections/mostAnticipated',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/sections/mostAnticipated.lazy').then((d) => d.Route),
+  )
 
 const InfoIdRoute = InfoIdImport.update({
   id: '/info/$id',
@@ -111,14 +118,14 @@ declare module '@tanstack/react-router' {
       id: '/sections/mostAnticipated'
       path: '/sections/mostAnticipated'
       fullPath: '/sections/mostAnticipated'
-      preLoaderRoute: typeof SectionsMostAnticipatedImport
+      preLoaderRoute: typeof SectionsMostAnticipatedLazyImport
       parentRoute: typeof rootRoute
     }
     '/sections/newReleases': {
       id: '/sections/newReleases'
       path: '/sections/newReleases'
       fullPath: '/sections/newReleases'
-      preLoaderRoute: typeof SectionsNewReleasesImport
+      preLoaderRoute: typeof SectionsNewReleasesLazyImport
       parentRoute: typeof rootRoute
     }
   }
@@ -132,8 +139,8 @@ export interface FileRoutesByFullPath {
   '/library': typeof LibraryRoute
   '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
-  '/sections/mostAnticipated': typeof SectionsMostAnticipatedRoute
-  '/sections/newReleases': typeof SectionsNewReleasesRoute
+  '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
+  '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
 
 export interface FileRoutesByTo {
@@ -142,8 +149,8 @@ export interface FileRoutesByTo {
   '/library': typeof LibraryRoute
   '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
-  '/sections/mostAnticipated': typeof SectionsMostAnticipatedRoute
-  '/sections/newReleases': typeof SectionsNewReleasesRoute
+  '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
+  '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
 
 export interface FileRoutesById {
@@ -153,8 +160,8 @@ export interface FileRoutesById {
   '/library': typeof LibraryRoute
   '/settings': typeof SettingsRoute
   '/info/$id': typeof InfoIdRoute
-  '/sections/mostAnticipated': typeof SectionsMostAnticipatedRoute
-  '/sections/newReleases': typeof SectionsNewReleasesRoute
+  '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
+  '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -194,8 +201,8 @@ export interface RootRouteChildren {
   LibraryRoute: typeof LibraryRoute
   SettingsRoute: typeof SettingsRoute
   InfoIdRoute: typeof InfoIdRoute
-  SectionsMostAnticipatedRoute: typeof SectionsMostAnticipatedRoute
-  SectionsNewReleasesRoute: typeof SectionsNewReleasesRoute
+  SectionsMostAnticipatedLazyRoute: typeof SectionsMostAnticipatedLazyRoute
+  SectionsNewReleasesLazyRoute: typeof SectionsNewReleasesLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -204,8 +211,8 @@ const rootRouteChildren: RootRouteChildren = {
   LibraryRoute: LibraryRoute,
   SettingsRoute: SettingsRoute,
   InfoIdRoute: InfoIdRoute,
-  SectionsMostAnticipatedRoute: SectionsMostAnticipatedRoute,
-  SectionsNewReleasesRoute: SectionsNewReleasesRoute,
+  SectionsMostAnticipatedLazyRoute: SectionsMostAnticipatedLazyRoute,
+  SectionsNewReleasesLazyRoute: SectionsNewReleasesLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -243,10 +250,10 @@ export const routeTree = rootRoute
       "filePath": "info/$id.tsx"
     },
     "/sections/mostAnticipated": {
-      "filePath": "sections/mostAnticipated.tsx"
+      "filePath": "sections/mostAnticipated.lazy.tsx"
     },
     "/sections/newReleases": {
-      "filePath": "sections/newReleases.tsx"
+      "filePath": "sections/newReleases.lazy.tsx"
     }
   }
 }
