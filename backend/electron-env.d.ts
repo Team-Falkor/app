@@ -2,22 +2,15 @@
 
 declare namespace NodeJS {
   interface ProcessEnv {
-    /**
-     * The built directory structure
-     *
-     * ```tree
-     * ├─┬─┬ dist
-     * │ │ └── index.html
-     * │ │
-     * │ ├─┬ dist-electron
-     * │ │ ├── main.js
-     * │ │ └── preload.js
-     * │
-     * ```
-     */
     APP_ROOT: string;
     /** /dist/ or /public/ */
     VITE_PUBLIC: string;
+    VITE_TWITCH_CLIENT_ID: string;
+    VITE_TWITCH_CLIENT_SECRET: string;
+    VITE_ITAD_API_KEY: string;
+    VITE_RD_CLIENT_ID: string;
+    VITE_STEAMGRIDDB_API_KEY?: string;
+    debug?: boolean;
   }
 }
 

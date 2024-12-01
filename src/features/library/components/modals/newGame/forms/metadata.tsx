@@ -64,6 +64,7 @@ const NewGameMetadataForm = ({ form }: NewGameMetadataFormProps) => {
             text={t("id")}
             description={t("game_id")}
             field={field}
+            required
             Button={
               <Button
                 variant="secondary"

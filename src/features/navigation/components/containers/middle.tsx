@@ -22,7 +22,7 @@ export const NavBarMiddle = () => {
   if (!Object.values(games)?.length) return null;
 
   return (
-    <div>
+    <div className="h-full">
       <Carousel
         orientation="vertical"
         opts={{
@@ -30,8 +30,9 @@ export const NavBarMiddle = () => {
           dragFree: true,
           loop: false,
         }}
+        className="h-full"
       >
-        <CarouselContent>
+        <CarouselContent className="h-full">
           {...gamesToShow.map((game) => {
             return (
               <CarouselItem key={game.id}>

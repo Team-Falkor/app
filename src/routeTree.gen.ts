@@ -14,19 +14,31 @@ import { createFileRoute } from '@tanstack/react-router'
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as SettingsImport } from './routes/settings'
-import { Route as LibraryImport } from './routes/library'
-import { Route as DownloadsImport } from './routes/downloads'
-import { Route as InfoIdImport } from './routes/info/$id'
+import { Route as IndexImport } from './routes/index'
 
 // Create Virtual Routes
 
-const IndexLazyImport = createFileRoute('/')()
+const LibraryLazyImport = createFileRoute('/library')()
+const DownloadsLazyImport = createFileRoute('/downloads')()
 const SectionsNewReleasesLazyImport = createFileRoute('/sections/newReleases')()
 const SectionsMostAnticipatedLazyImport = createFileRoute(
   '/sections/mostAnticipated',
 )()
+const InfoIdLazyImport = createFileRoute('/info/$id')()
 
 // Create/Update Routes
+
+const LibraryLazyRoute = LibraryLazyImport.update({
+  id: '/library',
+  path: '/library',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/library.lazy').then((d) => d.Route))
+
+const DownloadsLazyRoute = DownloadsLazyImport.update({
+  id: '/downloads',
+  path: '/downloads',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/downloads.lazy').then((d) => d.Route))
 
 const SettingsRoute = SettingsImport.update({
   id: '/settings',
@@ -34,23 +46,11 @@ const SettingsRoute = SettingsImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const LibraryRoute = LibraryImport.update({
-  id: '/library',
-  path: '/library',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const DownloadsRoute = DownloadsImport.update({
-  id: '/downloads',
-  path: '/downloads',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const IndexLazyRoute = IndexLazyImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
-} as any).lazy(() => import('./routes/index.lazy').then((d) => d.Route))
+} as any)
 
 const SectionsNewReleasesLazyRoute = SectionsNewReleasesLazyImport.update({
   id: '/sections/newReleases',
@@ -69,11 +69,11 @@ const SectionsMostAnticipatedLazyRoute =
     import('./routes/sections/mostAnticipated.lazy').then((d) => d.Route),
   )
 
-const InfoIdRoute = InfoIdImport.update({
+const InfoIdLazyRoute = InfoIdLazyImport.update({
   id: '/info/$id',
   path: '/info/$id',
   getParentRoute: () => rootRoute,
-} as any)
+} as any).lazy(() => import('./routes/info/$id.lazy').then((d) => d.Route))
 
 // Populate the FileRoutesByPath interface
 
@@ -83,21 +83,7 @@ declare module '@tanstack/react-router' {
       id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/downloads': {
-      id: '/downloads'
-      path: '/downloads'
-      fullPath: '/downloads'
-      preLoaderRoute: typeof DownloadsImport
-      parentRoute: typeof rootRoute
-    }
-    '/library': {
-      id: '/library'
-      path: '/library'
-      fullPath: '/library'
-      preLoaderRoute: typeof LibraryImport
+      preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
     '/settings': {
@@ -107,11 +93,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsImport
       parentRoute: typeof rootRoute
     }
+    '/downloads': {
+      id: '/downloads'
+      path: '/downloads'
+      fullPath: '/downloads'
+      preLoaderRoute: typeof DownloadsLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/library': {
+      id: '/library'
+      path: '/library'
+      fullPath: '/library'
+      preLoaderRoute: typeof LibraryLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/info/$id': {
       id: '/info/$id'
       path: '/info/$id'
       fullPath: '/info/$id'
-      preLoaderRoute: typeof InfoIdImport
+      preLoaderRoute: typeof InfoIdLazyImport
       parentRoute: typeof rootRoute
     }
     '/sections/mostAnticipated': {
@@ -134,32 +134,32 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexLazyRoute
-  '/downloads': typeof DownloadsRoute
-  '/library': typeof LibraryRoute
+  '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
-  '/info/$id': typeof InfoIdRoute
+  '/downloads': typeof DownloadsLazyRoute
+  '/library': typeof LibraryLazyRoute
+  '/info/$id': typeof InfoIdLazyRoute
   '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
   '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexLazyRoute
-  '/downloads': typeof DownloadsRoute
-  '/library': typeof LibraryRoute
+  '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
-  '/info/$id': typeof InfoIdRoute
+  '/downloads': typeof DownloadsLazyRoute
+  '/library': typeof LibraryLazyRoute
+  '/info/$id': typeof InfoIdLazyRoute
   '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
   '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexLazyRoute
-  '/downloads': typeof DownloadsRoute
-  '/library': typeof LibraryRoute
+  '/': typeof IndexRoute
   '/settings': typeof SettingsRoute
-  '/info/$id': typeof InfoIdRoute
+  '/downloads': typeof DownloadsLazyRoute
+  '/library': typeof LibraryLazyRoute
+  '/info/$id': typeof InfoIdLazyRoute
   '/sections/mostAnticipated': typeof SectionsMostAnticipatedLazyRoute
   '/sections/newReleases': typeof SectionsNewReleasesLazyRoute
 }
@@ -168,27 +168,27 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/settings'
     | '/downloads'
     | '/library'
-    | '/settings'
     | '/info/$id'
     | '/sections/mostAnticipated'
     | '/sections/newReleases'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/settings'
     | '/downloads'
     | '/library'
-    | '/settings'
     | '/info/$id'
     | '/sections/mostAnticipated'
     | '/sections/newReleases'
   id:
     | '__root__'
     | '/'
+    | '/settings'
     | '/downloads'
     | '/library'
-    | '/settings'
     | '/info/$id'
     | '/sections/mostAnticipated'
     | '/sections/newReleases'
@@ -196,21 +196,21 @@ export interface FileRouteTypes {
 }
 
 export interface RootRouteChildren {
-  IndexLazyRoute: typeof IndexLazyRoute
-  DownloadsRoute: typeof DownloadsRoute
-  LibraryRoute: typeof LibraryRoute
+  IndexRoute: typeof IndexRoute
   SettingsRoute: typeof SettingsRoute
-  InfoIdRoute: typeof InfoIdRoute
+  DownloadsLazyRoute: typeof DownloadsLazyRoute
+  LibraryLazyRoute: typeof LibraryLazyRoute
+  InfoIdLazyRoute: typeof InfoIdLazyRoute
   SectionsMostAnticipatedLazyRoute: typeof SectionsMostAnticipatedLazyRoute
   SectionsNewReleasesLazyRoute: typeof SectionsNewReleasesLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexLazyRoute: IndexLazyRoute,
-  DownloadsRoute: DownloadsRoute,
-  LibraryRoute: LibraryRoute,
+  IndexRoute: IndexRoute,
   SettingsRoute: SettingsRoute,
-  InfoIdRoute: InfoIdRoute,
+  DownloadsLazyRoute: DownloadsLazyRoute,
+  LibraryLazyRoute: LibraryLazyRoute,
+  InfoIdLazyRoute: InfoIdLazyRoute,
   SectionsMostAnticipatedLazyRoute: SectionsMostAnticipatedLazyRoute,
   SectionsNewReleasesLazyRoute: SectionsNewReleasesLazyRoute,
 }
@@ -226,28 +226,28 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/settings",
         "/downloads",
         "/library",
-        "/settings",
         "/info/$id",
         "/sections/mostAnticipated",
         "/sections/newReleases"
       ]
     },
     "/": {
-      "filePath": "index.lazy.tsx"
-    },
-    "/downloads": {
-      "filePath": "downloads.tsx"
-    },
-    "/library": {
-      "filePath": "library.tsx"
+      "filePath": "index.tsx"
     },
     "/settings": {
       "filePath": "settings.tsx"
     },
+    "/downloads": {
+      "filePath": "downloads.lazy.tsx"
+    },
+    "/library": {
+      "filePath": "library.lazy.tsx"
+    },
     "/info/$id": {
-      "filePath": "info/$id.tsx"
+      "filePath": "info/$id.lazy.tsx"
     },
     "/sections/mostAnticipated": {
       "filePath": "sections/mostAnticipated.lazy.tsx"

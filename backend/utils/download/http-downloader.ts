@@ -1,10 +1,10 @@
 import fs from "fs";
 import https from "https";
 import { logger } from "../../handlers/logging";
-
 import window from "../../utils/window";
 import download_events from "./events";
 import item from "./item";
+import { sanitizeFilename } from "../utils";
 
 const win = window?.window;
 
@@ -50,7 +50,8 @@ class HttpDownloader {
           (isPartialContent ? this.downloadedSize : 0);
         this.item.totalSize = totalSize;
 
-        this.fileStream = fs.createWriteStream(this.item.fullPath, {
+        const sanitizedPath = this.getSanitizedFilePath();
+        this.fileStream = fs.createWriteStream(sanitizedPath, {
           flags: isPartialContent ? "a" : "w",
         });
 
@@ -75,6 +76,11 @@ class HttpDownloader {
         );
       });
     });
+  }
+
+  private getSanitizedFilePath(): string {
+    const sanitizedFilename = sanitizeFilename(this.item.filename);
+    return `${this.item.filePath}/${sanitizedFilename}`;
   }
 
   private startSpeedTracking(totalSize: number) {

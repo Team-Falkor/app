@@ -10,14 +10,11 @@ const win = windoww?.window;
 class GameProcessLauncher {
   private gamePath: string;
   private gameId: string;
-
   private gameProcess: ChildProcess | null = null;
   private startDate: Date | null = null;
-  private playtime: number = 0;
+  private playtime: number;
   private isPlaying: boolean = false;
   private interval: NodeJS.Timeout | null = null;
-
-  private gamesDB = gamesDB;
 
   constructor(gamePath: string, gameId: string, currentPlaytime: number = 0) {
     this.gamePath = gamePath;
@@ -25,77 +22,111 @@ class GameProcessLauncher {
     this.playtime = currentPlaytime;
   }
 
-  // Launch the game process
-  public launchGame() {
+  /**
+   * Launches the game and sets up playtime tracking.
+   */
+  public launchGame(): void {
     console.log("Launching game:", this.gamePath);
 
     try {
-      // Spawn the game process
-      this.gameProcess = spawn(this.gamePath, {
-        detached: true,
-      });
+      this.gameProcess = spawn(this.gamePath, { detached: true });
       this.gameProcess.unref();
 
       this.gameProcess.on("exit", (code, signal) => {
         console.log(`Game exited with code: ${code}, signal: ${signal}`);
-
-        this.trackPlayTime();
-        this.cleanup();
-
-        if (this.interval) clearInterval(this.interval);
-
-        this.updatePlaytime();
-
-        // Send a message to the renderer process to update the status
-        if (!win) return;
-        win?.webContents.send("game:stopped", this.gameId);
+        this.onGameExit();
       });
 
-      this.startDate = new Date();
-      this.isPlaying = true;
-
-      this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
-
-      if (!win) return;
-      win?.webContents.send("game:playing", this.gameId);
+      this.startGameSession();
     } catch (error) {
       console.error("Error launching game:", error);
       logger.log("error", `Error launching game: ${(error as Error).message}`);
     }
   }
 
-  public trackPlayTime() {
-    if (!this.isPlaying) return;
-    if (!this.startDate) return;
+  /**
+   * Tracks the playtime for the current session.
+   */
+  private trackPlayTime(): void {
+    if (!this.isPlaying || !this.startDate) return;
 
-    const currentDate = new Date();
-    const playTime = currentDate.getTime() - this.startDate.getTime();
-    this.playtime += playTime;
+    const elapsed = Date.now() - this.startDate.getTime();
+    this.playtime += elapsed;
+    this.startDate = new Date(); // Reset start date for next interval tracking
   }
 
-  public updatePlaytime() {
+  /**
+   * Updates the database with the game's playtime and last played timestamp.
+   */
+  private updatePlaytime(): void {
     if (!this.gameId) return;
-    this.gamesDB.updateGame(this.gameId, {
+
+    gamesDB.updateGame(this.gameId, {
       game_playtime: this.playtime,
       game_last_played: new Date(),
     });
-    console.log(`Game playtime: ${ms(this.playtime)}`);
+
+    console.log(`Updated playtime: ${ms(this.playtime)}`);
   }
 
-  public cleanup() {
+  /**
+   * Handles game exit by cleaning up resources and updating playtime.
+   */
+  private onGameExit(): void {
+    this.trackPlayTime();
+    this.updatePlaytime(); // Call updatePlaytime when the game exits
+    this.cleanup();
+
+    if (win) {
+      win.webContents.send("game:stopped", this.gameId);
+    }
+  }
+
+  /**
+   * Cleans up the game session.
+   */
+  private cleanup(): void {
     if (this.gameProcess && !this.gameProcess.killed) {
       this.gameProcess.kill("SIGTERM");
     }
+
+    if (this.isPlaying) {
+      this.trackPlayTime(); // Ensure playtime is tracked before cleanup
+      this.updatePlaytime(); // Ensure database is updated during cleanup
+    }
+
     this.gameProcess = null;
     this.startDate = null;
     this.isPlaying = false;
-    this.interval = null;
+
+    if (this.interval) {
+      clearInterval(this.interval);
+      this.interval = null;
+    }
+
     gamesLaunched.delete(this.gameId);
   }
 
-  public stopGame() {
-    if (this.gameProcess && !this.gameProcess.killed) {
-      this.gameProcess.kill("SIGTERM");
+  /**
+   * Stops the game process.
+   */
+  public stopGame(): void {
+    if (this.isPlaying) {
+      this.cleanup();
+    }
+  }
+
+  /**
+   * Initializes game play session tracking.
+   */
+  private startGameSession(): void {
+    this.startDate = new Date();
+    this.isPlaying = true;
+
+    this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
+
+    if (win) {
+      win.webContents.send("game:playing", this.gameId);
     }
   }
 }

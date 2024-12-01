@@ -1,5 +1,6 @@
 import { PluginSearchResponse } from "@/@types";
 import { ITorrentGameData } from "@/@types/torrent";
+import { useLanguageContext } from "@/contexts/I18N";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { useSettings } from "@/hooks";
 import { createSlug, invoke, openLink } from "@/lib";
@@ -18,6 +19,7 @@ type SourceCardProps = {
 };
 
 export const SourceCard = ({ source, ...props }: SourceCardProps) => {
+  const { t } = useLanguageContext();
   const { addDownload, addTorrent } = UseDownloads();
   const { realDebrid } = useAccountServices();
   const { settings } = useSettings();
@@ -103,12 +105,18 @@ export const SourceCard = ({ source, ...props }: SourceCardProps) => {
           <>
             <h1 className="w-full font-bold line-clamp-2">{source.name}</h1>
             <Button
-              className="items-center w-full gap-3 text-sm font-bold rounded-full"
+              className="items-center w-full gap-3 text-sm font-bold capitalize rounded-full"
               variant="secondary"
               onClick={handleClick}
             >
-              <Download size={18} fill="currentColor" />
-              Download
+              <Download
+                size={18}
+                fill="currentColor"
+                className="flex-shrink-0"
+              />
+              <span className="max-w-full capitalize truncate">
+                {source?.uploader ?? t("download")}
+              </span>
             </Button>
           </>
         )}
