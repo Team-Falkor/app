@@ -141,3 +141,9 @@ export interface Tab {
   name: string;
   component: JSX.Element;
 }
+
+export interface Response<T = any> {
+  message: string;
+  error: boolean;
+  data: T | null;
+}

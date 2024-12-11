@@ -121,5 +121,6 @@
   "new_version": "New Version",
   "torrent": "Torrent",
   "max_download_speed": "Max Download Speed",
-  "max_upload_speed": "Max Upload Speed"
+  "max_upload_speed": "Max Upload Speed",
+  "add-to-list": "Add To List"
 }

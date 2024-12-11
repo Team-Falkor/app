@@ -52,9 +52,7 @@ class Window {
       VITE_DEV_SERVER_URL || `file://${path.join(RENDERER_DIST, "index.html")}`;
     win.loadURL(loadURL);
 
-    if (app.isPackaged) {
-      win.setMenu(null);
-    }
+    if (app.isPackaged) win.setMenu(null);
 
     this.setupSettings();
 
@@ -76,6 +74,8 @@ class Window {
     tray.setToolTip("Falkor");
 
     tray.setContextMenu(this.createContextMenu());
+
+    tray.on("double-click", () => this.showWindow());
 
     this.tray = tray;
   }

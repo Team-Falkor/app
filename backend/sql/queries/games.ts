@@ -99,7 +99,7 @@ class GamesDatabase {
    * @param {string} [game.args] - The arguments to pass to the game when launching it.
    * @param {string} [game.command] - The command to use when launching the game.
    *
-   * @returns {Promise<void>}
+   * @returns {Promise<LibraryGame>}
    */
   async addGame(game: NewLibraryGame): Promise<LibraryGame> {
     await this.init();

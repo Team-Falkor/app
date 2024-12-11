@@ -1,44 +1,59 @@
+import EventEmitter from "events";
 import HttpDownloader from "./http-downloader";
 import DownloadItem from "./item";
 
-class DownloadQueue {
+class DownloadQueue extends EventEmitter {
   private queue: Map<string, DownloadItem> = new Map();
   private activeDownloads: Map<string, HttpDownloader> = new Map();
   private maxConcurrentDownloads: number;
+  private isProcessing = false;
 
   constructor(maxConcurrentDownloads: number = 1) {
+    super();
     this.maxConcurrentDownloads = maxConcurrentDownloads;
   }
 
   public addToQueue(downloadItem: DownloadItem): void {
-    if (downloadItem.status !== "completed") {
+    if (
+      downloadItem.status !== "completed" &&
+      !this.queue.has(downloadItem.id)
+    ) {
       this.queue.set(downloadItem.id, downloadItem);
+      this.emit("queueAdded", downloadItem);
       this.processQueue();
     }
   }
 
   private async processQueue(): Promise<void> {
-    if (
-      this.activeDownloads.size >= this.maxConcurrentDownloads ||
-      this.queue.size === 0
-    ) {
-      return;
-    }
-
-    const downloadItem = this.queue.values().next().value;
-    if (!downloadItem) return;
-
-    const downloader = new HttpDownloader(downloadItem);
-    this.activeDownloads.set(downloadItem.id, downloader);
+    if (this.isProcessing) return;
+    this.isProcessing = true;
 
     try {
-      await downloader.download();
-    } catch (error) {
-      this.logError(`Failed to download ${downloadItem.url}`, error);
+      while (
+        this.activeDownloads.size < this.maxConcurrentDownloads &&
+        this.queue.size > 0
+      ) {
+        const downloadItem = this.queue.values().next().value;
+        if (!downloadItem) break;
+
+        const downloader = new HttpDownloader(downloadItem);
+        this.activeDownloads.set(downloadItem.id, downloader);
+
+        this.emit("downloadStarted", downloadItem);
+
+        try {
+          await downloader.download();
+          this.emit("downloadCompleted", downloadItem);
+        } catch (error) {
+          this.logError(`Failed to download ${downloadItem.url}`, error);
+          this.emit("downloadFailed", downloadItem, error);
+        } finally {
+          this.activeDownloads.delete(downloadItem.id);
+          this.queue.delete(downloadItem.id);
+        }
+      }
     } finally {
-      this.activeDownloads.delete(downloadItem.id);
-      this.queue.delete(downloadItem.id);
-      this.processQueue();
+      this.isProcessing = false;
     }
   }
 
@@ -46,6 +61,7 @@ class DownloadQueue {
     this.activeDownloads.forEach((downloader) => downloader.stop());
     this.activeDownloads.clear();
     this.queue.clear();
+    this.emit("queueCleared");
   }
 
   public async pause(id: string): Promise<DownloadItem | null> {
@@ -54,6 +70,7 @@ class DownloadQueue {
 
     try {
       downloader.pause();
+      this.emit("downloadPaused", downloader.item);
       await this.processQueue();
       return downloader.item;
     } catch (error) {
@@ -68,6 +85,7 @@ class DownloadQueue {
 
     try {
       await downloader.resume();
+      this.emit("downloadResumed", downloader.item);
       await this.processQueue();
       return downloader.item;
     } catch (error) {
@@ -84,6 +102,7 @@ class DownloadQueue {
       downloader.stop();
       this.activeDownloads.delete(id);
       this.queue.delete(id);
+      this.emit("downloadStopped", downloader.item);
       return downloader.item;
     } catch (error) {
       this.logError(`Failed to stop download with id ${id}`, error);

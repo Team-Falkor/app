@@ -2,8 +2,9 @@ import { useLanguageContext } from "@/contexts/I18N";
 import { cn } from "@/lib";
 import { Link } from "@tanstack/react-router";
 import { HTMLAttributes } from "react";
+import CarouselButton from "../carouselButton";
 import GenericRow from "../genericRow";
-import { buttonVariants } from "../ui/button";
+import { Carousel } from "../ui/carousel";
 
 interface RowContainerProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
@@ -22,34 +23,34 @@ const RowContainer = ({
 
   return (
     <div className={cn("mx-auto", className)} id={id} {...props}>
-      <div className="flex items-center justify-between pb-1">
-        <h3 className="pb-2 font-mono text-lg font-medium leading-6">
-          {title}
-        </h3>
+      <Carousel
+        className={className}
+        id={id}
+        opts={{
+          skipSnaps: true,
+          dragFree: true,
+        }}
+      >
+        <div className="flex items-center justify-between pb-4">
+          <div className="flex items-end gap-2">
+            <h3 className="font-mono text-lg font-medium leading-6">{title}</h3>
 
-        <Link
-          to={`/sections/${dataToFetch}`}
-          className={cn(
-            buttonVariants({
-              variant: "link",
-            }),
-            "p-0 m-0 text-sm text-slate-400"
-          )}
-        >
-          {t("view_more")}
-        </Link>
-      </div>
+            <Link
+              to={`/sections/${dataToFetch}`}
+              className={cn("p-0 m-0 text-sm text-slate-400 hover:underline")}
+            >
+              {t("view_more")}
+            </Link>
+          </div>
 
-      {/* <Separator
-        orientation="horizontal"
-        className="mb-3.5 bg-muted-foreground/25"
-      /> */}
+          <div>
+            <CarouselButton direction="left" id={`${dataToFetch}-left-btn`} />
+            <CarouselButton direction="right" />
+          </div>
+        </div>
 
-      <GenericRow
-        className="mt-2"
-        dataToFetch={dataToFetch}
-        fetchKey={[dataToFetch]}
-      />
+        <GenericRow dataToFetch={dataToFetch} fetchKey={[dataToFetch]} />
+      </Carousel>
     </div>
   );
 };

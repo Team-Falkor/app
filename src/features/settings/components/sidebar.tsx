@@ -15,7 +15,7 @@ const LINKS: Array<LinkItemType> = [
   {
     icon: <FaDiscord />,
     title: "join_the_discord",
-    url: "https://falkor.com/discord",
+    url: "https://falkor.moe/discord",
   },
   {
     icon: <FaGithub />,

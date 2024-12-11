@@ -10,12 +10,17 @@ const RETRY_INTERVAL = 600;
 
 // Configure deep linking
 const configureDeepLinking = () => {
-  if (process.defaultApp && process.argv.length <= 2) {
-    app.setAsDefaultProtocolClient(DEEP_LINK_NAME, process.execPath, [
-      path.resolve(process.argv[1]),
-    ]);
+  if (process.defaultApp) {
+    if (process.argv.length <= 2) {
+      app.setAsDefaultProtocolClient(DEEP_LINK_NAME, process.execPath, [
+        path.resolve(process.argv[1]),
+      ]);
+
+      console.log("1");
+    }
   } else {
     app.setAsDefaultProtocolClient(DEEP_LINK_NAME);
+    console.log("2");
   }
 };
 
@@ -25,7 +30,10 @@ const handleSecondInstance = (commandLine: string[]) => {
   if (mainWindow) {
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.focus();
-    mainWindow.webContents.send("app:deep-link", commandLine.pop()?.slice(0));
+
+    const url = commandLine.pop()?.slice(0);
+
+    mainWindow.webContents.send("app:deep-link", url);
   }
 };
 
@@ -78,11 +86,13 @@ const setEventListeners = () => {
   });
 };
 
+const gotTheLock = app.requestSingleInstanceLock();
+
 // Main Process
 const main = () => {
   configureDeepLinking();
 
-  if (!app.requestSingleInstanceLock()) {
+  if (!gotTheLock) {
     app.quit();
     return;
   }

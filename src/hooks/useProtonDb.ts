@@ -7,7 +7,7 @@ export const useProtonDb = (appId: string) => {
       "request",
       `https://www.protondb.com/api/v1/reports/summaries/${appId}.json`
     );
-    return response;
+    return response?.data;
   };
 
   const { data, isPending, error, refetch } = useQuery({

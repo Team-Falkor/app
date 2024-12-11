@@ -29,9 +29,9 @@ const GameFormInput = <T extends FieldValues>({
     <FormItem>
       <FormLabel>
         {text}
-        {required ? "*" : ""}
+        {required ? "*" : null}
       </FormLabel>
-      <div className="flex flex-row flex-1 gap-1">
+      <div className="flex flex-row flex-1">
         <FormControl>
           <Input placeholder={description} {...props} {...field} />
         </FormControl>

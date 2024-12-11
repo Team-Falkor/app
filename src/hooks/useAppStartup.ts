@@ -3,11 +3,13 @@ import { invoke } from "@/lib";
 import { getRealDebridAuthInstance } from "@/lib/api/realdebrid/auth";
 import { useAccountServices } from "@/stores/account-services";
 import { useQuery } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const useAppStartup = () => {
   const [hasLoaded, setHasLoaded] = useState(false);
+  const navigate = useNavigate();
   const { setRealDebrid, realDebrid } = useAccountServices();
 
   const { data, isPending, error, isError } = useQuery({
@@ -118,13 +120,26 @@ export const useAppStartup = () => {
         toast.success(installed?.message ?? null);
       }
 
+      if (command === "goto" && args.length) {
+        const url = args.join("/").startsWith("/")
+          ? args.join("/")
+          : `/${args.join("/")}`;
+        if (!url) return;
+        navigate({
+          to: url,
+          replace: false,
+          resetScroll: true,
+        });
+        return;
+      }
+
       setHasLoaded(true);
     });
 
     return () => {
       window.ipcRenderer.removeAllListeners("app:deep-link");
     };
-  }, []);
+  }, [navigate]);
 
   return {
     hasLoaded,
