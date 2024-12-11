@@ -1,6 +1,6 @@
 import "./app";
 import "./db";
-import "./download";
+import "./download-queue";
 import "./generic";
 import "./launcher";
 import "./logger";

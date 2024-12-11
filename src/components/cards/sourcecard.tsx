@@ -1,5 +1,4 @@
-import { PluginSearchResponse } from "@/@types";
-import { ITorrentGameData } from "@/@types/torrent";
+import { DownloadgameData, PluginSearchResponse } from "@/@types";
 import { useLanguageContext } from "@/contexts/I18N";
 import UseDownloads from "@/features/downloads/hooks/useDownloads";
 import { useSettings } from "@/hooks";
@@ -13,14 +12,14 @@ import { Card } from "../ui/card";
 type SourceCardProps = {
   source: PluginSearchResponse | Deal;
   pluginId?: string;
-  game_data?: ITorrentGameData;
+  game_data?: DownloadgameData;
   multiple_choice?: boolean;
   slug?: string;
 };
 
 export const SourceCard = ({ source, ...props }: SourceCardProps) => {
   const { t } = useLanguageContext();
-  const { addDownload, addTorrent } = UseDownloads();
+  const { addDownload } = UseDownloads();
   const { realDebrid } = useAccountServices();
   const { settings } = useSettings();
 
@@ -59,10 +58,13 @@ export const SourceCard = ({ source, ...props }: SourceCardProps) => {
         if (!props.game_data) return;
 
         addDownload({
-          id: props.slug ?? createSlug(props.game_data?.name),
-          url,
-          game_data: props.game_data,
-          file_name: props.game_data.name,
+          type: "download",
+          data: {
+            id: props.slug ?? createSlug(props.game_data?.name),
+            url,
+            game_data: props.game_data,
+            file_name: props.game_data.name,
+          },
         });
         return;
       }
@@ -70,16 +72,25 @@ export const SourceCard = ({ source, ...props }: SourceCardProps) => {
       if (type === "ddl") {
         if (!props.game_data) return;
         addDownload({
-          id: props?.slug ?? createSlug(props.game_data.name),
-          url,
-          game_data: props.game_data,
-          file_name: props.game_data.name,
+          type: "download",
+          data: {
+            id: props?.slug ?? createSlug(props.game_data.name),
+            url,
+            game_data: props.game_data,
+            file_name: props.game_data.name,
+          },
         });
         return;
       }
 
       if (!props.game_data) return;
-      addTorrent(url, props.game_data);
+      addDownload({
+        type: "torrent",
+        data: {
+          torrentId: url,
+          game_data: props.game_data,
+        },
+      });
     }
   };
 

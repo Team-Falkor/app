@@ -1,5 +1,9 @@
-import { InfoItadProps, ItemDownload, SourceProvider } from "@/@types";
-import { ITorrentGameData } from "@/@types/torrent";
+import {
+  DownloadgameData,
+  InfoItadProps,
+  ItemDownload,
+  SourceProvider,
+} from "@/@types";
 import { Button } from "@/components/ui/button";
 import {
   Carousel,
@@ -20,7 +24,7 @@ interface DownloadDialogProps extends InfoItadProps {
   slug?: string;
   isReleased: boolean;
   websites: Website[];
-  game_data: ITorrentGameData;
+  game_data: DownloadgameData;
 }
 
 const Sources = ({

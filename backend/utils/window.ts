@@ -123,6 +123,11 @@ class Window {
     if (maxDownloadSpeed > 0) client.throttleDownload(maxDownloadSpeed);
     if (maxUploadSpeed > 0) client.throttleUpload(maxUploadSpeed);
   }
+
+  emitToFrontend = <TData>(channel: string, data?: TData) => {
+    if (!this.window) return; // If window doesn't exist, nothing to do
+    this.window.webContents.send(channel, data);
+  };
 }
 
 const window = new Window();

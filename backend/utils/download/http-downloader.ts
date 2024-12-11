@@ -1,12 +1,9 @@
 import fs from "fs";
 import https from "https";
-import { logger } from "../../handlers/logging";
 import window from "../../utils/window";
+import { sanitizeFilename } from "../utils";
 import download_events from "./events";
 import item from "./item";
-import { sanitizeFilename } from "../utils";
-
-const win = window?.window;
 
 class HttpDownloader {
   item: item;
@@ -120,16 +117,11 @@ class HttpDownloader {
     this.item.updateStatus("error");
     this.stop();
 
-    logger.log("error", `Failed to download ${this.item.url}: ${message}`);
-
-    win?.webContents?.send(download_events.error, {
+    window.emitToFrontend(download_events.error, {
       error: message,
       id: this.item.id,
-      game_data: this.item.game_data,
       status: "error",
     });
-
-    logger.log("error", `Failed to download ${this.item.url}: ${message}`);
 
     reject(new Error(message));
   }
@@ -146,7 +138,7 @@ class HttpDownloader {
     this.fileStream?.close();
     this.item.updateStatus("stopped");
     this.clearSpeedTracking();
-    win?.webContents?.send(download_events.stopped, {
+    window.emitToFrontend(download_events.stopped, {
       ...this.item.getReturnData(),
       status: "stopped",
     });
@@ -157,7 +149,7 @@ class HttpDownloader {
     this.isPaused = true;
     this.item.updateStatus("paused");
     this.stop();
-    win?.webContents?.send(download_events.paused, {
+    window.emitToFrontend(download_events.paused, {
       ...this.item.getReturnData(),
       status: "paused",
     });
@@ -168,7 +160,7 @@ class HttpDownloader {
     this.isPaused = false;
     this.item.updateStatus("downloading");
     await this.download();
-    win?.webContents?.send(download_events.paused, {
+    window.emitToFrontend(download_events.paused, {
       ...this.item.getReturnData(),
       status: "downloading",
     });
@@ -177,7 +169,7 @@ class HttpDownloader {
   private handleComplete() {
     this.item.updateStatus("completed");
     this.clearSpeedTracking();
-    win?.webContents?.send(download_events.complete, {
+    window.emitToFrontend(download_events.complete, {
       ...this.item.getReturnData(),
       status: "completed",
     });

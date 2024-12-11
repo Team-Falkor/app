@@ -1,14 +1,14 @@
-import { ITorrentGameData } from "@/@types/torrent";
+import { DownloadgameData } from "@/@types";
 import WebTorrent, { Torrent } from "webtorrent";
 import { logger } from "../../handlers/logging";
 
 export const client = new WebTorrent();
 
-export type TorrentWithGameData = Torrent & { game_data: ITorrentGameData };
+export type TorrentWithGameData = Torrent & { game_data: DownloadgameData };
 
 export const combineTorrentData = (
   torrent: Torrent,
-  game_data: ITorrentGameData
+  game_data: DownloadgameData
 ) => {
   return { ...torrent, game_data } as TorrentWithGameData;
 };
@@ -18,4 +18,4 @@ client.on("error", (error) => {
   logger.log("error", `WebTorrent error: ${(error as Error).message}`);
 });
 
-export const torrents: Map<number, TorrentWithGameData> = new Map();
+export const torrents: Map<string, TorrentWithGameData> = new Map();

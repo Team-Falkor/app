@@ -1,12 +1,11 @@
-import { ItemDownload, PluginSearchResponse } from "@/@types";
-import { ITorrentGameData } from "@/@types/torrent";
+import { DownloadgameData, ItemDownload, PluginSearchResponse } from "@/@types";
 import { SourceCard } from "@/components/cards/sourcecard";
 import { CarouselItem } from "@/components/ui/carousel";
 import { ITADPrice } from "@/lib/api/itad/types";
 
 interface SourceShowcaseProps {
   sources: ItemDownload[];
-  game_data: ITorrentGameData;
+  game_data: DownloadgameData;
   slug?: string;
 }
 
