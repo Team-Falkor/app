@@ -17,62 +17,64 @@ export const Route = createLazyFileRoute("/downloads")({
 
 function Downloads() {
   const { t } = useLanguageContext();
-  const { downloads, queue } = UseDownloads();
+  const { downloads, queue } = UseDownloads(); // Assuming `removeFromQueue` is available in your hook
   const {
     map: statsMap,
     set: setStats,
     remove: removeStats,
   } = useMapState<string, ITorrent | DownloadData>();
 
+  // Improved progress handler to prevent unnecessary changes
   const handleProgress = useCallback(
     (_event: any, data: ITorrent | DownloadData) => {
-      if (isTorrent(data)) {
-        setStats(data.infoHash, data);
-      } else {
-        setStats(data.id, data);
-      }
+      const id = isTorrent(data) ? data.infoHash : data.id;
+      setStats(id, data);
     },
     [setStats]
   );
 
-  // Register progress event listener
+  // Optimized useEffect to manage IPC listener and remove item from queue once downloading
   useEffect(() => {
     const ipcRenderer = window.ipcRenderer;
-    ipcRenderer.on("torrent:progress", handleProgress);
+    const listener = (event: any, data: ITorrent | DownloadData) => {
+      handleProgress(event, data);
+
+      // If the status is 'downloading', remove the item from the queue
+      if (data.status === "downloading") {
+        removeStats(isTorrent(data) ? data.infoHash : data.id);
+      }
+    };
+    ipcRenderer.on("torrent:progress", listener);
 
     return () => {
-      ipcRenderer.removeAllListeners("torrent:progress");
+      ipcRenderer.off("torrent:progress", listener);
     };
-  }, [handleProgress]);
+  }, [handleProgress, removeStats]);
 
-  // Combine downloading and queue, removing duplicates by ID/infoHash
+  // Ensure unique downloads by combining downloads and queue
   const uniqueDownloads = useMemo(() => {
     const uniqueSet = new Map<string, ITorrent | DownloadData | QueueData>();
-
     for (const item of [...downloads, ...queue]) {
-      if ("type" in item) {
-        uniqueSet.set(
-          item.type === "torrent" ? item.data.torrentId : item.data.id,
-          item
-        );
-      } else {
-        uniqueSet.set(isTorrent(item) ? item.infoHash : item.id, item);
-      }
+      const key =
+        "type" in item
+          ? item.type === "torrent"
+            ? item.data.torrentId
+            : item.data.id
+          : isTorrent(item)
+            ? item.infoHash
+            : item.id;
+      uniqueSet.set(key, item);
     }
-
     return Array.from(uniqueSet.values());
   }, [downloads, queue]);
 
+  // Render download cards, with cleanup for unused stats
   const renderDownloadCard = useCallback(
     (item: ITorrent | DownloadData | QueueData) => {
-      const stats: ITorrent | DownloadData | QueueData | undefined =
+      const stats =
         "type" in item
           ? item
           : statsMap.get(isTorrent(item) ? item.infoHash : item.id);
-
-      // if ((stats && stats.status === "stopped") || stats?.status === "error")
-      //   return null;
-
       if (!stats) return null;
 
       if ("type" in stats) {
@@ -86,8 +88,8 @@ function Downloads() {
         );
       }
 
-      if (stats?.status === "pending") return <DownloadCardLoading />;
-      if (isTorrent(stats))
+      if (stats.status === "pending") return <DownloadCardLoading />;
+      if (isTorrent(stats)) {
         return (
           <DownloadCard
             key={stats.infoHash}
@@ -95,6 +97,7 @@ function Downloads() {
             deleteStats={removeStats}
           />
         );
+      }
       return (
         <DownloadCard key={stats.id} stats={stats} deleteStats={removeStats} />
       );
@@ -122,7 +125,7 @@ function Downloads() {
       </div>
 
       {uniqueDownloads.length ? (
-        <div className="flex flex-col gap-4 mt-2 ">
+        <div className="flex flex-col gap-4 mt-2">
           {uniqueDownloads.map(renderDownloadCard)}
         </div>
       ) : (

@@ -17,8 +17,9 @@ const THROTTLE_INTERVAL = 1000; // Send progress updates every second
 let lastUpdateTime: number | null = null;
 
 // Helper to determine if the item is a Torrent
-export const isTorrent = (item: HttpDownloader | Torrent): item is Torrent =>
-  !!(item as Torrent).magnetURI;
+export const isTorrent = (item: HttpDownloader | Torrent): item is Torrent => {
+  return !!(item as Torrent).magnetURI;
+};
 
 class AllQueue {
   private queue = new Map<string, QueueData>();
@@ -51,18 +52,13 @@ class AllQueue {
           path: d.path,
           paused: d.paused,
           progress: d.progress,
-          status: d.downloaded
-            ? "completed"
-            : d.paused
-              ? "paused"
-              : "downloading",
+          status: d.done ? "completed" : d.paused ? "paused" : "downloading",
           totalSize: d.length,
           timeRemaining: d.timeRemaining,
           game_data: torrent?.game_data,
         } as ITorrent;
-      } else {
-        return d.item.getReturnData();
       }
+      return d.item.getReturnData();
     });
   }
 
@@ -109,7 +105,7 @@ class AllQueue {
           this.activeDownloads.set(item.data.torrentId, torrent);
           this.queue.delete(item.data.torrentId);
 
-          const reutrn_data: ITorrent = {
+          const returnData: ITorrent = {
             infoHash: torrent.infoHash,
             name: torrent.name,
             progress: torrent.progress,
@@ -133,8 +129,7 @@ class AllQueue {
           });
 
           torrent.on("done", () => {
-            this.activeDownloads.delete(item.data.torrentId);
-            torrents.delete(item.data.torrentId);
+            this.completeDownload(item.data.torrentId);
             window.emitToFrontend("torrent:done", {
               infoHash: torrent.infoHash,
             });
@@ -142,8 +137,7 @@ class AllQueue {
           });
 
           torrent.on("error", (error) => {
-            this.activeDownloads.delete(item.data.torrentId);
-            torrents.delete(item.data.torrentId);
+            this.completeDownload(item.data.torrentId);
             window.emitToFrontend("torrent:error", {
               infoHash: torrent.infoHash,
               error: (error as Error).message,
@@ -155,13 +149,11 @@ class AllQueue {
             const now = Date.now();
 
             if (!lastUpdateTime || now - lastUpdateTime >= THROTTLE_INTERVAL) {
-              console.log(reutrn_data);
               torrents.set(
                 torrent.infoHash,
                 combineTorrentData(torrent, item.data.game_data)
               );
-
-              window.emitToFrontend("torrent:progress", reutrn_data);
+              window.emitToFrontend("torrent:progress", returnData);
               lastUpdateTime = now;
             }
           });
@@ -187,9 +179,14 @@ class AllQueue {
         error: (error as Error).message,
       });
     } finally {
-      this.activeDownloads.delete(item.data.id);
+      this.completeDownload(item.data.id);
       void this.processQueue();
     }
+  }
+
+  private completeDownload(id: string): void {
+    this.activeDownloads.delete(id);
+    this.queue.delete(id);
   }
 
   async stopAll(): Promise<void> {
@@ -206,8 +203,7 @@ class AllQueue {
     if (!downloader) return;
 
     this.stopDownloader(downloader);
-    this.activeDownloads.delete(id);
-    this.queue.delete(id);
+    this.completeDownload(id);
     window.emitToFrontend("queue:stop", { id });
     void this.processQueue();
   }

@@ -19,8 +19,9 @@ const DownloadCardActions = ({
 }: DownloadCardActionsProps) => {
   const isTorrentType = isTorrent(stats);
 
-  const { pauseDownload, startDownload, stopDownload, status } =
-    UseDownloadAction(isTorrentType ? stats.infoHash : stats.id, isTorrentType);
+  const { pause, start, stop, status } = UseDownloadAction(
+    isTorrentType ? stats.infoHash : stats.id
+  );
 
   if (status === "stopped" || !stats) return null;
 
@@ -31,7 +32,7 @@ const DownloadCardActions = ({
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={startDownload ?? undefined}
+          onClick={start ?? undefined}
         >
           <Play fill="currentColor" />
           Start Download
@@ -41,7 +42,7 @@ const DownloadCardActions = ({
           size="default"
           variant="secondary"
           className="gap-2"
-          onClick={pauseDownload ?? undefined}
+          onClick={pause ?? undefined}
         >
           <Pause fill="currentColor" />
           Pause Download
@@ -53,7 +54,7 @@ const DownloadCardActions = ({
         variant="destructive"
         className="p-0.5"
         onClick={() => {
-          stopDownload();
+          stop();
           deleteStats(isTorrentType ? stats.infoHash : stats.id);
         }}
       >

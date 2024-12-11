@@ -46,13 +46,14 @@ const Sources = ({
     [itadData]
   );
 
-  const { data: pluginSources } = useQuery<ItemDownload[]>({
+  const { data: pluginSources, isError } = useQuery<ItemDownload[]>({
     queryKey: ["sources", formatName(title)],
     queryFn: async () => {
       const plugins = await searchAllPlugins(formatName(title));
       return plugins.filter((plugin) => plugin.sources.length > 0);
     },
     enabled: isReleased,
+    staleTime: 60000, // Cache for a minute to reduce unnecessary queries
   });
 
   const allSources = useMemo(
@@ -116,7 +117,9 @@ const Sources = ({
           </CarouselContent>
         </Carousel>
 
-        {filteredSources?.length ? (
+        {isError ? (
+          <p className="text-red-500">{t("error_loading_sources")}</p>
+        ) : filteredSources?.length ? (
           <Carousel
             opts={{
               skipSnaps: true,
