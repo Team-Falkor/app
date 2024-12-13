@@ -6,12 +6,10 @@ interface UseDownloadsProps {
   forceFetch: boolean;
 }
 
-const UseDownloads = (
-  { fetch, forceFetch }: Partial<UseDownloadsProps> = {
-    fetch: true,
-    forceFetch: false,
-  }
-) => {
+const UseDownloads = ({
+  fetch = true,
+  forceFetch = false,
+}: Partial<UseDownloadsProps> = {}) => {
   const {
     addToQueue,
     downloads,
@@ -29,14 +27,26 @@ const UseDownloads = (
   useEffect(() => {
     if (!fetch && !forceFetch) return;
 
-    if (queue?.length <= 0 && !forceFetch) {
+    if (!forceFetch && queue?.length === 0) {
       fetchQueue();
     }
 
-    if (downloads?.length <= 0 && !forceFetch) {
+    if (!forceFetch && downloads?.length === 0) {
       fetchDownloads();
     }
-  }, [downloads?.length, fetch, fetchDownloads, fetchQueue, forceFetch, queue]);
+
+    if (forceFetch) {
+      fetchQueue();
+      fetchDownloads();
+    }
+  }, [
+    fetch,
+    forceFetch,
+    queue?.length,
+    downloads?.length,
+    fetchQueue,
+    fetchDownloads,
+  ]);
 
   return {
     addDownload: addToQueue,

@@ -17,7 +17,10 @@ interface QueueStoreState {
 }
 
 export const useDownloadStore = create<QueueStoreState>((set, get) => {
-  // Helper to safely update state and avoid stale closures
+  const logError = (action: string, error: unknown) => {
+    console.error(`[DownloadStore] ${action} failed:`, error);
+  };
+
   const safeSetState = <T extends keyof QueueStoreState>(
     key: T,
     value: QueueStoreState[T]
@@ -39,10 +42,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
         if (response.success) {
           safeSetState("queue", response.data);
         } else {
-          console.error("Failed to fetch queue:", response.error);
+          logError("Fetching queue", response.error);
         }
       } catch (error) {
-        console.error("Error fetching queue:", error);
+        logError("Fetching queue", error);
       }
     },
 
@@ -52,10 +55,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
         if (response.success) {
           safeSetState("downloads", response.data);
         } else {
-          console.error("Failed to fetch downloads:", response.error);
+          logError("Fetching downloads", response.error);
         }
       } catch (error) {
-        console.error("Error fetching downloads:", error);
+        logError("Fetching downloads", error);
       }
     },
 
@@ -63,12 +66,12 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
       try {
         const response = await window.ipcRenderer.invoke("queue:add", item);
         if (response.success) {
-          await get().fetchQueue(); // Ensure async completion
+          await get().fetchQueue();
         } else {
-          console.error("Failed to add to queue:", response.error);
+          logError("Adding to queue", response.error);
         }
       } catch (error) {
-        console.error("Error adding to queue:", error);
+        logError("Adding to queue", error);
       }
     },
 
@@ -76,12 +79,12 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
       try {
         const response = await window.ipcRenderer.invoke("queue:remove", id);
         if (response.success) {
-          await get().fetchQueue(); // Ensure async completion
+          await get().fetchQueue();
         } else {
-          console.error("Failed to remove from queue:", response.error);
+          logError("Removing from queue", response.error);
         }
       } catch (error) {
-        console.error("Error removing from queue:", error);
+        logError("Removing from queue", error);
       }
     },
 
@@ -91,10 +94,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
         if (response.success) {
           await get().fetchDownloads();
         } else {
-          console.error("Failed to pause download:", response.error);
+          logError("Pausing download", response.error);
         }
       } catch (error) {
-        console.error("Error pausing download:", error);
+        logError("Pausing download", error);
       }
     },
 
@@ -104,10 +107,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
         if (response.success) {
           await get().fetchDownloads();
         } else {
-          console.error("Failed to resume download:", response.error);
+          logError("Resuming download", response.error);
         }
       } catch (error) {
-        console.error("Error resuming download:", error);
+        logError("Resuming download", error);
       }
     },
 
@@ -117,10 +120,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
         if (response.success) {
           await get().fetchDownloads();
         } else {
-          console.error("Failed to stop download:", response.error);
+          logError("Stopping download", response.error);
         }
       } catch (error) {
-        console.error("Error stopping download:", error);
+        logError("Stopping download", error);
       }
     },
 
@@ -132,13 +135,10 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
           max
         );
         if (!response.success) {
-          console.error(
-            "Failed to update max concurrent downloads:",
-            response.error
-          );
+          logError("Updating max concurrent downloads", response.error);
         }
       } catch (error) {
-        console.error("Error updating max concurrent downloads:", error);
+        logError("Updating max concurrent downloads", error);
       }
     },
   };
