@@ -81,7 +81,13 @@ const DownloadCard = ({ stats, deleteStats }: DownloadCardProps) => {
           <div className="flex flex-col items-end justify-between flex-1 h-full gap-4">
             <div className="overflow-hidden size-full">
               <DownloadCardChartArea
-                progress={stats.progress ? stats.progress * 100 : 0}
+                progress={
+                  stats.progress
+                    ? "infoHash" in stats
+                      ? stats.progress * 100
+                      : stats.progress
+                    : 0
+                }
                 timeRemaining={stats.timeRemaining ?? 0}
                 chartData={speedHistory}
               />

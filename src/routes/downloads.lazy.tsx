@@ -28,6 +28,7 @@ function Downloads() {
   const handleProgress = useCallback(
     (_event: any, data: ITorrent | DownloadData) => {
       const id = isTorrent(data) ? data.infoHash : data.id;
+
       setStats(id, data);
     },
     [setStats]
@@ -38,16 +39,14 @@ function Downloads() {
     const ipcRenderer = window.ipcRenderer;
     const listener = (event: any, data: ITorrent | DownloadData) => {
       handleProgress(event, data);
-
-      // If the status is 'downloading', remove the item from the queue
-      if (data.status === "downloading") {
-        removeStats(isTorrent(data) ? data.infoHash : data.id);
-      }
     };
+
     ipcRenderer.on("torrent:progress", listener);
+    ipcRenderer.on("download:progress", listener);
 
     return () => {
       ipcRenderer.off("torrent:progress", listener);
+      ipcRenderer.off("download:progress", listener);
     };
   }, [handleProgress, removeStats]);
 
@@ -75,7 +74,10 @@ function Downloads() {
         "type" in item
           ? item
           : statsMap.get(isTorrent(item) ? item.infoHash : item.id);
-      if (!stats) return null;
+      console.log({ stats });
+      if (!stats) {
+        return null;
+      }
 
       if ("type" in stats) {
         return (
@@ -87,7 +89,6 @@ function Downloads() {
           />
         );
       }
-
       if (stats.status === "pending") return <DownloadCardLoading />;
       if (isTorrent(stats)) {
         return (
@@ -98,6 +99,7 @@ function Downloads() {
           />
         );
       }
+
       return (
         <DownloadCard key={stats.id} stats={stats} deleteStats={removeStats} />
       );

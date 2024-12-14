@@ -11,7 +11,9 @@ class HttpDownloader {
   private isPaused: boolean = false;
   private downloadedSize: number = 0;
   private speedInterval?: NodeJS.Timeout;
+  private progressInterval?: NodeJS.Timeout;
   private previousDownloadedSize: number = 0;
+  private previousProgress: number = 0;
   private fileStream?: fs.WriteStream;
 
   constructor(item: item) {
@@ -20,9 +22,10 @@ class HttpDownloader {
 
   public async download(): Promise<void> {
     if (this.item.status === "completed") return;
+    console.log(`[Download]: ${this.item.id} Starting download...`);
 
     this.item.updateStatus("downloading");
-    this.previousDownloadedSize = this.downloadedSize; // Initialize downloaded size
+    this.previousDownloadedSize = this.downloadedSize;
 
     return new Promise<void>((resolve, reject) => {
       const options = {
@@ -41,11 +44,27 @@ class HttpDownloader {
           return;
         }
 
+        // Ensure content-length is available and valid
+        const contentLengthHeader = response.headers["content-length"];
+        if (!contentLengthHeader) {
+          this.handleError(reject, "Missing content-length header.");
+          return;
+        }
+
+        const contentLength = Number(contentLengthHeader);
+        if (isNaN(contentLength) || contentLength <= 0) {
+          this.handleError(reject, "Invalid content-length value.");
+          return;
+        }
+
         const isPartialContent = response.statusCode === 206;
         const totalSize =
-          Number(response.headers["content-length"]) +
-          (isPartialContent ? this.downloadedSize : 0);
+          contentLength + (isPartialContent ? this.downloadedSize : 0);
         this.item.totalSize = totalSize;
+
+        console.log(
+          `[Download]: Total size: ${totalSize}, Downloaded: ${this.downloadedSize}`
+        );
 
         const sanitizedPath = this.getSanitizedFilePath();
         this.fileStream = fs.createWriteStream(sanitizedPath, {
@@ -56,9 +75,11 @@ class HttpDownloader {
 
         // Start tracking download speed and progress
         this.startSpeedTracking(totalSize);
-        response.on("data", (chunk) =>
-          this.trackProgress(chunk.length, totalSize)
-        );
+        this.startProgressTracking(totalSize);
+
+        response.on("data", (chunk) => {
+          this.downloadedSize += chunk.length;
+        });
 
         response.on("end", () => {
           this.fileStream?.close();
@@ -77,7 +98,7 @@ class HttpDownloader {
 
   private getSanitizedFilePath(): string {
     const sanitizedFilename = sanitizeFilename(this.item.filename);
-    return `${this.item.filePath}/${sanitizedFilename}`;
+    return `${this.item.filePath}/${sanitizedFilename}.${this.item.fileExtension}`;
   }
 
   private startSpeedTracking(totalSize: number) {
@@ -98,16 +119,34 @@ class HttpDownloader {
     }, 1000);
   }
 
-  private trackProgress(chunkSize: number, totalSize: number) {
-    this.downloadedSize += chunkSize;
-    const progress = (this.downloadedSize / totalSize) * 100;
-    this.item.updateProgress(progress);
-    this.item.sendProgress();
+  private startProgressTracking(totalSize: number) {
+    this.progressInterval = setInterval(() => {
+      // Calculate progress
+      let progress = (this.downloadedSize / totalSize) * 100;
+
+      // Ensure progress is between 0 and 100
+      progress = Math.min(Math.max(progress, 0), 100);
+
+      // Only emit progress if there's a significant change
+      if (Math.abs(progress - this.previousProgress) >= 1) {
+        this.previousProgress = progress;
+
+        // Round progress to 2 decimal places for accuracy
+        const roundedProgress = Math.round(progress * 100) / 100;
+
+        console.log(
+          `[Progress]: ${this.item.id} - ${roundedProgress}% (${this.downloadedSize}/${totalSize})`
+        );
+
+        this.item.updateProgress(roundedProgress);
+        this.item.sendProgress();
+      }
+    }, 1000);
   }
 
   private finishDownload(resolve: () => void) {
     this.item.updateStatus("completed");
-    this.clearSpeedTracking();
+    this.clearTracking();
     this.handleComplete();
     resolve();
   }
@@ -126,10 +165,14 @@ class HttpDownloader {
     reject(new Error(message));
   }
 
-  private clearSpeedTracking() {
+  private clearTracking() {
     if (this.speedInterval) {
       clearInterval(this.speedInterval);
       this.speedInterval = undefined;
+    }
+    if (this.progressInterval) {
+      clearInterval(this.progressInterval);
+      this.progressInterval = undefined;
     }
   }
 
@@ -137,7 +180,7 @@ class HttpDownloader {
     this.request?.destroy();
     this.fileStream?.close();
     this.item.updateStatus("stopped");
-    this.clearSpeedTracking();
+    this.clearTracking();
     window.emitToFrontend(download_events.stopped, {
       ...this.item.getReturnData(),
       status: "stopped",
@@ -168,7 +211,7 @@ class HttpDownloader {
 
   private handleComplete() {
     this.item.updateStatus("completed");
-    this.clearSpeedTracking();
+    this.clearTracking();
     window.emitToFrontend(download_events.complete, {
       ...this.item.getReturnData(),
       status: "completed",

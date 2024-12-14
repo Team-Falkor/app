@@ -6,6 +6,7 @@ import { toast } from "sonner";
 interface DownloadPauseReturn {
   message: string;
   error: boolean;
+  success: boolean;
   data: {
     id: string;
     status: DownloadStatus;
@@ -19,17 +20,15 @@ export const UseDownloadAction = (id?: string) => {
   const pause = async () => {
     if (!id) return null;
 
-    const data = await invoke<
-      { message: string; error: boolean; data: any },
-      string
-    >("queue:pause", id);
+    const data = await invoke<DownloadPauseReturn, string>("queue:pause", id);
 
-    if (!data) return null;
-    if (data.error) {
+    if (!data?.success) return null;
+    if (data?.error) {
       toast.error(data.message);
       return null;
     }
 
+    console.log({ data });
     // Assuming "paused" is a valid status within DownloadStatus
     setStatus("paused");
     return data;
@@ -40,7 +39,7 @@ export const UseDownloadAction = (id?: string) => {
 
     const data = await invoke<DownloadPauseReturn, string>("queue:resume", id);
 
-    if (!data) return null;
+    if (!data?.success) return null;
     if (data.error) {
       toast.error(data.message);
       return null;
@@ -56,7 +55,7 @@ export const UseDownloadAction = (id?: string) => {
 
     const data = await invoke<DownloadPauseReturn, string>("queue:stop", id);
 
-    if (!data) return null;
+    if (!data?.success) return null;
     if (data.error) {
       toast.error(data.message);
       return null;

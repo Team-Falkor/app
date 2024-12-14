@@ -1,15 +1,17 @@
-import { AddDownloadData, DownloadData, DownloadStatus } from "@/@types";
-import { ITorrentGameData } from "@/@types/torrent";
+import {
+  AddDownloadData,
+  DownloadData,
+  DownloadgameData,
+  DownloadStatus,
+} from "@/@types";
 import { createWriteStream, WriteStream } from "node:fs";
 import path from "node:path";
 import { logger } from "../../handlers/logging";
 import window from "../../utils/window";
 import { constants } from "../constants";
 import { settings } from "../settings/settings";
-import download_events from "./events";
 import { sanitizeFilename } from "../utils";
-
-const win = window?.window;
+import download_events from "./events";
 
 class DownloadItem {
   id: string;
@@ -26,7 +28,7 @@ class DownloadItem {
   progressIntervalId?: ReturnType<typeof setInterval>;
   private fileStream?: WriteStream;
 
-  game_data: ITorrentGameData;
+  game_data: DownloadgameData;
 
   constructor(data: AddDownloadData) {
     const { file_path, game_data, url, file_name, id, file_extension } = data;
@@ -63,7 +65,10 @@ class DownloadItem {
   }
 
   private getFileExtension(url: string): string {
-    return url.split(".").pop()?.toLowerCase() || "rar";
+    const fileExtFromUrl = url.split(".").pop();
+    if (fileExtFromUrl && fileExtFromUrl?.length >= 1)
+      return fileExtFromUrl.toLowerCase();
+    return "rar";
   }
 
   private getDownloadPath(): string {
@@ -147,7 +152,7 @@ class DownloadItem {
     }
 
     const progressData = this.getReturnData();
-    win?.webContents?.send(download_events.progress, progressData);
+    window.emitToFrontend(download_events.progress, progressData);
   }
 }
 

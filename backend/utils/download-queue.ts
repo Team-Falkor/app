@@ -212,6 +212,7 @@ class AllQueue {
     const downloader = this.activeDownloads.get(id);
     if (!downloader) return;
 
+    console.log("[download]: pausing", id);
     downloader.pause();
     window.emitToFrontend("queue:pause", { id });
   }
@@ -219,6 +220,8 @@ class AllQueue {
   async resume(id: string): Promise<void> {
     const downloader = this.activeDownloads.get(id);
     if (!downloader) return;
+
+    console.log("[download]: resuming", id);
 
     downloader.resume();
     window.emitToFrontend("queue:resume", { id });
