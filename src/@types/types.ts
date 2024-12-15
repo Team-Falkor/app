@@ -162,3 +162,8 @@ export type Cracker =
   | "razor1911"
   | "rle"
   | "_3dm";
+
+export interface UnlockedAchievement {
+  name: string;
+  unlockTime: number;
+}

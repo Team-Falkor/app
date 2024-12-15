@@ -1,6 +1,7 @@
 import { Cracker } from "@/@types";
 import { app } from "electron";
-import { join } from "path";
+import { existsSync, readdirSync } from "node:fs";
+import { join } from "node:path";
 
 type PathType =
   | "appData"
@@ -14,9 +15,14 @@ interface FilePath {
   achievement_file_location: string[];
 }
 
+interface AchievementFile {
+  type: Cracker;
+  filePath: string;
+}
+
 class AchievementFileLocator {
-  private static isWindows32 = process.platform === "win32";
-  private static user = !this.isWindows32
+  private static isWindows = process.platform === "win32";
+  private static user = !this.isWindows
     ? app.getPath("home").split("/").pop()
     : undefined;
 
@@ -247,45 +253,94 @@ class AchievementFileLocator {
     });
 
   private static getSystemPath(type: PathType): string {
-    switch (type) {
-      case "appData":
-        return this.isWindows32
-          ? app.getPath("appData")
-          : join("drive_c", "users", this.user || "", "AppData", "Roaming");
-      case "documents":
-        return this.isWindows32
-          ? app.getPath("documents")
-          : join("drive_c", "users", this.user || "", "Documents");
-      case "publicDocuments":
-        return this.isWindows32
-          ? join("C:", "Users", "Public", "Documents")
-          : join("drive_c", "users", "Public", "Documents");
-      case "localAppData":
-        return this.isWindows32
-          ? join(app.getPath("appData"), "..", "Local")
-          : join("drive_c", "users", this.user || "", "AppData", "Local");
-      case "programData":
-        return this.isWindows32
-          ? join("C:", "ProgramData")
-          : join("drive_c", "ProgramData");
-      default:
+    const basePaths = {
+      appData: this.isWindows
+        ? app.getPath("appData")
+        : join("drive_c", "users", this.user || "", "AppData", "Roaming"),
+      documents: this.isWindows
+        ? app.getPath("documents")
+        : join("drive_c", "users", this.user || "", "Documents"),
+      publicDocuments: this.isWindows
+        ? join("C:", "Users", "Public", "Documents")
+        : join("drive_c", "users", "Public", "Documents"),
+      localAppData: this.isWindows
+        ? join(app.getPath("appData"), "..", "Local")
+        : join("drive_c", "users", this.user || "", "AppData", "Local"),
+      programData: this.isWindows
+        ? join("C:", "ProgramData")
+        : join("drive_c", "ProgramData"),
+    };
+
+    return (
+      basePaths[type] ||
+      (() => {
         throw new Error(`Unknown path type: ${type}`);
-    }
+      })()
+    );
   }
 
   static getCrackerPath(cracker: Cracker): FilePath[] {
-    const paths = this.crackerPaths[cracker];
-    if (!paths) {
-      throw new Error(`Cracker "${cracker}" not implemented`);
-    }
-    return paths;
+    return this.crackerPaths[cracker] || [];
   }
 
-  static replacePlaceholders(path: string, gameStoreId: string): string {
+  private static replacePlaceholders(
+    path: string,
+    gameStoreId: string
+  ): string {
     if (!gameStoreId) {
       throw new Error("Invalid gameStoreId provided");
     }
     return path.replace(/<game_store_id>/g, gameStoreId);
+  }
+
+  private static buildFilePath(
+    folderPath: string,
+    fileLocations: string[],
+    gameStoreId: string
+  ): string {
+    const mappedLocations = fileLocations.map((location) =>
+      this.replacePlaceholders(location, gameStoreId)
+    );
+    return join(folderPath, ...mappedLocations);
+  }
+
+  static findAllAchievementFiles(): Map<string, AchievementFile[]> {
+    const gameAchievementFiles = new Map<string, AchievementFile[]>();
+
+    for (const [cracker, paths] of Object.entries(this.crackerPaths) as [
+      Cracker,
+      FilePath[],
+    ][]) {
+      paths.forEach(
+        ({ achievement_folder_location, achievement_file_location }) => {
+          if (!existsSync(achievement_folder_location)) return;
+
+          const gameStoreIds = readdirSync(achievement_folder_location);
+          gameStoreIds.forEach((gameStoreId) => {
+            const filePath = this.buildFilePath(
+              achievement_folder_location,
+              achievement_file_location,
+              gameStoreId
+            );
+
+            if (!existsSync(filePath)) return;
+
+            const achievementFile: AchievementFile = {
+              type: cracker,
+              filePath,
+            };
+
+            const existingFiles = gameAchievementFiles.get(gameStoreId) || [];
+            gameAchievementFiles.set(gameStoreId, [
+              ...existingFiles,
+              achievementFile,
+            ]);
+          });
+        }
+      );
+    }
+
+    return gameAchievementFiles;
   }
 }
 
