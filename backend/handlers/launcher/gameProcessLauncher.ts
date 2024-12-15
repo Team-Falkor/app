@@ -5,8 +5,6 @@ import windoww from "../../utils/window";
 import { logger } from "../logging";
 import { gamesLaunched } from "./games_launched";
 
-const win = windoww?.window;
-
 class GameProcessLauncher {
   private gamePath: string;
   private gameId: string;
@@ -77,9 +75,7 @@ class GameProcessLauncher {
     this.updatePlaytime(); // Call updatePlaytime when the game exits
     this.cleanup();
 
-    if (win) {
-      win.webContents.send("game:stopped", this.gameId);
-    }
+    windoww.emitToFrontend("game:stopped", this.gameId);
   }
 
   /**
@@ -125,9 +121,7 @@ class GameProcessLauncher {
 
     this.interval = setInterval(() => this.trackPlayTime(), ms("1m"));
 
-    if (win) {
-      win.webContents.send("game:playing", this.gameId);
-    }
+    windoww.emitToFrontend("game:playing", this.gameId);
   }
 }
 

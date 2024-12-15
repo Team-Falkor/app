@@ -15,7 +15,6 @@ interface DownloadCardActionsProps {
 const DownloadCardActions = ({
   stats,
   deleteStats,
-  isPaused,
 }: DownloadCardActionsProps) => {
   const isTorrentType = isTorrent(stats);
 

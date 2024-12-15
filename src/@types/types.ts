@@ -147,3 +147,18 @@ export interface Response<T = any> {
   error: boolean;
   data: T | null;
 }
+
+export type Cracker =
+  | "codex"
+  | "rune"
+  | "onlinefix"
+  | "goldberg"
+  | "rld"
+  | "empress"
+  | "skidrow"
+  | "creamapi"
+  | "smartsteamemu"
+  | "flt"
+  | "razor1911"
+  | "rle"
+  | "_3dm";
