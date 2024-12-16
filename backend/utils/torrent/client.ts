@@ -15,7 +15,7 @@ export const combineTorrentData = (
 
 client.on("error", (error) => {
   console.error("WebTorrent error:", error);
-  logger.log("error", `WebTorrent error: ${(error as Error).message}`);
+  logger.log("error", `[torrent] error: ${(error as Error).message}`);
 });
 
 export const torrents: Map<string, TorrentWithGameData> = new Map();

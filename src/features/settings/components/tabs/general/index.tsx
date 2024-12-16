@@ -131,6 +131,19 @@ const GeneralSetting = () => {
               {t("settings.settings.close-to-tray")}
             </Label>
           </div>
+          {/* toggle notifications */}
+          <div className="flex items-center gap-4">
+            <Switch
+              id="toggle-notifications"
+              checked={settings.notifications}
+              onCheckedChange={() =>
+                updateSetting("notifications", !settings.notifications)
+              }
+            />
+            <Label htmlFor="toggle-notifications">
+              {t("settings.settings.toggle-notifications")}
+            </Label>
+          </div>
         </SettingsSection>
 
         <SettingsSection
