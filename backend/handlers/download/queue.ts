@@ -1,6 +1,6 @@
 import EventEmitter from "events";
-import HttpDownloader from "./http-downloader";
-import DownloadItem from "./item";
+import { HttpDownloader } from "./http-downloader";
+import { DownloadItem } from "./item";
 
 class DownloadQueue extends EventEmitter {
   private queue: Map<string, DownloadItem> = new Map();

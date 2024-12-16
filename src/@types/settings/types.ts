@@ -11,6 +11,7 @@ export interface SettingsConfig {
   titleBarStyle: SettingsTitleBarStyle;
   maxDownloadSpeed: number;
   maxUploadSpeed: number;
+  notifications: boolean;
 }
 
 export type SettingsTheme = "system" | "light" | "dark";

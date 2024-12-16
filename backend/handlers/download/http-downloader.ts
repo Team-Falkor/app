@@ -1,9 +1,9 @@
 import fs from "fs";
 import https from "https";
+import { sanitizeFilename } from "../..//utils";
 import window from "../../utils/window";
-import { sanitizeFilename } from "../utils";
 import download_events from "./events";
-import item from "./item";
+import { DownloadItem as item } from "./item";
 
 class HttpDownloader {
   item: item;
@@ -219,4 +219,4 @@ class HttpDownloader {
   }
 }
 
-export default HttpDownloader;
+export { HttpDownloader };

@@ -14,4 +14,5 @@ export const defaultSettings: SettingsConfig = {
   closeToTray: false,
   maxDownloadSpeed: -1,
   maxUploadSpeed: -1,
+  notifications: true,
 };

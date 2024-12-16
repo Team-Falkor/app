@@ -5,10 +5,10 @@ import {
   QueueDataTorrent,
 } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
+import { NotificationsHandler } from "backend/handlers/notifications";
 import { Torrent } from "webtorrent";
+import { DownloadItem, HttpDownloader } from "../handlers/download";
 import { constants } from "./constants";
-import HttpDownloader from "./download/http-downloader";
-import DownloadItem from "./download/item";
 import { settings } from "./settings/settings";
 import { client, combineTorrentData, torrents } from "./torrent";
 import window from "./window";
@@ -184,9 +184,34 @@ class AllQueue {
     }
   }
 
-  private completeDownload(id: string): void {
+  private async completeDownload(id: string): Promise<void> {
     this.activeDownloads.delete(id);
     this.queue.delete(id);
+
+    const activeDownload = this.activeDownloads.get(id);
+    if (!activeDownload) return;
+
+    const item = isTorrent(activeDownload)
+      ? torrents.get(id)
+      : activeDownload.item.getReturnData();
+
+    if (!item) return;
+
+    await this.notification(
+      item?.game_data.name,
+      `https://images.igdb.com/igdb/image/upload/t_original/${item.game_data.image_id ?? item.game_data.banner_id}.png`
+    );
+  }
+
+  private async notification(title: string, icon: string | null | undefined) {
+    NotificationsHandler.constructNotification(
+      {
+        title: title,
+        body: "Download completed",
+        icon: icon ? await NotificationsHandler.createImage(icon) : undefined,
+      },
+      true
+    );
   }
 
   async stopAll(): Promise<void> {
