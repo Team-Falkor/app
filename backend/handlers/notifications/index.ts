@@ -1,5 +1,5 @@
 import { Notification, type NotificationConstructorOptions } from "electron";
-import { createWriteStream } from "fs";
+import { createWriteStream, existsSync } from "fs";
 import https from "https";
 import { join } from "path";
 import { constants } from "../../utils";
@@ -11,13 +11,24 @@ class NotificationsHandler {
     options?: NotificationConstructorOptions,
     show: boolean = true
   ) => {
-    const setting = settings.get("notifications");
-    if (!setting) return;
+    try {
+      const setting = settings.get("notifications");
+      if (!setting) {
+        console.log("Notifications are disabled in settings");
+        return;
+      }
 
-    const notification = new Notification(options);
+      const notification = new Notification(options);
 
-    if (!show) return notification;
-    notification.show();
+      if (!show) {
+        console.log("show is false");
+        return notification;
+      }
+
+      notification.show();
+    } catch (error) {
+      console.error("Error creating notification:", error);
+    }
   };
 
   /**
@@ -32,7 +43,7 @@ class NotificationsHandler {
       fileName?: string;
     }
   ): Promise<string | undefined> {
-    if (!url) return undefined; // Return null if the URL is invalid.
+    if (!url) return undefined; // Return undefined if the URL is invalid.
 
     try {
       // Determine the file name, prioritizing the extra parameter, then URL path, with a default fallback.
@@ -42,7 +53,13 @@ class NotificationsHandler {
         "image.png";
       const output = join(constants.cachePath, fileName); // Build the output file path.
 
-      // Delegate to the helper method to download and save the image.
+      // Check if the file already exists.
+      if (existsSync(output)) {
+        console.log("File already exists:", output);
+        return output; // Return the path to the existing file.
+      }
+
+      // If the file doesn't exist, download and save the image.
       return await this.downloadImage(url, output);
     } catch (error) {
       console.error("Error creating image:", error); // Log any unexpected errors.

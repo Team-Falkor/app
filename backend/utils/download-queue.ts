@@ -5,9 +5,9 @@ import {
   QueueDataTorrent,
 } from "@/@types";
 import { ITorrent } from "@/@types/torrent";
-import { NotificationsHandler } from "backend/handlers/notifications";
 import { Torrent } from "webtorrent";
 import { DownloadItem, HttpDownloader } from "../handlers/download";
+import { NotificationsHandler } from "../handlers/notifications";
 import { constants } from "./constants";
 import { settings } from "./settings/settings";
 import { client, combineTorrentData, torrents } from "./torrent";
@@ -185,10 +185,11 @@ class AllQueue {
   }
 
   private async completeDownload(id: string): Promise<void> {
+    const activeDownload = this.activeDownloads.get(id);
+
     this.activeDownloads.delete(id);
     this.queue.delete(id);
 
-    const activeDownload = this.activeDownloads.get(id);
     if (!activeDownload) return;
 
     const item = isTorrent(activeDownload)
