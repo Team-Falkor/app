@@ -181,7 +181,7 @@ class HttpDownloader {
     this.fileStream?.close();
     this.item.updateStatus("stopped");
     this.clearTracking();
-    window.emitToFrontend(download_events.stopped, {
+    window.emitToFrontend(download_events.status, {
       ...this.item.getReturnData(),
       status: "stopped",
     });
@@ -192,7 +192,7 @@ class HttpDownloader {
     this.isPaused = true;
     this.item.updateStatus("paused");
     this.stop();
-    window.emitToFrontend(download_events.paused, {
+    window.emitToFrontend(download_events.status, {
       ...this.item.getReturnData(),
       status: "paused",
     });
@@ -203,7 +203,7 @@ class HttpDownloader {
     this.isPaused = false;
     this.item.updateStatus("downloading");
     await this.download();
-    window.emitToFrontend(download_events.paused, {
+    window.emitToFrontend(download_events.status, {
       ...this.item.getReturnData(),
       status: "downloading",
     });
@@ -212,7 +212,7 @@ class HttpDownloader {
   private handleComplete() {
     this.item.updateStatus("completed");
     this.clearTracking();
-    window.emitToFrontend(download_events.complete, {
+    window.emitToFrontend(download_events.status, {
       ...this.item.getReturnData(),
       status: "completed",
     });

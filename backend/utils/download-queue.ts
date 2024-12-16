@@ -124,15 +124,11 @@ class AllQueue {
             game_data: item.data.game_data,
           };
 
-          window.emitToFrontend("torrent:start", {
-            infoHash: torrent.infoHash,
-          });
+          window.emitToFrontend("torrent:status", returnData);
 
           torrent.on("done", () => {
             this.completeDownload(item.data.torrentId);
-            window.emitToFrontend("torrent:done", {
-              infoHash: torrent.infoHash,
-            });
+            window.emitToFrontend("torrent:status", returnData);
             resolve();
           });
 
@@ -153,7 +149,7 @@ class AllQueue {
                 torrent.infoHash,
                 combineTorrentData(torrent, item.data.game_data)
               );
-              window.emitToFrontend("torrent:progress", returnData);
+              window.emitToFrontend("torrent:status", returnData);
               lastUpdateTime = now;
             }
           });
@@ -168,11 +164,9 @@ class AllQueue {
 
     this.activeDownloads.set(item.data.id, downloader);
     this.queue.delete(item.data.id);
-    window.emitToFrontend("download:start", { id: item.data.id });
 
     try {
       await downloader.download();
-      window.emitToFrontend("download:done", { id: item.data.id });
     } catch (error) {
       window.emitToFrontend("download:error", {
         id: item.data.id,
@@ -197,6 +191,8 @@ class AllQueue {
       : activeDownload.item.getReturnData();
 
     if (!item) return;
+    // check if download has finished
+    if (!item.progress || item.progress < 99) return;
 
     await this.notification(
       item?.game_data.name,

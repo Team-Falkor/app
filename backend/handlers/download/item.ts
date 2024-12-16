@@ -151,7 +151,7 @@ class DownloadItem {
     }
 
     const progressData = this.getReturnData();
-    window.emitToFrontend(download_events.progress, progressData);
+    window.emitToFrontend(download_events.status, progressData);
   }
 }
 

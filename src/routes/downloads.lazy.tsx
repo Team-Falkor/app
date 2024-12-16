@@ -29,9 +29,14 @@ function Downloads() {
     (_event: any, data: ITorrent | DownloadData) => {
       const id = isTorrent(data) ? data.infoHash : data.id;
 
+      if (data.status === "stopped" || data.status === "completed") {
+        removeStats(id);
+        return;
+      }
+
       setStats(id, data);
     },
-    [setStats]
+    [removeStats, setStats]
   );
 
   // Optimized useEffect to manage IPC listener and remove item from queue once downloading
@@ -41,12 +46,12 @@ function Downloads() {
       handleProgress(event, data);
     };
 
-    ipcRenderer.on("torrent:progress", listener);
-    ipcRenderer.on("download:progress", listener);
+    ipcRenderer.on("torrent:status", listener);
+    ipcRenderer.on("download:status", listener);
 
     return () => {
-      ipcRenderer.off("torrent:progress", listener);
-      ipcRenderer.off("download:progress", listener);
+      ipcRenderer.off("torrent:status", listener);
+      ipcRenderer.off("download:status", listener);
     };
   }, [handleProgress, removeStats]);
 
