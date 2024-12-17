@@ -40,6 +40,7 @@ class Window {
         // devTools: !app.isPackaged,
         devTools: true,
       },
+      backgroundColor: "#020817",
       autoHideMenuBar: false,
       minWidth: 1000,
       minHeight: 600,
