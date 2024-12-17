@@ -206,6 +206,7 @@ class AllQueue {
         title: title,
         body: "Download completed",
         icon: icon ? await NotificationsHandler.createImage(icon) : undefined,
+        notificationType: "download_completed",
       },
       true
     );
