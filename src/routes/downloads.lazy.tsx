@@ -17,7 +17,7 @@ export const Route = createLazyFileRoute("/downloads")({
 
 function Downloads() {
   const { t } = useLanguageContext();
-  const { downloads, queue } = UseDownloads(); // Assuming `removeFromQueue` is available in your hook
+  const { downloads, queue } = UseDownloads();
   const {
     map: statsMap,
     set: setStats,
@@ -39,7 +39,6 @@ function Downloads() {
     [removeStats, setStats]
   );
 
-  // Optimized useEffect to manage IPC listener and remove item from queue once downloading
   useEffect(() => {
     const ipcRenderer = window.ipcRenderer;
     const listener = (event: any, data: ITorrent | DownloadData) => {
@@ -55,7 +54,6 @@ function Downloads() {
     };
   }, [handleProgress, removeStats]);
 
-  // Ensure unique downloads by combining downloads and queue
   const uniqueDownloads = useMemo(() => {
     const uniqueSet = new Map<string, ITorrent | DownloadData | QueueData>();
     for (const item of [...downloads, ...queue]) {
@@ -72,7 +70,6 @@ function Downloads() {
     return Array.from(uniqueSet.values());
   }, [downloads, queue]);
 
-  // Render download cards, with cleanup for unused stats
   const renderDownloadCard = useCallback(
     (item: ITorrent | DownloadData | QueueData) => {
       const stats =

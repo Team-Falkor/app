@@ -66,7 +66,7 @@ export const useDownloadStore = create<QueueStoreState>((set, get) => {
       try {
         const response = await window.ipcRenderer.invoke("queue:add", item);
         if (response.success) {
-          await get().fetchQueue();
+          Promise.all([await get().fetchDownloads(), await get().fetchQueue()]);
         } else {
           logError("Adding to queue", response.error);
         }
