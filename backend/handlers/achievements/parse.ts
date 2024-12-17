@@ -200,4 +200,4 @@ class AchievementParser {
   }
 }
 
-export default AchievementParser;
+export { AchievementParser };

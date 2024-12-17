@@ -344,4 +344,4 @@ class AchievementFileLocator {
   }
 }
 
-export default AchievementFileLocator;
+export { AchievementFileLocator };
