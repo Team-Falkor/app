@@ -13,6 +13,11 @@
   directories: {
     output: "release/",
   },
+  extraResources: [
+    {
+      from: "resources",
+    },
+  ],
   appImage: {},
   files: ["dist", "dist-electron"],
   mac: {

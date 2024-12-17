@@ -167,3 +167,5 @@ export interface UnlockedAchievement {
   name: string;
   unlockTime: number;
 }
+
+export type NotificationType = "download_completed" | "achievement_unlocked";

@@ -1,6 +1,7 @@
 import fs from "fs";
 import { join } from "node:path";
 import { homedir } from "os";
+import { getSoundPath } from "./utils";
 
 const appDataPath = join(homedir(), "moe.falkor");
 const downloadsPath = join(homedir(), "Downloads");
@@ -29,4 +30,9 @@ export const constants = {
   appDataPath,
   settingsPath,
   downloadsPath,
+  assets: {
+    sounds: {
+      complete: getSoundPath("complete.wav"),
+    },
+  },
 };

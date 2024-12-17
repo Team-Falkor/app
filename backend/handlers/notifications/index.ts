@@ -1,14 +1,17 @@
+import { NotificationType } from "@/@types";
 import { Notification, type NotificationConstructorOptions } from "electron";
 import { createWriteStream, existsSync } from "fs";
 import https from "https";
 import { join } from "path";
-import { constants } from "../../utils";
+import { constants, getSoundPath } from "../../utils";
+import { playSound } from "../../utils/playsound";
 import { settings } from "../../utils/settings/settings";
 
 class NotificationsHandler {
-  // Creates and returns a new Electron notification with the provided options.
   public static constructNotification = (
-    options?: NotificationConstructorOptions,
+    options?: NotificationConstructorOptions & {
+      notificationType?: NotificationType;
+    },
     show: boolean = true
   ) => {
     try {
@@ -18,7 +21,10 @@ class NotificationsHandler {
         return;
       }
 
-      const notification = new Notification(options);
+      const notification = new Notification({
+        ...options,
+        silent: true,
+      });
 
       if (!show) {
         console.log("show is false");
@@ -26,6 +32,25 @@ class NotificationsHandler {
       }
 
       notification.show();
+
+      let soundPath: string | null = null;
+      switch (options?.notificationType) {
+        case "download_completed":
+          soundPath = getSoundPath("complete.wav");
+          break;
+        case "achievement_unlocked":
+          soundPath = getSoundPath("achievement_unlock.wav");
+          break;
+        default:
+          console.error(
+            "Unknown notification type:",
+            options?.notificationType
+          );
+          break;
+      }
+
+      if (!soundPath) return;
+      playSound(soundPath);
     } catch (error) {
       console.error("Error creating notification:", error);
     }
@@ -43,26 +68,23 @@ class NotificationsHandler {
       fileName?: string;
     }
   ): Promise<string | undefined> {
-    if (!url) return undefined; // Return undefined if the URL is invalid.
+    if (!url) return undefined;
 
     try {
-      // Determine the file name, prioritizing the extra parameter, then URL path, with a default fallback.
       const fileName =
         extra?.fileName ||
         new URL(url).pathname.split("/").pop() ||
         "image.png";
-      const output = join(constants.cachePath, fileName); // Build the output file path.
+      const output = join(constants.cachePath, fileName);
 
-      // Check if the file already exists.
       if (existsSync(output)) {
         console.log("File already exists:", output);
-        return output; // Return the path to the existing file.
+        return output;
       }
 
-      // If the file doesn't exist, download and save the image.
       return await this.downloadImage(url, output);
     } catch (error) {
-      console.error("Error creating image:", error); // Log any unexpected errors.
+      console.error("Error creating image:", error);
       return undefined;
     }
   }
@@ -75,11 +97,9 @@ class NotificationsHandler {
    */
   private static downloadImage(url: string, output: string): Promise<string> {
     return new Promise((resolve, reject) => {
-      // Perform an HTTPS GET request to fetch the image.
       https
         .get(url, { timeout: 10000 }, (response) => {
           if (response.statusCode !== 200) {
-            // Reject if the response status code is not successful.
             reject(
               new Error(
                 `Failed to fetch image. Status code: ${response.statusCode}`
@@ -88,20 +108,17 @@ class NotificationsHandler {
             return;
           }
 
-          const writeStream = createWriteStream(output); // Create a writable stream to save the file.
-          response.pipe(writeStream); // Pipe the response data to the write stream.
+          const writeStream = createWriteStream(output);
+          response.pipe(writeStream);
 
-          // Resolve the promise when the write operation finishes successfully.
           writeStream.on("finish", () => resolve(output));
-
-          // Reject the promise if an error occurs during file writing.
           writeStream.on("error", (error) =>
             reject(new Error(`File write error: ${error.message}`))
           );
         })
         .on("error", (error) =>
           reject(new Error(`Request error: ${error.message}`))
-        ); // Handle request-level errors.
+        );
     });
   }
 }
