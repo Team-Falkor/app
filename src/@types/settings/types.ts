@@ -12,6 +12,7 @@ export interface SettingsConfig {
   maxDownloadSpeed: number;
   maxUploadSpeed: number;
   notifications: boolean;
+  api_base_url: string;
 }
 
 export type SettingsTheme = "system" | "light" | "dark";

@@ -1,4 +1,5 @@
 import { Cracker } from "@/@types";
+import { AchievementFile } from "@/@types/achievements/types";
 import { app } from "electron";
 import { existsSync, readdirSync } from "node:fs";
 import { join } from "node:path";
@@ -13,11 +14,6 @@ type PathType =
 interface FilePath {
   achievement_folder_location: string;
   achievement_file_location: string[];
-}
-
-interface AchievementFile {
-  type: Cracker;
-  filePath: string;
 }
 
 class AchievementFileLocator {
@@ -326,8 +322,8 @@ class AchievementFileLocator {
             if (!existsSync(filePath)) return;
 
             const achievementFile: AchievementFile = {
-              type: cracker,
-              filePath,
+              cracker,
+              path: filePath,
             };
 
             const existingFiles = gameAchievementFiles.get(gameStoreId) || [];
@@ -341,6 +337,11 @@ class AchievementFileLocator {
     }
 
     return gameAchievementFiles;
+  }
+
+  static findAchievementFiles(gameStoreId: string): AchievementFile[] {
+    const gameAchievementFiles = this.findAllAchievementFiles();
+    return gameAchievementFiles.get(gameStoreId) || [];
   }
 }
 

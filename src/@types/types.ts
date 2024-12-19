@@ -1,5 +1,5 @@
 import { ITADPrice } from "@/lib/api/itad/types";
-import { ReactElement } from "react";
+import { JSX, ReactElement } from "react";
 import { PluginConfig, PluginSearchResponse } from "./plugins";
 
 export type IGDBImageSize =
@@ -162,10 +162,5 @@ export type Cracker =
   | "razor1911"
   | "rle"
   | "_3dm";
-
-export interface UnlockedAchievement {
-  name: string;
-  unlockTime: number;
-}
 
 export type NotificationType = "download_completed" | "achievement_unlocked";

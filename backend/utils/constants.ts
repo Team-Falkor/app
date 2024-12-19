@@ -30,6 +30,7 @@ export const constants = {
   appDataPath,
   settingsPath,
   downloadsPath,
+  apiUrl: process.env.FALKOR_API_BASE_URL,
   assets: {
     sounds: {
       complete: getSoundPath("complete.wav"),

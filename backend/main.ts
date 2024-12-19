@@ -15,12 +15,9 @@ const configureDeepLinking = () => {
       app.setAsDefaultProtocolClient(DEEP_LINK_NAME, process.execPath, [
         path.resolve(process.argv[1]),
       ]);
-
-      console.log("1");
     }
   } else {
     app.setAsDefaultProtocolClient(DEEP_LINK_NAME);
-    console.log("2");
   }
 };
 
