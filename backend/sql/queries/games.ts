@@ -5,6 +5,7 @@ import {
 } from "@/@types/library/types";
 import { logger } from "../../handlers/logging";
 import { db } from "../knex";
+import { BaseQuery } from "./base";
 
 /**
  * Handles operations on the `library_games` table in the database.
@@ -12,14 +13,14 @@ import { db } from "../knex";
  *
  * @class
  */
-class GamesDatabase {
+class GamesDatabase extends BaseQuery {
   /**
    * Whether the database has been initialized.
    *
-   * @private
+   * @protected
    * @type {boolean}
    */
-  private initialized: boolean = false;
+  initialized: boolean = false;
 
   /**
    * Initializes the database.
